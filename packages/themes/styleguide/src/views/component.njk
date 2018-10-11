@@ -1,0 +1,54 @@
+{% extends "layouts/default" %}
+
+{% set page = {
+  title: component.label
+} %}
+
+{% set variants = component.variants | collect %}
+{% set hasViewContents = component.view and component.view.contents %}
+
+{% block content %}
+<div class="component">
+
+  <header class="component__header">
+    <h1 class="component__label">{{ component.label }}</h1>
+  </header>
+
+  <section class="component__section component__section--preview">
+    {% if hasViewContents %}
+    {% for variant in variants %}
+    <div class="variant">
+      <div class="variant__header">
+        <h3 class="variant__label">{{ variant.label }}</h3>
+        <div class="variant__toggles">
+          <a class="variant__toggle" href="#{{ variant.name }}-preview">Preview</a>
+          | <a class="variant__toggle" href="#{{ variant.name }}-html">HTML</a>
+        </div>
+      </div>
+      <div class="variant__panels">
+        <div class="variant__panel" id="{{ variant.name }}-preview">
+          <iframe class="preview" src="{{ route('preview', {component: component.name, variant: variant.name}) }}"></iframe>
+        </div>
+        <div class="variant__panel" id="{{ variant.name }}-html">
+          <pre class="code"><code class="html">{{ variant | html }}</code></pre>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="note">View template is not found or empty.</p>
+    {% endif %}
+  </section>
+
+  {% if hasViewContents %}
+  <section class="component__section component__section--template">
+    <h2 class="component__heading">
+      View Template
+    </h2>
+    <pre class="code"><code>{{ component.view }}</code></pre>
+  </section>
+  {% endif %}
+
+</div>
+
+{% endblock %}

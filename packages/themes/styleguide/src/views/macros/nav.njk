@@ -1,0 +1,14 @@
+{% macro tree(nodes) %}
+<ul class="tree">
+  {% for node in nodes %}
+  <li class="tree__item">
+    {% if node.children %}
+    <span class="tree__group">{{ node.label }}</span>
+    {{ tree(node.children) }}
+    {% else %}
+    <a class="tree__component" href="{{ route('component', { component: node.content.name } ) }}">{{ node.content.label }}</a>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endmacro %}

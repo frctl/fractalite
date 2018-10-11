@@ -1,0 +1,24 @@
+/* global window */
+
+import 'babel-polyfill';
+import Vue from 'vue';
+import VueSocketio from 'vue-socket.io-extended';
+import VueSelect from 'vue-select';
+import io from 'socket.io-client';
+import AsyncComputed from 'vue-async-computed';
+import App from './App.vue';
+import store from './store';
+
+Vue.component('v-select', VueSelect);
+
+if (window.env.dev) {
+  Vue.use(VueSocketio, io(), { store });
+}
+
+Vue.use(AsyncComputed);
+
+export default new Vue({
+  el: '#app',
+  store,
+  render: h => h(App)
+});

@@ -1,0 +1,33 @@
+{
+  "name": "@fractalite/theme-workbench",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "parcel build ./src/app/main.js --out-file=workbench.js --no-source-maps",
+    "dev": "parcel watch ./src/app/main.js --out-file=workbench.js --hmr-hostname localhost"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
+    "highlight.js": "9.12.0",
+    "lodash": "^4.17.10",
+    "socket.io-client": "^2.1.1",
+    "vue": "^2.5.17",
+    "vue-async-computed": "^3.4.1",
+    "vue-highlight-component": "^1.0.0",
+    "vue-hot-reload-api": "^2.3.1",
+    "vue-json-pretty": "1.4.1",
+    "vue-select": "^2.5.1",
+    "vue-socket.io": "^2.1.1-b",
+    "vue-socket.io-extended": "^3.1.0",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@fractalite/support": "^0.0.0",
+    "@vue/component-compiler-utils": "^2.2.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "parcel-bundler": "^1.10.1",
+    "sass": "^1.14.1",
+    "vue-template-compiler": "^2.5.17"
+  }
+}

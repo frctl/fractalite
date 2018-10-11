@@ -1,0 +1,15 @@
+{
+  "name": "card-component",
+  "fractal": {
+    "label": "Basic Card",
+    "variants": [
+      {
+        "name": "example",
+        "context": {
+          "title": "A test title",
+          "text": "Some dummy text for the card"
+        }
+      }
+    ]
+  }
+}

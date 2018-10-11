@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  {% block preHead %}{% endblock %}
+  {% block head %}{{ head | safe }}{% endblock %}
+  {% block postHead %}{% endblock %}
+
+  <title>{% block title %}{{ component.label }} / {{ variant.label }}{% endblock %}</title>
+</head>
+<body>
+
+{% block preContents %}{% endblock %}
+{% block contents %}{{ contents | safe }}{% endblock %}
+{% block postContents %}{% endblock %}
+
+{% block preFoot %}{% endblock %}
+{% block foot %}{{ foot | safe }}{% endblock %}
+{% block postFoot %}{% endblock %}
+
+{% block scripts %}
+{% include "ui/reload" %}
+{% endblock %}
+
+</body>
+</html>

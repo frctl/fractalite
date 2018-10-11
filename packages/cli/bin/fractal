@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+const mri = require('mri');
+
+const cwd = process.cwd();
+const args = mri(process.argv.slice(2));
+
+const binPathParts = process.argv[1].split('/');
+args.$ = binPathParts[binPathParts.length - 1];
+
+require('../')(args, cwd);

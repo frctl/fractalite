@@ -1,0 +1,5 @@
+<button class="button">
+  {% if icon and iconPos == 'before' %}{% render icon %}{% endif %}
+  <span class="button__label">{{ label }}</span>
+  {% if icon and iconPos == 'after' %}{% render icon %}{% endif %}
+</button>

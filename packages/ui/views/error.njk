@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" class="error">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="stylesheet" href="{{ asset('ui.css', 'ui') }}">
+
+  <title>An error occured</title>
+</head>
+<body>
+
+  <h1>An error occured.</h1>
+  <p class="error-info">
+    {% if error.status %}<span class="error-status">{{ error.status }}:</span>{% endif %}
+    <span class="error-message">{{ error.message }}</span>
+  </p>
+
+  {% include "ui/reload" %}
+
+</body>
+</html>

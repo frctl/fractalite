@@ -1,0 +1,46 @@
+{% import "macros/nav" as nav -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="stylesheet" href="{{ asset('styleguide.css', 'theme') }}">
+
+  <title>{{ site.title }}</title>
+</head>
+<body>
+
+{% block body %}
+
+{% set components = state.components | collect %}
+
+<div class="container">
+
+  <nav class="nav">
+    <div class="nav__section">
+      <ul class="tree">
+        <li>
+          <a href="{{ route('index') }}">Overview</a>
+        </li>
+      </ul>
+    </div>
+    <div class="nav__section">
+      <h4 class="nav__label">Components</h4>
+      {{ nav.tree(components | tree) }}
+    </div>
+  </nav>
+
+  <main class="content">
+  {% block content %}{% endblock %}
+  </main>
+
+</div>
+{% endblock %}
+
+<script src="{{ asset('styleguide.js', 'theme') }}"></script>
+{% include "ui/reload" %}
+
+</body>
+</html>
