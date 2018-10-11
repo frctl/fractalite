@@ -22,6 +22,6 @@ module.exports = function mustache(opts = {}) {
 
 The default [Nunjucks](https://mozilla.github.io/nunjucks/) render engine supports all standard Nunjucks functionality, with a few tweaks to make building components easier.
 
-### Referencing component views
+<!-- ### Referencing component views
 
-If you wish to `include` or `extend` another component's
+If you wish to `include` or `extend` another component's -->
