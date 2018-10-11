@@ -42,8 +42,8 @@ Once installed, `cd demo` to move into the demo directory and then run one of th
 
 ## Documentation/notes
 
-- [Components](/docs/components)
-- [Parser plugins](/docs/plugins)
-- [Render engines](/docs/engines)
-- [UI themes](/docs/themes)
-- [CLI](/docs/cli)
+- [Components](/docs/components.md)
+- [Parser plugins](/docs/plugins.md)
+- [Render engines](/docs/engines.md)
+- [UI themes](/docs/themes.md)
+- [CLI](/docs/cli.md)
