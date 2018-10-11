@@ -34,10 +34,10 @@ The example project is provided in the `/demo` directory. The dependencies for t
 
 Once installed, you can then run one of the following commands:
 
-- `npm run workbench:dev` - Start the development server using the [workbench](/docs/ui#themes) theme
-- `npm run workbench:build` - Build a static version of the [workbench](/docs/ui#themes) theme
-- `npm run styleguide:dev` - Start the development server using the [styleguide](/docs/ui#themes) theme
-- `npm run styleguide:build` - Build a static version of the [styleguide](/docs/ui#themes) theme
+- `npm run workbench:dev` - Start the development server using the [workbench](/docs/ui.md#themes) theme
+- `npm run workbench:build` - Build a static version of the [workbench](/docs/ui.md#themes) theme
+- `npm run styleguide:dev` - Start the development server using the [styleguide](/docs/ui.md#themes) theme
+- `npm run styleguide:build` - Build a static version of the [styleguide](/docs/ui.md#themes) theme
 
 
 ## Documentation/notes
