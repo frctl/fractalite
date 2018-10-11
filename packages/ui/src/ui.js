@@ -1,14 +1,12 @@
 const { mapValues } = require('lodash');
-const Fractal = require('@fractalite/core');
 const { toArray } = require('@fractalite/support/utils');
 const Router = require('./router');
 const Engine = require('./engine');
 const Assets = require('./assets');
 const resolveConfig = require('./config');
 
-module.exports = function(conf = {}) {
-  const app = new Fractal(conf);
-  const config = resolveConfig(conf.ui);
+module.exports = function(app, opts = {}) {
+  const config = resolveConfig(opts);
   const engineConfig = config.engine;
   const engine = new Engine(engineConfig);
 

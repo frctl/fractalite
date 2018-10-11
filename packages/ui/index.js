@@ -4,9 +4,9 @@ const Builder = require('./src/builder');
 const init = require('./src/ui');
 const utils = require('./src/env-utils');
 
-module.exports.develop = async function(conf = {}) {
-  const ui = init(conf);
-  const { config, app } = ui;
+module.exports.develop = async function(app, opts = {}) {
+  const ui = init(app, opts);
+  const { config } = ui;
 
   ui.env = {
     dev: true,
@@ -41,13 +41,9 @@ module.exports.develop = async function(conf = {}) {
   return { server, ui, app };
 };
 
-module.exports.build = async function(conf = {}) {
-  const ui = init(
-    Object.assign({}, conf, {
-      ui: Object.assign({ cache: false }, conf.ui)
-    })
-  );
-  const { app, config } = ui;
+module.exports.build = async function(app, opts = {}) {
+  const ui = init(app, Object.assign({ cache: false }, opts.ui));
+  const { config } = ui;
   const buildConfig = config.build;
 
   ui.env = {
