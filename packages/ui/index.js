@@ -31,12 +31,14 @@ module.exports.develop = async function(conf = {}) {
 
   server.on('connection', ({ socket }) => socket.emit('state', app.getState()));
 
-  await app.watch(state => server.emit('state_updated', state));
+  app.watch(state => server.emit('state_updated', state));
+  app.on('error', err => server.emit('error', err));
+
   await ui.assets.watch(path => {
     server.emit('asset_updated', ui.utils.url(path));
   });
 
-  return { server, ui };
+  return { server, ui, app };
 };
 
 module.exports.build = async function(conf = {}) {
@@ -62,7 +64,7 @@ module.exports.build = async function(conf = {}) {
   const builder = new Builder(buildConfig);
   await app.init();
   await builder.run(ui.assets, ui.router, app.getState());
-  return { builder, ui };
+  return { builder, ui, app };
 };
 
 module.exports.Server = Server;

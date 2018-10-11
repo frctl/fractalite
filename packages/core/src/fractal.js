@@ -1,16 +1,21 @@
 const { get, isString, isFunction, cloneDeep } = require('lodash');
 const watch = require('glob-watcher');
+const { EventEmitter2 } = require('eventemitter2');
 const { defaultsDeep } = require('@fractalite/support/utils');
 const resolveConfig = require('./config');
 const Parser = require('./parser');
 const State = require('./state');
 
-class Fractal {
+class Fractal extends EventEmitter2 {
   constructor(config = {}) {
-    this._config = resolveConfig(config);
+    super({
+      wildcard: true
+    });
 
+    this._config = resolveConfig(config);
     this._state = new State();
     this._parser = new Parser(this.get('src.path'), this.get('src.opts'));
+    this._watcher = null;
     this._watchCallbacks = [];
 
     const [engine, engineOpts = {}] = this.get('engine');
@@ -29,8 +34,8 @@ class Fractal {
     return this._state;
   }
 
-  get watching() {
-    return Boolean(this._watcher);
+  get watcher() {
+    return this._watcher;
   }
 
   get(path, fallback) {
@@ -63,14 +68,17 @@ class Fractal {
     if (this._watcher) {
       return this._watcher;
     }
-    this._watcher = watch(this.get('watch.paths'), this.get('watch.opts'), async done => {
-      await this.updateState();
-      for (const callback of this._watchCallbacks) {
-        callback(this.getState());
+    this._watcher = watch(this.get('watch.paths'), this.get('watch.opts'), async () => {
+      try {
+        await this.updateState();
+        for (const callback of this._watchCallbacks) {
+          await callback(this.getState());
+        }
+      } catch (err) {
+        this.emit('error', err);
       }
-      done();
     });
-    return this._watcher;
+    return this;
   }
 
   render(target, context, opts = {}) {

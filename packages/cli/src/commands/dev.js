@@ -5,7 +5,7 @@ const { develop } = require('@fractalite/ui');
 
 module.exports = function dev(opts = {}) {
   return async function(args, config, { logger, exit }) {
-    const { server } = await develop(config);
+    const { server, app } = await develop(config);
 
     logger.success('UI server started');
 
@@ -15,6 +15,8 @@ module.exports = function dev(opts = {}) {
       Network: ${cyan(`http://${server.address}:${server.port}`)}
       ---
     `);
+
+    app.on('error', err => logger.error(err));
 
     process.on('SIGINT', () => {
       server.stop();
