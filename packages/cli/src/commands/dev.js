@@ -4,24 +4,24 @@ const { cyan } = require('kleur');
 const { develop } = require('@fractalite/ui');
 
 module.exports = function dev(opts = {}) {
-  return async function(args, config, { logger, exit }) {
-    const { server, app } = await develop(config);
+  return async function(app, args, config) {
+    const { server } = await develop(app, config.ui);
 
-    logger.success('UI server started');
+    this.success('UI server started');
 
-    logger.log(`
+    this.log(`
       ---
       Local:   ${cyan(`http://${server.hostname}:${server.port}`)}
       Network: ${cyan(`http://${server.address}:${server.port}`)}
       ---
     `);
 
-    app.on('error', err => logger.error(err));
+    app.on('error', err => this.error(err));
 
     process.on('SIGINT', () => {
       server.stop();
-      logger.br.success('UI server stopped');
-      exit();
+      this.br().success('UI server stopped');
+      process.exit(0);
     });
   };
 };

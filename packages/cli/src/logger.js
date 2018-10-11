@@ -1,23 +1,40 @@
 const { Signale } = require('signale');
 const stripIndent = require('strip-indent');
 
-module.exports = function(opts = {}) {
-  const logger = new Signale(opts);
+const levels = ['success', 'debug', 'info', 'error', 'complete'];
 
-  const oldLog = logger.log;
-  logger.log = function(arg, ...args) {
-    if (typeof arg === 'string') {
-      return oldLog(stripIndent(arg, ...args));
+class Logger {
+  constructor(opts = {}) {
+    this._logger = new Signale(opts);
+  }
+
+  br(count = 1) {
+    this._logger.log('\n'.repeat(count));
+    return this;
+  }
+
+  log(...args) {
+    if (typeof args[0] === 'string') {
+      this._logger.log(stripIndent(args[0]), ...args.slice(1));
+      return this;
     }
-    return oldLog(arg, ...args);
+    this._logger.log(...args);
+  }
+
+  bind(emitter) {
+    for (const level of levels) {
+      emitter.on(`log.${level}`, (...args) => this[level](...args));
+    }
+    emitter.on('error', (...args) => this.error(...args));
+    return this;
+  }
+}
+
+for (const level of levels) {
+  Logger.prototype[level] = function(...args) {
+    this._logger[level](...args);
+    return this;
   };
+}
 
-  Object.defineProperty(logger, 'br', {
-    get() {
-      logger.log('');
-      return logger;
-    }
-  });
-
-  return logger;
-};
+module.exports = Logger;

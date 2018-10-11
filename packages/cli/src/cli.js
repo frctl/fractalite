@@ -8,11 +8,14 @@ const importCwd = require('import-cwd');
 const { get, isString } = require('lodash');
 const cosmiconfig = require('cosmiconfig');
 const { toArray } = require('@fractalite/support/utils');
+const Fractal = require('@fractalite/core');
+const Logger = require('./logger');
+const pkg = require('../package.json');
 
 const readFiles = promisify(readdir);
 
 module.exports = async function(args, cwd) {
-  const logger = require('./logger')();
+  const logger = new Logger();
 
   const exit = err => {
     if (err) {
@@ -42,16 +45,17 @@ module.exports = async function(args, cwd) {
     const { config } = configFile;
 
     let commands = await readFiles(resolve(__dirname, 'commands'));
-    commands = commands.map(c => resolve(__dirname, 'commands', c));
-    commands = commands.concat(get(config, 'cli.commands', []));
-    commands = commands.map(cmd => {
-      let [attacher, opts] = toArray(cmd);
-      attacher = isString(attacher) ? importCwd(attacher) : attacher;
-      return Object.assign({}, attacher, {
-        name: attacher.name,
-        handler: attacher(opts)
+    commands = commands
+      .map(c => resolve(__dirname, 'commands', c))
+      .concat(get(config, 'cli.commands', []))
+      .map(cmd => {
+        let [attacher, opts] = toArray(cmd);
+        attacher = isString(attacher) ? importCwd(attacher) : attacher;
+        return Object.assign({}, attacher, {
+          name: attacher.name,
+          handler: attacher(opts).bind(logger)
+        });
       });
-    });
 
     const commandName = args._[0] || 'info';
     const command = commands.find(cmd => cmd.name === commandName);
@@ -59,9 +63,10 @@ module.exports = async function(args, cwd) {
       exit(`Command '${commandName}' not found`);
     }
 
-    await command.handler(args, config, {
-      logger,
-      exit,
+    const app = new Fractal(config);
+
+    await command.handler(app, args, config, {
+      version: pkg.version,
       commands: commands.filter(c => !c.hidden)
     });
   } catch (err) {

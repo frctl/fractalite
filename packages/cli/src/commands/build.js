@@ -1,32 +1,34 @@
 /* eslint-disable unicorn/no-process-exit */
 
 const { cyan } = require('kleur');
-const webUI = require('@fractalite/ui');
-const Logger = require('../logger');
+const { Signale } = require('signale');
+const Fractal = require('@fractalite/core');
 
 module.exports = function build(opts = {}) {
-  return async function(args, config, { logger, exit }) {
-    const interactiveLogger = new Logger({ interactive: true });
-    interactiveLogger.await('Starting static UI build...');
+  const { build, Server } = require('@fractalite/ui');
 
-    const { builder, ui } = await webUI.build(config);
+  return async function(app, args, config) {
+    const logger = new Signale({ interactive: true });
+    logger.await('Starting static UI build...');
 
-    interactiveLogger.success(
+    const { builder, ui } = await build(app, config);
+
+    logger.success(
       `Static UI build complete (${builder.stats.pages.length} pages built, ${
         builder.stats.files.length
       } files copied)`
     );
 
     if (args.serve) {
-      const server = new webUI.Server({
+      const server = new Server({
         port: args.port || ui.config.build.server.port,
         assets: [{ src: ui.config.build.dest }]
       });
       await server.start();
 
-      logger.success('Serving build directory');
+      this.success('Serving build directory');
 
-      logger.log(`
+      this.log(`
         ---
         Local:   ${cyan(`http://${server.hostname}:${server.port}`)}
         Network: ${cyan(`http://${server.address}:${server.port}`)}
@@ -35,11 +37,11 @@ module.exports = function build(opts = {}) {
 
       process.on('SIGINT', () => {
         server.stop();
-        logger.br.success('Build directory server stopped');
-        exit();
+        this.br().success('Build directory server stopped');
+        process.exit(0);
       });
     } else {
-      exit();
+      process.exit(0);
     }
   };
 };

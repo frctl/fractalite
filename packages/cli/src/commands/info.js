@@ -2,25 +2,24 @@
 
 const { cyan, green } = require('kleur');
 const { sortBy } = require('lodash');
-const pkg = require('../../package.json');
 
 module.exports = function info(opts = {}) {
-  return function(args, config, { logger, commands, exit }) {
-    logger.log(`
-      ${green(`${args.$} CLI v${pkg.version}`)}
+  return function(app, args, config, { version, commands }) {
+    this.log(`
+      ${green(`${args.$} CLI v${version}`)}
 
       Available commands:
       `);
 
     for (const command of sortBy(commands, 'name')) {
-      logger.log(
+      this.log(
         `→ ${cyan(`${args.$} ${command.name}`)}${
           command.description ? ` - ${command.description}` : ''
         }`
       );
     }
-    logger.log('');
-    exit();
+
+    process.exit(0);
   };
 };
 
