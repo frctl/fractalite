@@ -32,7 +32,7 @@ An end-user focussed theme for browsing components, variants and their related f
 
 The example project is provided in the `/demo` directory. The dependencies for the demo are bootstrapped as part of the installation process above.
 
-Once installed, `cd demo` to move into the demo directory and then run one of the following commands:
+Once installed, you can then run one of the following commands:
 
 - `npm run workbench:dev` - Start the development server using the [workbench](/docs/ui#themes) theme
 - `npm run workbench:build` - Build a static version of the [workbench](/docs/ui#themes) theme

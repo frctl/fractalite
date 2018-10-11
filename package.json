@@ -12,7 +12,11 @@
     "test": "xo && lerna run test",
     "build": "npm run build:workbench && npm run build:styleguide",
     "build:workbench": "cd packages/themes/workbench && npm run build",
-    "build:styleguide": "cd packages/themes/styleguide && npm run build"
+    "build:styleguide": "cd packages/themes/styleguide && npm run build",
+    "styleguide:dev": "cd ./demo && npm run styleguide:dev",
+    "workbench:dev": "cd ./demo && npm run workbench:dev",
+    "styleguide:build": "cd ./demo && npm run styleguide:build",
+    "workbench:build": "cd ./demo && npm run workbench:build"
   },
   "xo": {
     "extends": "@frctl/eslint-config-frctl",
