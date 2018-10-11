@@ -1,6 +1,6 @@
 const { get, isString, merge } = require('lodash');
 
-module.exports = function(opts, app, ui) {
+module.exports = function(opts, ui) {
   return function(components) {
     let configOpts = ui.config.preview;
     configOpts = isString(configOpts) ? { contents: configOpts } : configOpts;

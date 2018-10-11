@@ -48,7 +48,7 @@ class Fractal extends EventEmitter2 {
 
   use(attacher, opts = {}, ...ctx) {
     const options = defaultsDeep(this.get(`opts.${attacher.name}`, {}), opts);
-    this._parser.use(attacher(options, this, ...ctx));
+    this._parser.use(attacher(options, ...ctx));
     return this;
   }
 

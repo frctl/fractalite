@@ -1,4 +1,4 @@
-module.exports = function(opts, app, ui) {
+module.exports = function(opts, ui) {
   return function(components) {
     return Promise.all(
       components.map(component => {
