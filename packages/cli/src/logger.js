@@ -1,11 +1,18 @@
 const { Signale } = require('signale');
 const stripIndent = require('strip-indent');
 
-const levels = ['success', 'debug', 'info', 'error', 'complete'];
+const levels = ['success', 'debug', 'info', 'error', 'warn', 'complete'];
 
 class Logger {
-  constructor(opts = {}) {
-    this._logger = new Signale(opts);
+  constructor() {
+    this._logger = new Signale({
+      types: {
+        debug: {
+          badge: '✎',
+          color: 'gray'
+        }
+      }
+    });
   }
 
   br(count = 1) {

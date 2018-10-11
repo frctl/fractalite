@@ -3,18 +3,17 @@ const watch = require('glob-watcher');
 const { EventEmitter2 } = require('eventemitter2');
 const { defaultsDeep } = require('@fractalite/support/utils');
 const resolveConfig = require('./config');
+const Logger = require('./logger');
 const Parser = require('./parser');
 const State = require('./state');
 
-class Fractal extends EventEmitter2 {
+class Fractal {
   constructor(config = {}) {
-    super({
-      wildcard: true
-    });
-
     this._config = resolveConfig(config);
+
     this._state = new State();
     this._parser = new Parser(this.get('src.path'), this.get('src.opts'));
+    this._emitter = new EventEmitter2({ wildcard: true });
     this._watcher = null;
     this._watchCallbacks = [];
 
@@ -38,6 +37,21 @@ class Fractal extends EventEmitter2 {
     return this._watcher;
   }
 
+  get emitter() {
+    return this._emitter;
+  }
+
+  on(...args) {
+    this._emitter.on(...args);
+    return this;
+  }
+
+  emit(...args) {
+    console.log(...args);
+    this._emitter.emit(...args);
+    return this;
+  }
+
   get(path, fallback) {
     return cloneDeep(get(this._config, path, fallback));
   }
@@ -48,7 +62,9 @@ class Fractal extends EventEmitter2 {
 
   use(attacher, opts = {}, ...ctx) {
     const options = defaultsDeep(this.get(`opts.${attacher.name}`, {}), opts);
-    this._parser.use(attacher(options, ...ctx));
+    const plugin = attacher(options, ...ctx);
+    const logger = new Logger(this._emitter);
+    this._parser.use(plugin.bind(logger));
     return this;
   }
 

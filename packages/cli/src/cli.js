@@ -64,6 +64,7 @@ module.exports = async function(args, cwd) {
     }
 
     const app = new Fractal(config);
+    logger.bind(app.emitter);
 
     await command.handler(app, args, config, {
       version: pkg.version,
