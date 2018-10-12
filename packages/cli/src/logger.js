@@ -1,4 +1,5 @@
 const { Signale } = require('signale');
+const kleur = require('kleur');
 const stripIndent = require('strip-indent');
 
 const levels = ['success', 'debug', 'info', 'error', 'warn', 'complete'];
@@ -15,8 +16,16 @@ class Logger {
     });
   }
 
+  get colours() {
+    return kleur;
+  }
+
+  get colors() {
+    return this.colours;
+  }
+
   br(count = 1) {
-    this._logger.log('\n'.repeat(count));
+    this._logger.log('\n'.repeat(count - 1));
     return this;
   }
 

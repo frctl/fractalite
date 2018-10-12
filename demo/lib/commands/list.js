@@ -1,13 +1,11 @@
-const Fractal = require('@fractalite/core');
-
 module.exports = function list() {
-  return async function(args, config, { logger }) {
-    const app = new Fractal(config);
+  return async function(app, args) {
+    const { cyan, dim } = this.colours;
     const { components } = await app.init();
-    logger.br().log(`${components.length} components found:`);
-    logger.br();
+    this.br().log(`${components.length} components found:`);
+    this.br();
     for (const component of components) {
-      logger.log(`-- ${component.label} (${component.root.relative})`);
+      this.log(`-- ${cyan(component.label)}  ${dim(component.root.relative)}`);
     }
   };
 };
