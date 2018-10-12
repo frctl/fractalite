@@ -1,7 +1,4 @@
-{% if env.dev %}
-<script>
-  window._env = {{ env | json }}
-</script>
+{% if ui.dev %}
 <script src="{{ asset('ui:socket-io.js') }}"></script>
 <script src="{{ asset('ui:reload.js') }}"></script>
 {% endif %}
