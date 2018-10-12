@@ -40,7 +40,10 @@ class DevServer extends Server {
           await next();
           ctx.body = await router.handle(ctx.url);
         } catch (err) {
-          router.handleError(ctx.url, err);
+          if (err.status) {
+            ctx.response.status = err.status;
+          }
+          ctx.body = await router.handleError(ctx.url, err);
         }
       });
       return this;

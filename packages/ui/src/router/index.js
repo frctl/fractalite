@@ -59,26 +59,22 @@ class Router {
   }
 
   async handle(url) {
-    try {
-      for (const route of this._routes) {
-        if (!route.matcher) {
-          continue;
-        }
-        const params = route.matcher.match(url);
-        if (params !== null) {
-          // eslint-disable-next-line no-await-in-loop
-          const result = await route.handler({ url, params });
-          if (result !== null) {
-            return result;
-          }
+    for (const route of this._routes) {
+      if (!route.matcher) {
+        continue;
+      }
+      const params = route.matcher.match(url);
+      if (params !== null) {
+        // eslint-disable-next-line no-await-in-loop
+        const result = await route.handler({ url, params });
+        if (result !== null) {
+          return result;
         }
       }
-      const err = new Error('Page not found');
-      err.status = 404;
-      throw err;
-    } catch (err) {
-      return this.handleError(url, err);
     }
+    const err = new Error('Page not found');
+    err.status = 404;
+    throw err;
   }
 
   async handleError(url, err) {
