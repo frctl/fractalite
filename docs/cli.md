@@ -79,7 +79,7 @@ The engine can be specified as one of:
 
 Configuration for the UI generator can be provided under the `ui` key. Typical options include:
 
-`ui.theme`: The [UI theme](#ui-themes) to use, specified as a CWD-relative path to a local theme directory or as an NPM package name
+`ui.theme`: The UI theme to use, specified as a CWD-relative path to a local theme directory or as an NPM package name
 
 ```js
 // config.fractal.js

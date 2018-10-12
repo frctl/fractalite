@@ -9,8 +9,8 @@ const { get, isString } = require('lodash');
 const cosmiconfig = require('cosmiconfig');
 const { toArray } = require('@fractalite/support/utils');
 const Fractal = require('@fractalite/core');
-const Logger = require('./logger');
 const pkg = require('../package.json');
+const Logger = require('./logger');
 
 const readFiles = promisify(readdir);
 

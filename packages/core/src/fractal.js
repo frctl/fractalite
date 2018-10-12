@@ -86,10 +86,8 @@ class Fractal {
     }
     this._watcher = watch(this.get('watch.paths'), this.get('watch.opts'), async () => {
       try {
-        await this.updateState();
-        for (const callback of this._watchCallbacks) {
-          await callback(this.getState());
-        }
+        const state = await this.updateState();
+        await Promise.all(this._watchCallbacks.map(cb => cb(state)));
       } catch (err) {
         this.emit('error', err);
       }

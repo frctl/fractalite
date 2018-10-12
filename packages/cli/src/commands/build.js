@@ -2,7 +2,6 @@
 
 const { cyan } = require('kleur');
 const { Signale } = require('signale');
-const Fractal = require('@fractalite/core');
 
 module.exports = function build(opts = {}) {
   const { build, Server } = require('@fractalite/ui');
