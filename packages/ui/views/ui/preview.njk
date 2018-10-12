@@ -13,7 +13,7 @@
   {% endblock -%}
   {%- block postHead %}{% endblock -%}
 
-  <title>{% block title %}{{ component.label }} / {{ variant.label }}{% endblock %}</title>
+  <title>{% block title %}{{ component.label }}{% if variant %} / {{ variant.label }}{% endif %}{% endblock %}</title>
 </head>
 <body>
 
