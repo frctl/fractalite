@@ -8,7 +8,7 @@ module.exports = function(opts = {}) {
   let [theme, themeOpts] = [].concat(opts.theme);
   theme = isString(theme) ? importCwd(theme) : theme;
 
-  const config = cloneDeep([defaults, opts, theme, themeOpts]);
+  const config = cloneDeep([defaults, theme, themeOpts, opts]);
 
   return {
     engine: {
@@ -23,10 +23,10 @@ module.exports = function(opts = {}) {
       plugins: concat(config, 'parser.plugins')
     },
     routes: concatReverse(config, 'routes'),
-    assets: concatReverse(config, 'assets'),
+    assets: concatAssets(config),
     develop: assign(config, 'develop'),
     build: assign(config, 'build'),
-    preview: mergePreviews(config, 'preview'),
+    preview: mergePreviews(config),
     stylesheets: mergeRefs(config, 'stylesheets'),
     scripts: mergeRefs(config, 'scripts'),
     opts: blend(config, 'opts'),
@@ -36,7 +36,17 @@ module.exports = function(opts = {}) {
   };
 };
 
-function mergePreviews(configs, path) {
+function concatAssets(configs) {
+  const path = 'assets';
+  let opts = getValues(configs, path).map(opt => {
+    return isString(opt) ? { src: opt } : opt;
+  });
+  opts = [].concat(opts.reverse());
+  return compact([].concat(...opts));
+}
+
+function mergePreviews(configs) {
+  const path = 'preview';
   const values = getValues(configs, path, []);
   const stylesheets = values.map(c => c.stylesheets).reverse();
   const scripts = values.map(c => c.scripts).reverse();
