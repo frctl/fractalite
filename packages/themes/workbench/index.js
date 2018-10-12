@@ -10,6 +10,8 @@ module.exports = {
       watch: false
     }
   ],
+  stylesheets: ['theme:workbench.css'],
+  scripts: ['theme:workbench.js'],
   globals: {
     theme: {
       name: 'workbench',

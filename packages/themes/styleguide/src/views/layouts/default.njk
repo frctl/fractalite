@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <link rel="stylesheet" href="{{ asset('styleguide.css', 'theme') }}">
+  {% include "ui/stylesheets" %}
 
   <title>{{ site.title }}</title>
 </head>
@@ -39,7 +39,7 @@
 </div>
 {% endblock %}
 
-<script src="{{ asset('styleguide.js', 'theme') }}"></script>
+{% include "ui/scripts" %}
 {% include "ui/reload" %}
 
 </body>

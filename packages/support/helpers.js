@@ -1,4 +1,5 @@
 const { extname } = require('path');
+const { isString, isPlainObject } = require('lodash');
 
 const helpers = {
   parseHandle(handle) {
@@ -12,6 +13,24 @@ const helpers = {
       variant = rest;
     }
     return { component, path, variant };
+  },
+
+  mergeSrcRefs(values) {
+    let refs = [];
+    for (const value of values) {
+      if (!value) {
+        continue;
+      }
+      if (Array.isArray(value) || isString(value)) {
+        refs = refs.concat(value);
+      } else if (isPlainObject(value)) {
+        const replace = [].concat(get(value, 'replace', refs));
+        const prepend = [].concat(get(value, 'prepend', []));
+        const append = [].concat(get(value, 'append', []));
+        refs = prepend.concat(replace).concat(append);
+      }
+    }
+    return refs;
   }
 };
 

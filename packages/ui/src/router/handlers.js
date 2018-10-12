@@ -53,6 +53,10 @@ module.exports.preview = route => {
       context[key] = stripIndent(resolvedProps[i]);
     }
 
+    for (const key of ['stylesheets', 'scripts']) {
+      context[key] = component.preview[key];
+    }
+
     if (isString(component.preview.view)) {
       return engine.renderString(component.preview.view, context);
     }

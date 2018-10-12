@@ -2,14 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="{{ asset('workbench.css', 'theme') }}">
+    {% include "ui/stylesheets" %}
     <title>{{ site.title }}</title>
   </head>
   <body>
     <div id="app"></div>
     <script>
-      window.env = {{ env | json }};
+      window.ui = {{ ui | json }};
     </script>
-    <script src="{{ asset('workbench.js', 'theme') }}"></script>
+    {% include "ui/scripts" %}
   </body>
 </html>

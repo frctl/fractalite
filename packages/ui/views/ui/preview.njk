@@ -4,25 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  {% block preHead %}{% endblock %}
-  {% block head %}{{ head | safe }}{% endblock %}
-  {% block postHead %}{% endblock %}
+  {%- block preHead %}{% endblock %}
+  {%- block head %}
+  {{ head | safe }}
+  {%- for url in stylesheets -%}
+  <link rel="stylesheet" href="{{ url }}">
+  {% endfor -%}
+  {% endblock -%}
+  {%- block postHead %}{% endblock -%}
 
   <title>{% block title %}{{ component.label }} / {{ variant.label }}{% endblock %}</title>
 </head>
 <body>
 
-{% block preContents %}{% endblock %}
-{% block contents %}{{ contents | safe }}{% endblock %}
-{% block postContents %}{% endblock %}
+{%- block preContents %}{% endblock %}
+{%- block contents %}{{ contents | safe }}{% endblock %}
+{%- block postContents %}{% endblock %}
 
-{% block preFoot %}{% endblock %}
-{% block foot %}{{ foot | safe }}{% endblock %}
-{% block postFoot %}{% endblock %}
+{%- block preFoot %}{% endblock %}
+{%- block foot %}
+{{ foot | safe }}
+{%- for url in scripts -%}
+<script src="{{ url }}"></script>
+{% endfor -%}
+{% endblock -%}
+{%- block postFoot %}
+{% endblock -%}
 
-{% block scripts %}
+{%- block scripts -%}
 {% include "ui/reload" %}
-{% endblock %}
+{% endblock -%}
 
 </body>
 </html>

@@ -11,7 +11,7 @@ import store from './store';
 
 Vue.component('v-select', VueSelect);
 
-if (window.env.dev) {
+if (window.ui.dev) {
   Vue.use(VueSocketio, io(), { store });
 }
 

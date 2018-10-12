@@ -6,18 +6,16 @@ const utils = require('./src/env-utils');
 
 module.exports.develop = async function(app, opts = {}) {
   const ui = init(app, opts);
-  const { config } = ui;
+  const { config, env } = ui;
 
-  ui.env = {
+  Object.assign(ui.env, {
     dev: true,
     urls: {
       indexes: config.develop.indexes,
       ext: config.develop.ext
     }
-  };
+  });
   ui.utils = utils(ui);
-
-  ui.engine.setGlobal('env', ui.env);
 
   const server = new DevServer(config.develop);
   server.use(ui.assets).use(ui.router);
@@ -43,19 +41,18 @@ module.exports.develop = async function(app, opts = {}) {
 
 module.exports.build = async function(app, opts = {}) {
   const ui = init(app, Object.assign({ cache: false }, opts.ui));
-  const { config } = ui;
+  const { config, env } = ui;
   const buildConfig = config.build;
 
-  ui.env = {
+  Object.assign(ui.env, {
     build: true,
     urls: {
       prefix: buildConfig.prefix,
       indexes: buildConfig.indexes,
       ext: buildConfig.ext
     }
-  };
+  });
   ui.utils = utils(ui);
-  ui.engine.setGlobal('env', ui.env);
 
   const builder = new Builder(buildConfig);
   await app.init();

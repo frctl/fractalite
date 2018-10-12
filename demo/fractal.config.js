@@ -21,13 +21,13 @@ module.exports = {
     assets: [
       {
         src: resolve(__dirname, 'dist/assets'),
-        name: 'site-assets',
+        name: 'demo',
         mount: '/assets'
       }
     ],
     preview: {
-      head: `<link rel="stylesheet" href="{{ asset('app.css', 'site-assets') }}">`,
-      foot: `<script src="{{ asset('app.js', 'site-assets') }}"></script>`
+      stylesheets: ['app.css'],
+      scripts: ['app.js']
     },
     build: {}
   },

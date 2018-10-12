@@ -9,8 +9,9 @@ module.exports = function(app, opts = {}) {
   const config = resolveConfig(opts);
   const engineConfig = config.engine;
   const engine = new Engine(engineConfig);
+  const env = {};
 
-  const ui = { app, config, engine };
+  const ui = { app, config, engine, env };
 
   config.assets = config.assets.map(source => {
     source.src = source.src === '.' ? app.get('src.path') : source.src;
@@ -67,8 +68,12 @@ module.exports = function(app, opts = {}) {
     app.use(attacher, opts, ui);
   }
 
+  env.stylesheets = config.stylesheets.map(ref => ui.assets.getMountedPath(ref));
+  env.scripts = config.scripts.map(ref => ui.assets.getMountedPath(ref));
+
   ui.state = app.getState();
 
+  engine.setGlobal('ui', ui.env);
   engine.setGlobal('state', ui.state);
   engine.addFilters(filters);
   engine.addHelpers(helpers);

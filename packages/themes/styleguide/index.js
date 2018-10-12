@@ -10,6 +10,11 @@ module.exports = {
       watch: false
     }
   ],
+  preview: {
+    scripts: ['theme:iframe.js']
+  },
+  stylesheets: ['theme:styleguide.css'],
+  scripts: ['theme:styleguide.js'],
   globals: {
     theme: {
       name: 'styleguide',

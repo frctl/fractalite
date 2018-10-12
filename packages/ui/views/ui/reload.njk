@@ -2,6 +2,6 @@
 <script>
   window._env = {{ env | json }}
 </script>
-<script src="{{ asset('socket-io.js', 'ui') }}"></script>
-<script src="{{ asset('reload.js', 'ui') }}"></script>
+<script src="{{ asset('ui:socket-io.js') }}"></script>
+<script src="{{ asset('ui:reload.js') }}"></script>
 {% endif %}

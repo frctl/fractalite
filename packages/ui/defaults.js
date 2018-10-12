@@ -51,11 +51,18 @@ module.exports = {
     contents: '{% for variant in variants %}{{ variant | render }}{% endfor %}',
     head: null,
     foot: null,
-    collated: false
+    stylesheets: [],
+    scripts: []
   },
+  stylesheets: [],
+  scripts: [],
   globals: {
     site: {
       title: 'Component library'
+    },
+    theme: {
+      name: 'default',
+      version: require('./package.json').version
     }
   },
   filters: {
