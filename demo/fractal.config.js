@@ -18,13 +18,10 @@ module.exports = {
         title: 'Fractalite demo'
       }
     },
-    assets: [
-      {
-        src: resolve(__dirname, 'dist/assets'),
-        name: 'demo',
-        mount: '/assets'
-      }
-    ],
+    assets: {
+      src: resolve(__dirname, 'dist/assets'),
+      mount: '/assets'
+    },
     preview: {
       stylesheets: ['app.css'],
       scripts: ['app.js']
