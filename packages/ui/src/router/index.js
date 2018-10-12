@@ -1,5 +1,6 @@
 const nanoid = require('nanoid');
 const UrlPattern = require('url-pattern');
+const pluralize = require('pluralize');
 const { flatten, compact, uniqBy, cloneDeep } = require('lodash');
 const handlers = require('./handlers');
 const generators = require('./generators');
@@ -33,7 +34,10 @@ class Router {
         }
         if (typeof generator === 'string') {
           if (!generators[generator]) {
-            throw new Error(`The route generator '${generator}' was not recognised`);
+            generator = pluralize(handlerName);
+            if (!generators[generator]) {
+              throw new Error(`The route generator '${generator}' was not recognised`);
+            }
           }
           generator = generators[generator];
         }

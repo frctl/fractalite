@@ -1,30 +1,11 @@
 const { isString } = require('lodash');
 const stripIndent = require('strip-indent');
-const UiError = require('../error');
+const { getComponent, getComponentAndVariant } = require('./utils');
 
-module.exports.component = route => {
-  return ({ params, state, engine }) => {
-    const component = state.components.find(c => c.name === params.component);
-    if (component) {
-      return engine.render(route.view, { component });
-    }
-    throw new UiError(`Component '${params.component}' not found`, 404);
-  };
-};
-
-module.exports['component/variant'] = route => {
-  return ({ params, state, engine, app }) => {
-    const ctx = getComponentAndVariant(params, state);
-    return engine.render(route.view, ctx);
-  };
-};
-
-module.exports.preview = route => {
+module.exports = function(route) {
   return async ({ params, state, engine, app, config }) => {
     let component;
-
     let variant;
-
     let variants = [];
 
     if (params.variant) {
@@ -63,20 +44,3 @@ module.exports.preview = route => {
     return engine.render(route.view, context);
   };
 };
-
-function getComponent(params, state) {
-  const component = state.components.find(c => c.name === params.component);
-  if (!component) {
-    throw new UiError(`Component '${params.component}' not found`, 404);
-  }
-  return component;
-}
-
-function getComponentAndVariant(params = {}, state = {}) {
-  const component = getComponent(params, state);
-  const variant = component.variants.find(v => v.name === params.variant);
-  if (variant) {
-    return { component, variant };
-  }
-  throw new UiError(`Variant '${params.variant}' not found`, 404);
-}

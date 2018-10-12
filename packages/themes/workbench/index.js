@@ -28,17 +28,10 @@ module.exports = {
       view: 'state.njk'
     },
     {
-      url: '/preview/:component(/:variant)',
-      name: 'preview',
-      view: 'preview.njk',
-      handler: 'preview'
-    },
-    {
       url: '/render/:component(/:variant)',
       name: 'render',
       view: 'render.njk',
-      handler: 'preview',
-      generator: 'component/variant'
+      handler: 'preview'
     }
   ]
 };
