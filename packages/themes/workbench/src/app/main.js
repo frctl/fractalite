@@ -6,6 +6,7 @@ import VueSocketio from 'vue-socket.io-extended';
 import VueSelect from 'vue-select';
 import io from 'socket.io-client';
 import AsyncComputed from 'vue-async-computed';
+import VueSplit from 'vue-split-panel';
 import App from './App.vue';
 import store from './store';
 
@@ -15,6 +16,7 @@ if (window.ui.dev) {
   Vue.use(VueSocketio, io(), { store });
 }
 
+Vue.use(VueSplit);
 Vue.use(AsyncComputed);
 
 export default new Vue({
