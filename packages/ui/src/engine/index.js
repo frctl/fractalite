@@ -1,6 +1,6 @@
+const { extname } = require('path');
 const { Environment } = require('nunjucks');
 const { each, get } = require('lodash');
-const { extname } = require('path');
 const remark = require('remark');
 const html = require('remark-html');
 const ViewLoader = require('./loader');

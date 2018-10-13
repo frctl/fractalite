@@ -7,21 +7,21 @@ module.exports = function Markdown(ui) {
   this.tags = ['markdown'];
 
   this.parse = function(parser, nodes, lexer) {
-    var tok = parser.nextToken();
+    const tok = parser.nextToken();
 
     // Parse the markdown tag and collect any arguments
-    var args = parser.parseSignature(null, true);
+    const args = parser.parseSignature(null, true);
     parser.advanceAfterBlockEnd(tok.value);
 
     // If arguments, return the fileTag constructed node
     if (args.children.length > 0) return new nodes.CallExtensionAsync(this, 'fileTag', args);
 
     // Otherwise parse until the close block and move the parser to the next position
-    var body = parser.parseUntilBlocks('endmarkdown');
+    const body = parser.parseUntilBlocks('endmarkdown');
 
     // I found Nunjucks  to be incredibly convoluted on how to just get some data into the BlockTag function,
     // this finally worked by faking another template node.
-    var tabStart = new nodes.NodeList(0, 0, [
+    const tabStart = new nodes.NodeList(0, 0, [
       new nodes.Output(0, 0, [new nodes.TemplateData(0, 0, tok.colno - 1)])
     ]);
 
