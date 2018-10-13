@@ -1,6 +1,6 @@
 # UI Generator
 
-Fractalite provides a UI generator package that is built upon and extends the core parser functionality. It allows creation of powerful, theme-based interfaces for developing and documenting your component library.
+Fractalite provides a UI generator package that is built upon and extends the core parser package. It allows creation of powerful, theme-based interfaces for developing and documenting your component library.
 
 ## Themes
 
