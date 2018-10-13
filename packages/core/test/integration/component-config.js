@@ -40,6 +40,10 @@ describe('Configuration loading and parsing', () => {
         expect(getComponent('js-fn').config.isLoaded).to.be.true;
       });
 
+      it('can be async', () => {
+        expect(getComponent('async-js-fn').config.isLoaded).to.be.true;
+      });
+
       it('are passed the raw component object as their first argument', () => {
         const { component } = getComponent('js-fn').config;
         expect(component).to.be.an('object');
