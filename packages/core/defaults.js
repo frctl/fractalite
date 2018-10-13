@@ -10,6 +10,7 @@ module.exports = {
     require('./src/plugins/name'),
     require('./src/plugins/label'),
     require('./src/plugins/view'),
+    require('./src/plugins/notes'),
     require('./src/plugins/variants')
   ],
   engine: '@fractalite/engine-nunjucks',

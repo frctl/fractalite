@@ -103,6 +103,28 @@ a {
     padding: 20px;
     border-top: 1px solid #ddd;
   }
+
+  &__section--notes + &__section {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+
+.notes {
+  color: #333;
+  padding: 20px;
+  background: #f8f8f8;
+  border-left: 4px solid #ddd;
+  h1 {
+    display: none;
+  }
+  p {
+    margin-bottom: 1em;
+    max-width: 50rem;
+  }
+  :last-child {
+    margin-bottom: 0;
+  }
 }
 
 .variant {
