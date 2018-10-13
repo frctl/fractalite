@@ -17,7 +17,6 @@ class Assets {
   }
 
   getMountedPath(path, source) {
-    let assetSource;
     if (!source) {
       const parts = path.split(':');
       if (parts.length === 2) {
@@ -26,7 +25,7 @@ class Assets {
         source = this.sources[0].name;
       }
     }
-    assetSource = this.sources.find(src => src.name === source);
+    const assetSource = this.sources.find(src => src.name === source);
     if (!assetSource) {
       throw new Error(`'${source}' is not a recognised static asset source`);
     }

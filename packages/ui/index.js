@@ -8,7 +8,7 @@ module.exports.develop = async function(app, opts = {}) {
   const ui = init(app, opts);
   const { config, env } = ui;
 
-  Object.assign(ui.env, {
+  Object.assign(env, {
     dev: true,
     urls: {
       indexes: config.develop.indexes,
@@ -44,7 +44,7 @@ module.exports.build = async function(app, opts = {}) {
   const { config, env } = ui;
   const buildConfig = config.build;
 
-  Object.assign(ui.env, {
+  Object.assign(env, {
     build: true,
     urls: {
       prefix: buildConfig.prefix,

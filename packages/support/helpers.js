@@ -1,5 +1,5 @@
 const { extname } = require('path');
-const { isString, isPlainObject } = require('lodash');
+const { isString, isPlainObject, get } = require('lodash');
 
 const helpers = {
   parseHandle(handle) {
