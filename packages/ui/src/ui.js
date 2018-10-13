@@ -55,13 +55,7 @@ module.exports = function(app, opts = {}) {
     };
   });
 
-  const extensions = mapValues(engineConfig.extensions, extension => {
-    Object.defineProperty(extension, 'ui', {
-      value: ui,
-      writable: false
-    });
-    return extension;
-  });
+  const extensions = mapValues(engineConfig.extensions, Ext => new Ext(ui));
 
   for (const pluginDef of config.parser.plugins) {
     const [attacher, opts = {}] = toArray(pluginDef);

@@ -83,7 +83,9 @@ module.exports = {
     route: require('./src/engine/helpers/route'),
     asset: require('./src/engine/helpers/asset')
   },
-  extensions: {},
+  extensions: {
+    markdown: require('./src/engine/extensions/markdown')
+  },
   parser: {
     plugins: [
       require(`./src/plugins/file-urls`),
