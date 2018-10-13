@@ -1,15 +1,19 @@
 const { Environment } = require('nunjucks');
-const { each } = require('lodash');
+const { each, get } = require('lodash');
+const { extname } = require('path');
+const remark = require('remark');
+const html = require('remark-html');
 const ViewLoader = require('./loader');
 
 class Engine {
   constructor(opts = {}) {
-    const engine = new Environment(
-      new ViewLoader(opts.views || [], {
-        noCache: !opts.cache
-      })
-    );
+    const viewLoader = new ViewLoader(opts.views || [], {
+      noCache: !opts.cache
+    });
+    const engine = new Environment(viewLoader);
+    this._loader = viewLoader;
     this._engine = engine;
+    this._opts = opts;
     each(opts.globals || {}, (val, name) => engine.addGlobal(name, val));
   }
 
@@ -35,6 +39,38 @@ class Engine {
     return this;
   }
 
+  async render(path, context = {}, opts = {}) {
+    const md = opts.markdown;
+    if (md === 'pre') {
+      const html = await this.renderMarkdownFile(path);
+      return this.renderString(html, context);
+    }
+    if (md === true || md === 'post' || (md !== false && extname(path) === '.md')) {
+      const html = await this.renderFile(path, context);
+      return this.renderMarkdownString(html);
+    }
+    return this.renderFile(path, context);
+  }
+
+  async renderMarkdownString(str) {
+    const opts = get(this._opts, 'markdown.opts', {});
+    const plugins = get(this._opts, 'markdown.plugins', []);
+    const output = await remark()
+      .data('settings', opts)
+      .use(html)
+      .use(plugins)
+      .process(str);
+    return String(output);
+  }
+
+  renderMarkdownFile(path) {
+    const file = this._loader.getSource(path);
+    if (!file) {
+      throw new Error(`Could not find file '${path}'`);
+    }
+    return this.renderMarkdownString(file.src);
+  }
+
   renderString(str, context = {}) {
     return new Promise((resolve, reject) => {
       this._engine.renderString(str, context, (err, result) => {
@@ -46,7 +82,7 @@ class Engine {
     });
   }
 
-  render(path, context = {}) {
+  renderFile(path, context = {}) {
     return new Promise((resolve, reject) => {
       this._engine.render(path, context, (err, result) => {
         if (err) {

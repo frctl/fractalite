@@ -65,15 +65,18 @@ module.exports = {
       version: require('./package.json').version
     }
   },
+  markdown: {
+    opts: {}
+  },
   filters: {
     render: require('./src/engine/filters/render'),
-    html: require('./src/engine/filters/html'),
     collect: require('./src/engine/filters/collect'),
     view: require('./src/engine/filters/view'),
     json: require('./src/engine/filters/json'),
     pluralize: require('./src/engine/filters/pluralize'),
     prettify: require('./src/engine/filters/prettify'),
-    tree: require('./src/engine/filters/tree')
+    tree: require('./src/engine/filters/tree'),
+    markdown: require('./src/engine/filters/markdown')
   },
   helpers: {
     url: require('./src/engine/helpers/url'),
