@@ -15,7 +15,7 @@ module.exports = {
 };
 ```
 
-#### Plugins
+### Plugins
 
 Plugins can be added via the `plugins` array. Each entry should be one of the following:
 
@@ -75,7 +75,7 @@ The engine can be specified as one of:
 }
 ```
 
-#### UI configuration
+### UI configuration
 
 Configuration for the UI generator can be provided under the `ui` key. Typical options include:
 

@@ -1,20 +1,24 @@
 # Fractalite
 
-Experimental, stripped-down version of [Fractal](https://fractal.build), featuring:
+Experimental, streamlined version of [Fractal](https://fractal.build).
 
-- Simplified component specification
-- Plugin-based component parser
+- Rationalised component specification
+- Plugin-based parser
+- Simpler theme creation and customisation
+- Improved static build performance
 - Declarative CLI configuration
-- Customisable, theme-driven UI builder
-- Improved UI static build performance
 
-Fractalite removes many of the more opinionated and/or complex features from the core Fractal feature set. A plugin system allows for adding missing or additional functionality in as required.
+> Fractalite is **not** intended to be a replacement for Fractal, but rather a proposal for the way a future version of Fractal could be implemented.
+
+> [Read more](#motivation) about the motivation behind the development of Fractalite.
+
+
 
 ## Themes
 
 Fractalite ships with two **work-in-progress** core themes - 'Workbench' and 'Styleguide'.
 
-> Please note that the themes are current very much at 'proof of concept' stage - very little design work has been put in yet!
+> The themes are current very much at 'proof of concept' stage - very little design work has been put in yet!
 
 #### Workbench
 
@@ -48,10 +52,26 @@ Once installed, you can then run one of the following commands:
 - `npm run styleguide:build` - Build a static version of the [styleguide](/docs/ui.md#themes) theme
 
 
-## Documentation/notes
+## Key concepts
+
+Some work in progress documentation regarding some of the key features of Fractalite.
 
 - [Components](/docs/components.md)
 - [Parser plugins](/docs/plugins.md)
 - [Render engines](/docs/engines.md)
 - [UI themes](/docs/themes.md)
 - [CLI](/docs/cli.md)
+
+## Motivation
+
+Fractalite has been put together to help address the gap between Fractal v1 and the work-in-progress Fractal v2 beta.
+
+**Why is this needed?**
+
+The Fractal v2 beta is very wide-ranging in scope and includes many fundamental conceptual differences from Fractal v1.
+
+In addition, the codebase is fairly complex and the current implementation suffers from some fairly fundamental issues that still require a large amount of development time to address.
+
+However, the v2 beta also includes many important improvements including a plugin-based parser, simplified component specification and a significantly improved configuration handling mechanism.
+
+Fractalite is an attempt to **cherry-pick the best features from the v2 branch**, omit the problematic ones and roll everything up in a package that **feels conceptually much closer to the current v1.x release**.
