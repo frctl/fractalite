@@ -6,7 +6,8 @@ module.exports = {
       {% for variant in variants %}
       <div style="margin-bottom: 10px;">{{ variant | render }}</div>
       {% endfor %}
-    `
+    `,
+    scripts: ['./preview.js']
   },
   defaults: {
     iconPos: 'after'
