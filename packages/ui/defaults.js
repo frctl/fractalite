@@ -43,6 +43,11 @@ module.exports = {
           return engine.render('error');
         }
       }
+    },
+    {
+      url: '/state.json',
+      name: 'state',
+      view: 'ui/state'
     }
   ],
   theme: null,

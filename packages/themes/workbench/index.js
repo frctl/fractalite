@@ -23,11 +23,6 @@ module.exports = {
   },
   routes: [
     {
-      url: '/state.json',
-      name: 'state',
-      view: 'state.njk'
-    },
-    {
       url: '/render/:component(/:variant)',
       name: 'render',
       view: 'render.njk',
