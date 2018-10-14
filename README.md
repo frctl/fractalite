@@ -12,8 +12,6 @@ Experimental, streamlined version of [Fractal](https://fractal.build).
 
 > [Read more](#motivation) about the motivation behind the development of Fractalite.
 
-
-
 ## Themes
 
 Fractalite ships with two **work-in-progress** core themes - 'Workbench' and 'Styleguide'.
@@ -26,7 +24,7 @@ A minimal, development-focussed theme. Built on VueJS and providing fast preview
 
 <img src="/docs/assets/theme-workbench.png" width="500" alt="Workbench theme">
 
-Demo: https://workbench-dhzqwqhepu.now.sh/
+Demo: https://workbench-ahdjesxdht.now.sh/
 
 #### Styleguide
 
