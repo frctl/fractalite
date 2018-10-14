@@ -47,6 +47,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import 'codemirror/lib/codemirror.css';
+
 *,
 *:before,
 *:after {
@@ -114,5 +116,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.gutter.gutter-horizontal {
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
 }
 </style>

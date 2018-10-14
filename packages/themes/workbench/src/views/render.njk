@@ -1,4 +1,4 @@
 {% for variant in variants -%}
 <!-- @{{ component.name }}/{{ variant.name }} -->
 {{ variant | render | prettify | safe }}
-{% endfor %}
+{% endfor -%}

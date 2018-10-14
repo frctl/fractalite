@@ -33,6 +33,7 @@ module.exports = function config(opts = {}) {
           config = await config(component);
         }
         component.config = deepFreeze(defaultsDeep(config, opts.default || {}));
+        component.configFile = component.files.find(file => file.path === searchResult.filepath);
         return component;
       })
     );

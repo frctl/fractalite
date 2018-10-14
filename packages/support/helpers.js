@@ -17,6 +17,7 @@ const helpers = {
 
   mergeSrcRefs(values) {
     let refs = [];
+    // console.log(values);
     for (const value of values) {
       if (!value) {
         continue;

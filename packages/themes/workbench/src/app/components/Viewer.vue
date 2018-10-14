@@ -1,15 +1,34 @@
 <template>
   <Split class="viewer" :gutter-size="5">
     <SplitArea :size="60">
-        <iframe class="preview" :src="preview" width="100%" height="100%"></iframe>
+      <tabs>
+        <tab name="Preview" :selected="true">
+          <iframe class="preview" :src="preview" width="100%" height="100%"></iframe>
+        </tab>
+        <tab name="HTML">
+          <codemirror ref="html" :value="html" :options="htmlOpts"></codemirror>
+        </tab>
+      </tabs>
     </SplitArea>
     <SplitArea :size="40">
       <Split direction="vertical" :gutter-size="5">
         <SplitArea :size="50" class="code-pane">
-          <highlight :code="html" language="html" v-if="html" class="code"></highlight>
+          <tabs>
+            <tab name="Context" :selected="true" class="json-pane">
+              <vue-json-pretty :data="context"></vue-json-pretty>
+            </tab>
+            <tab name="View">
+              <codemirror ref="view" :value="view" :options="htmlOpts"></codemirror>
+            </tab>
+          </tabs>
         </SplitArea>
-        <SplitArea :size="50" class="context-pane">
-          <vue-json-pretty :data="context"></vue-json-pretty>
+        <SplitArea :size="50">
+          <tabs>
+            <tab name="Component" class="json-pane" :selected="true">
+              <vue-json-pretty :data="component" :deep="1"></vue-json-pretty>
+            </tab>
+            <!-- <tab name="Logs"></tab> -->
+          </tabs>
         </SplitArea>
       </Split>
     </SplitArea>
@@ -22,14 +41,22 @@ import hljs from 'highlight.js';
 import axios from 'axios';
 import VueJsonPretty from 'vue-json-pretty';
 import Highlight from 'vue-highlight-component';
+import Tabs from './Tabs.vue';
+import Tab from './Tab.vue';
 
 export default {
   name: 'viewer',
   props: ['component'],
-  components: { Highlight, VueJsonPretty },
+  components: { Highlight, VueJsonPretty, Tabs, Tab },
   data() {
     return {
-      selected: 'preview'
+      htmlOpts: {
+        mode: 'htmlmixed',
+        lineNumbers: true,
+        readOnly: true,
+        lineWrapping: true,
+        autoRefresh: true
+      }
     };
   },
   asyncComputed: {
@@ -53,11 +80,9 @@ export default {
         return `preview/${this.component.name}`;
       }
       return null;
-    }
-  },
-  methods: {
-    isSelected(name) {
-      return name === this.selected;
+    },
+    view() {
+      return this.component.view.contents;
     }
   }
 };
@@ -88,18 +113,29 @@ export default {
   }
 }
 
-.context-pane {
+.json-pane {
   display: flex;
   flex-direction: column;
   padding: 10px;
+  overflow: auto;
 
   .vjs__tree {
-    font-size: 14px;
+    font-size: 15px;
+    line-height: 1.3;
+    font-family: monospace;
   }
 
   .vjs__tree .vjs__value__string {
-    color: #d14;
+    color: rgb(170, 17, 17);
   }
+}
+
+.vue-codemirror,
+.vue-codemirror .CodeMirror {
+  height: 100%;
+  font-size: 15px;
+  line-height: 1.3;
+  font-family: monospace;
 }
 
 .preview {
