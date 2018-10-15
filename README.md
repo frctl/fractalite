@@ -24,7 +24,7 @@ A minimal, development-focussed theme. Built on VueJS and providing fast preview
 
 <img src="/docs/assets/theme-workbench.png" width="500" alt="Workbench theme">
 
-Demo: https://workbench-ahdjesxdht.now.sh/
+Demo: https://workbench-oyicmggoow.now.sh
 
 #### Styleguide
 
