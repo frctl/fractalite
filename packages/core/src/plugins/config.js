@@ -25,15 +25,16 @@ module.exports = function config(opts = {}) {
         });
         const finder = cosmiconfig(name, cosmiOpts);
         const searchResult = await finder.search(path);
-        if (!searchResult) {
-          this.warn(`No config file found for component '${component.root.relative}'`);
-        }
         let config = searchResult ? searchResult.config : {};
-        if (typeof config === 'function') {
-          config = await config(component);
+        if (!searchResult) {
+          this.debug(`No config file found for component '${component.root.relative}'`);
+        } else {
+          component.configFile = component.files.find(file => file.path === searchResult.filepath);
+          if (typeof config === 'function') {
+            config = await config(component);
+          }
         }
         component.config = deepFreeze(defaultsDeep(config, opts.default || {}));
-        component.configFile = component.files.find(file => file.path === searchResult.filepath);
         return component;
       })
     );

@@ -4,6 +4,8 @@ const Builder = require('./src/builder');
 const init = require('./src/ui');
 const utils = require('./src/env-utils');
 
+const logLevels = ['success', 'debug', 'info', 'error', 'warn', 'complete'];
+
 module.exports.develop = async function(app, opts = {}) {
   const ui = init(app, opts);
   const { config, env } = ui;
@@ -27,10 +29,26 @@ module.exports.develop = async function(app, opts = {}) {
   ui.env.hostname = server.hostname;
   ui.env.address = server.address;
 
-  server.on('connection', ({ socket }) => socket.emit('state', app.getState()));
+  server.on('connection', ({ socket }) => {
+    socket.emit('state', [app.getState()]);
+  });
 
-  app.watch(state => server.emit('state_updated', state));
-  app.on('error', err => server.emit('error', err));
+  app.watch(state => {
+    server.emit('state_updated', state);
+    server.emit('log', {
+      level: 'success',
+      message: 'App state updated'
+    });
+  });
+
+  for (const level of logLevels) {
+    app.on(`log.${level}`, msg => {
+      server.emit('log', { level: level, message: msg });
+    });
+  }
+  app.on('error', err => {
+    server.emit('log', { level: 'error', message: err.message, data: err.stack });
+  });
 
   await ui.assets.watch(path => {
     server.emit('asset_updated', ui.utils.url(path));

@@ -41,7 +41,6 @@ class Logger {
     for (const level of levels) {
       emitter.on(`log.${level}`, (...args) => this[level](...args));
     }
-    emitter.on('error', (...args) => this.error(...args));
     return this;
   }
 }

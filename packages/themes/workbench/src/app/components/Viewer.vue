@@ -2,32 +2,34 @@
   <Split class="viewer" :gutter-size="5">
     <SplitArea :size="60">
       <tabs>
-        <tab name="Preview" :selected="true">
+        <tab name="Preview" :selected="true" class="preview-pane">
           <iframe class="preview" :src="preview" width="100%" height="100%"></iframe>
         </tab>
-        <tab name="HTML">
+        <tab name="HTML" class="code-pane">
           <codemirror ref="html" :value="html" :options="htmlOpts"></codemirror>
         </tab>
       </tabs>
     </SplitArea>
     <SplitArea :size="40">
       <Split direction="vertical" :gutter-size="5">
-        <SplitArea :size="50" class="code-pane">
+        <SplitArea :size="50">
           <tabs>
             <tab name="Context" :selected="true" class="json-pane">
               <vue-json-pretty :data="context"></vue-json-pretty>
             </tab>
-            <tab name="View">
+            <tab name="View" class="code-pane">
               <codemirror ref="view" :value="view" :options="htmlOpts"></codemirror>
             </tab>
           </tabs>
         </SplitArea>
         <SplitArea :size="50">
           <tabs>
-            <tab name="Component" class="json-pane" :selected="true">
+            <tab name="Component Data" class="json-pane" :selected="true">
               <vue-json-pretty :data="component" :deep="1"></vue-json-pretty>
             </tab>
-            <!-- <tab name="Logs"></tab> -->
+            <tab name="Event Log" v-if="$store.state.ui.dev">
+              <log-viewer></log-viewer>
+            </tab>
           </tabs>
         </SplitArea>
       </Split>
@@ -43,11 +45,12 @@ import VueJsonPretty from 'vue-json-pretty';
 import Highlight from 'vue-highlight-component';
 import Tabs from './Tabs.vue';
 import Tab from './Tab.vue';
+import LogViewer from './LogViewer.vue';
 
 export default {
   name: 'viewer',
   props: ['component'],
-  components: { Highlight, VueJsonPretty, Tabs, Tab },
+  components: { Highlight, VueJsonPretty, Tabs, Tab, LogViewer },
   data() {
     return {
       htmlOpts: {
@@ -61,10 +64,14 @@ export default {
   },
   asyncComputed: {
     async html() {
-      const response = await axios.get(`/render/${this.component.name}`, {
-        responseType: 'text'
-      });
-      return response.data;
+      try {
+        const response = await axios.get(`/render/${this.component.name}`, {
+          responseType: 'text'
+        });
+        return response.data;
+      } catch (err) {
+        return 'Error rendering component preview.';
+      }
     }
   },
   computed: {

@@ -1,12 +1,14 @@
 <template>
   <div id="app">
-    <header class="header">
-      <h1 class="title"><span>&lt;</span> Workbench <span>/&gt;</span></h1>
-      <v-select :options="options" v-model="componentName" placeholder="Select a component..."></v-select>
-    </header>
-    <viewer :component="component" v-if="component"></viewer>
-    <div class="landing" v-else>
-      <p>&uarr; Select a component to get started &uarr;</p>
+    <template v-if="$store.state.ready">
+      <header class="header">
+        <h1 class="title"><span>&lt;</span> Workbench <span>/&gt;</span></h1>
+        <v-select ref="select" :options="options" v-model="selectedComponent" placeholder="Select a component..."></v-select>
+      </header>
+      <viewer :component="component"></viewer>
+    </template>
+    <div class="loading" v-else>
+      <p>Initialising...</p>
     </div>
   </div>
 </template>
@@ -14,34 +16,39 @@
 <script>
 import { sortBy } from 'lodash';
 import Viewer from './components/Viewer.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'app',
   components: { Viewer },
   data() {
     return {
-      componentName: null
+      selectedComponent: null
     };
   },
   computed: {
+    ...mapGetters(['components', 'component']),
     options() {
       return sortBy(
-        this.$store.state.components.map(component => ({
+        this.components.map(component => ({
           value: component.name,
           label: component.label
         })),
         'label'
       );
-    },
-    component() {
-      if (this.componentName) {
-        return this.$store.state.components.find(c => c.name === this.componentName.value);
-      }
-      return null;
     }
   },
-  mounted() {
-    this.$store.dispatch('initialise');
+  async mounted() {
+    await this.$store.dispatch('initialise');
+    this.selectedComponent = {
+      label: this.component.label,
+      value: this.component.name
+    };
+  },
+  watch: {
+    selectedComponent(option) {
+      this.$store.commit('SET_ACTIVE_COMPONENT', option.value);
+    }
   }
 };
 </script>
@@ -121,5 +128,13 @@ body {
 .gutter.gutter-horizontal {
   border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;
+}
+
+.loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

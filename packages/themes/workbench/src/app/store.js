@@ -9,14 +9,18 @@ export default new Vuex.Store({
     ready: false,
     isConnected: false,
     components: [],
-    files: []
+    files: [],
+    logs: [],
+    ui: window.ui,
+    appState: null,
+    activeComponent: null
   },
 
   actions: {
     async initialise({ commit, dispatch }) {
       const response = await axios.get('/state.json');
-      commit('SET_COMPONENTS', response.data.components);
-      commit('SET_FILES', response.data.files);
+      commit('SET_APP_STATE', response.data);
+      commit('READY');
       return response;
     }
   },
@@ -27,19 +31,40 @@ export default new Vuex.Store({
     },
 
     SOCKET_STATE_UPDATED: (state, data) => {
-      if (Array.isArray(data)) {
-        data = data[0];
-      }
-      state.components = data.components;
-      state.files = data.files;
+      state.appState = data[0];
     },
 
-    SET_COMPONENTS: (state, components = []) => {
-      state.components = components;
+    SOCKET_LOG: (state, msg) => {
+      const message = Object.assign({}, msg, {
+        timestamp: new Date().getTime()
+      });
+      state.logs.push(msg[0]);
     },
 
-    SET_FILES: (state, files = []) => {
-      state.files = files;
+    SET_APP_STATE: (state, appState) => {
+      state.appState = appState;
+    },
+
+    SET_ACTIVE_COMPONENT: (state, name) => {
+      state.activeComponent = name;
+    },
+
+    READY: state => {
+      state.ready = true;
+    }
+  },
+
+  getters: {
+    component: state => {
+      return state.activeComponent
+        ? state.appState.components.find(c => c.name === state.activeComponent)
+        : state.appState.components[0];
+    },
+    components: state => {
+      return state.appState.components;
+    },
+    logs: state => {
+      return state.logs;
     }
   }
 });

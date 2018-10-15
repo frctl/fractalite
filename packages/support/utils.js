@@ -3,7 +3,6 @@ const _ = require('lodash');
 const slug = require('slugify');
 const titlecase = require('titlecase');
 const slash = require('slash');
-// Const {assert} = require('check-types');
 
 const utils = {
   addTrailingSeparator(str) {

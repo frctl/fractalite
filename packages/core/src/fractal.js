@@ -47,7 +47,6 @@ class Fractal {
   }
 
   emit(...args) {
-    console.log(...args);
     this._emitter.emit(...args);
     return this;
   }
