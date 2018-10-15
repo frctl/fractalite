@@ -40,18 +40,13 @@ module.exports.develop = async function(app, opts = {}) {
       message: 'App state updated'
     });
   });
+  ui.assets.watch(path => server.emit('asset_updated', ui.utils.url(path)));
 
   for (const level of logLevels) {
-    app.on(`log.${level}`, msg => {
-      server.emit('log', { level: level, message: msg });
-    });
+    app.on(`log.${level}`, message => server.emit('log', { level, message }));
   }
   app.on('error', err => {
     server.emit('log', { level: 'error', message: err.message, data: err.stack });
-  });
-
-  await ui.assets.watch(path => {
-    server.emit('asset_updated', ui.utils.url(path));
   });
 
   return { server, ui, app };

@@ -25,9 +25,6 @@ module.exports = function(app, opts = {}) {
     const { handler } = route;
     route.handler = ({ url, params, error }) => {
       const request = { url, route, params };
-      if (error) {
-        app.emit('error', error);
-      }
       engine.setGlobal('error', error);
       engine.setGlobal('request', request);
       return handler(Object.assign({ request, params, error }, ui));

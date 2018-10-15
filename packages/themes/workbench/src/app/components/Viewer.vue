@@ -24,7 +24,7 @@
         </SplitArea>
         <SplitArea :size="50">
           <tabs>
-            <tab name="Component Data" class="json-pane" :selected="true">
+            <tab name="Component" class="json-pane" :selected="true">
               <vue-json-pretty :data="component" :deep="1"></vue-json-pretty>
             </tab>
             <tab name="Event Log" v-if="$store.state.ui.dev">

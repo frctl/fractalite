@@ -28,6 +28,11 @@ export default new Vuex.Store({
   mutations: {
     SOCKET_CONNECT: state => {
       state.isConnected = true;
+      state.logs.push({
+        level: 'info',
+        message: 'Websocket connected',
+        date: new Date()
+      });
     },
 
     SOCKET_STATE_UPDATED: (state, data) => {
@@ -35,10 +40,10 @@ export default new Vuex.Store({
     },
 
     SOCKET_LOG: (state, msg) => {
-      const message = Object.assign({}, msg, {
-        timestamp: new Date().getTime()
+      const message = Object.assign({}, msg[0], {
+        date: new Date()
       });
-      state.logs.push(msg[0]);
+      state.logs.push(message);
     },
 
     SET_APP_STATE: (state, appState) => {
@@ -64,7 +69,9 @@ export default new Vuex.Store({
       return state.appState.components;
     },
     logs: state => {
-      return state.logs;
+      return state.logs.length
+        ? state.logs
+        : [{ message: 'No messages received', date: new Date() }];
     }
   }
 });

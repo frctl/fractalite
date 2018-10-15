@@ -1,8 +1,11 @@
 <template>
   <ul class="log">
     <li v-for="(log, index) in logs" class="line" :class="[log.level, {open: isOpen(index)}, {hasData: log.data}]" @click="toggle(index)">
-      <span class="level">{{ log.level }}</span>
-      <span class="message">{{ log.message }}</span>
+      <div class="summary">
+        <span class="level" v-if="log.level">{{ log.level }}</span>
+        <span class="message">{{ log.message }}</span>
+        <span class="timestamp" v-if="log.date">{{ log.date.getHours() }}:{{ log.date.getMinutes() < 10 ? '0' : '' }}{{ log.date.getMinutes() }}:{{ log.date.getSeconds() }}</span>
+      </div>
       <div class="details" v-if="log.data">{{ log.data }}</div>
     </li>
   </ul>
@@ -65,8 +68,27 @@ export default {
   border-bottom: 1px solid #eee;
 }
 
+.summary {
+  display: flex;
+}
+
+.timestamp {
+  font-style: italic;
+  color: #aaa;
+  flex: 0;
+  margin-left: auto;
+  padding-left: 5px;
+  display: inline-block;
+}
+
 .level {
   font-weight: bold;
+  flex: 0;
+  margin-right: 5px;
+}
+
+.message {
+  flex: 1;
 }
 
 .details {
