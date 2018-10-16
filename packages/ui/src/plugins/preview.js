@@ -1,7 +1,7 @@
 const { get, isString, flatten, compact } = require('lodash');
 const { mergeSrcRefs } = require('@fractalite/support/helpers');
 
-module.exports = function(opts, ui) {
+module.exports = function uiPreview(opts, ui) {
   return function(components) {
     let configOpts = ui.config.preview;
     configOpts = isString(configOpts) ? { contents: configOpts } : configOpts;

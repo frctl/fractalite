@@ -1,4 +1,4 @@
-module.exports = function(opts, ui) {
+module.exports = function uiAssetRefs(opts, ui) {
   return function(components) {
     return Promise.all(
       components.map(component => {

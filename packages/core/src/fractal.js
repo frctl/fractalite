@@ -63,7 +63,7 @@ class Fractal {
     const options = defaultsDeep(this.get(`opts.${attacher.name}`, {}), opts);
     const plugin = attacher(options, ...ctx);
     const logger = new Logger(this._emitter);
-    this._parser.use(plugin.bind(logger));
+    this._parser.use(attacher.name, plugin.bind(logger));
     return this;
   }
 
