@@ -1,0 +1,22 @@
+{% macro tree(type, nodes, opts = {}, level = 1) %}
+<ul class="ui-tree" data-level="{{ level }}">
+  {% for node in nodes %}
+  <li class="ui-tree__item {% if node.children %}ui-tree__branch{% else %}ui-tree__leaf{% endif %}">
+    {% if node.children %}
+    <span class="ui-tree__label">{{ node.label }}</span>
+    {{ tree(type, node.children, opts, level + 1) }}
+    {% else %}
+    {% if type == 'pages' %}
+    <a class="ui-tree__link" href="{{ route('page', {urlPath: node.content.urlPath}) }}">{{ node.content.label }}</a>
+    {% elseif type == 'components' %}
+    <a class="ui-tree__link" href="{{ route('component', {component: node.content.name }) }}">{{ node.content.label }}</a>
+    {% endif %}
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endmacro %}
+
+{% macro preview(handle) %}
+<iframe class="ui-preview" src="{{ route('preview', _.handleToParams(handle)) }}"></iframe>
+{% endmacro %}

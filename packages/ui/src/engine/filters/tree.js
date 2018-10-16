@@ -5,22 +5,23 @@ const { titlize } = require('@fractalite/support/utils');
 
 module.exports = function tree(items, [opts = {}]) {
   const key = opts.key || 'relative';
-  const sort = opts.sort || ['position', 'label'];
+  const sortKeys = opts.sort || ['order', 'label'];
 
   items = Collection.isCollection(items) ? items.toArray() : items;
 
-  // 1. generate all required paths from items
   let nodes = flatten(
     items.map(item => {
       const paths = [];
       let path;
       const segments = [];
       for (const segment of get(item, key).split(sep)) {
+        const [str, order, name] = segment.match(/^(?:(\d+)-)?(.*)$/);
         path = path ? `${path}/${segment}` : segment;
-        segments.push(segment);
+        segments.push(name);
         paths.push({
-          label: titlize(segment),
+          label: titlize(name),
           path,
+          order,
           segments: segments.slice(0),
           depth: segments.length
         });
@@ -28,10 +29,12 @@ module.exports = function tree(items, [opts = {}]) {
       return paths;
     })
   );
-  nodes = sortBy(uniqBy(nodes, 'path'), sort);
+  nodes = uniqBy(nodes, 'path');
   for (const node of nodes) {
     node.content = items.find(item => item[key] === node.path);
+    node.order = node.content && node.content.order ? node.content.order : node.order;
   }
+  nodes = sortBy(nodes, sortKeys);
 
   const tree = nodes.filter(node => node.depth === 1);
   for (const node of tree) {
@@ -41,16 +44,16 @@ module.exports = function tree(items, [opts = {}]) {
   }
 
   return tree;
-};
 
-function getChildren(parent, nodes) {
-  const children = nodes.filter(node => {
-    return node.depth === parent.depth + 1 && dirname(node.path) === parent.path;
-  });
-  for (const child of children) {
-    if (!child.content) {
-      child.children = getChildren(child, nodes);
+  function getChildren(parent, nodes) {
+    const children = nodes.filter(node => {
+      return node.depth === parent.depth + 1 && dirname(node.path) === parent.path;
+    });
+    for (const child of children) {
+      if (!child.content) {
+        child.children = getChildren(child, nodes);
+      }
     }
+    return children;
   }
-  return children;
-}
+};

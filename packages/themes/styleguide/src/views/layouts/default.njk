@@ -1,4 +1,4 @@
-{% import "macros/nav" as nav -%}
+{% import "ui/macros" as macros -%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +20,7 @@
 <div class="container">
 
   <nav class="nav">
+    {% block sidebar %}
     <div class="nav__section">
       <ul class="tree">
         <li>
@@ -27,14 +28,19 @@
         </li>
       </ul>
     </div>
+    {% if pages.length %}
     <div class="nav__section">
       <h4 class="nav__label">Docs</h4>
-      {{ nav.tree('pages', pages | tree) }}
+      {{ macros.tree('pages', pages | tree) }}
     </div>
+    {% endif %}
+    {% if components.length %}
     <div class="nav__section">
       <h4 class="nav__label">Components</h4>
-      {{ nav.tree('components', components | tree) }}
+      {{ macros.tree('components', components | tree) }}
     </div>
+    {% endif %}
+    {% endblock %}
   </nav>
 
   <main class="content">

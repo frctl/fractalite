@@ -54,12 +54,29 @@ class Pages {
               const parsed = matter(Object.assign({ content }, this._opts.frontmatter));
               const rel = slash(relative(root, path));
               const { ext, base, name } = parse(path);
+
+              // TODO: Support plugins for transforming page objects
+
               const page = defaultsDeep({}, this._opts.defaults, parsed.data || {}, {
                 path: slash(path),
                 relative: rel,
-                urlPath: rel.replace(this._opts.ext, ''),
                 contents: parsed.content
               });
+
+              const segments = rel
+                .replace(this._opts.ext, '')
+                .split('/')
+                .map(segment => segment.match(/^(?:(\d+)-)?(.*)$/)[2]);
+
+              page.urlPath = segments.join('/');
+
+              if (/^.*\/index$/.test(page.urlPath)) {
+                page.urlPath = segments.slice(0, -1).join('/');
+                page.index = true;
+                page.label = page.label || this._opts.indexLabel;
+                page.order = page.order || 1;
+              }
+
               page.label = page.label || titlize(name);
               page.title = page.title || page.label;
               return page;

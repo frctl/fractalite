@@ -96,6 +96,7 @@ module.exports = function() {
       src: null,
       ext: '.md',
       frontmatter: {},
+      indexLabel: 'Overview',
       defaults: {
         layout: null
       }

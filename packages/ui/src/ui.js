@@ -4,6 +4,7 @@ const Router = require('./router');
 const Engine = require('./engine');
 const Pages = require('./pages');
 const Assets = require('./assets');
+const tplUtils = require('./engine/utils');
 const resolveConfig = require('./config');
 const UIError = require('./error');
 
@@ -121,11 +122,13 @@ module.exports = function(app, opts = {}) {
   env.scripts = config.scripts.map(ref => ui.assets.getMountedPath(ref));
 
   /*
-   * Give templates access to environment and state data.
+   * Give templates access to environment and state data,
+   * plus a set of useful template util functions
    */
 
   engine.setGlobal('ui', ui.env);
   engine.setGlobal('state', ui.state);
+  engine.setGlobal('_', tplUtils(ui));
 
   return ui;
 };
