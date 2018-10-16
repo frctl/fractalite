@@ -7,6 +7,7 @@ module.exports = function list() {
     for (const component of components) {
       this.log(`-- ${cyan(component.label)}  ${dim(component.root.relative)}`);
     }
+    process.exit(0);
   };
 };
 
