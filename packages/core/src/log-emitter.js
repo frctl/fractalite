@@ -2,7 +2,7 @@ const { EventEmitter2 } = require('eventemitter2');
 
 const levels = ['success', 'debug', 'info', 'error', 'warn', 'complete'];
 
-class Logger {
+class LogEmitter {
   constructor(emitter) {
     this._emitter = emitter || new EventEmitter2({ wildcard: true });
   }
@@ -14,9 +14,9 @@ class Logger {
 }
 
 for (const level of levels) {
-  Logger.prototype[level] = function(...args) {
+  LogEmitter.prototype[level] = function(...args) {
     return this._emit(level, ...args);
   };
 }
 
-module.exports = Logger;
+module.exports = LogEmitter;

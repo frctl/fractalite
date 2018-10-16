@@ -3,7 +3,7 @@ const watch = require('glob-watcher');
 const { EventEmitter2 } = require('eventemitter2');
 const { defaultsDeep } = require('@fractalite/support/utils');
 const resolveConfig = require('./config');
-const Logger = require('./logger');
+const LogEmitter = require('./log-emitter');
 const Parser = require('./parser');
 const State = require('./state');
 
@@ -62,7 +62,7 @@ class Fractal {
   use(attacher, opts = {}, ...ctx) {
     const options = defaultsDeep(this.get(`opts.${attacher.name}`, {}), opts);
     const plugin = attacher(options, ...ctx);
-    const logger = new Logger(this._emitter);
+    const logger = new LogEmitter(this._emitter);
     this._parser.use(attacher.name, plugin.bind(logger));
     return this;
   }
