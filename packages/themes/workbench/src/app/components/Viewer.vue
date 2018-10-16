@@ -3,10 +3,12 @@
     <SplitArea :size="60">
       <tabs>
         <tab name="Preview" :selected="true" class="preview-pane">
-          <iframe class="preview" :src="preview" width="100%" height="100%"></iframe>
+          <iframe class="preview" :src="preview" width="100%" height="100%" @load="previewLoaded = true" :class="{loaded: previewLoaded}"></iframe>
+          <loader v-if="!previewLoaded"></loader>
         </tab>
         <tab name="HTML" class="code-pane">
-          <codemirror ref="html" :value="html" :options="htmlOpts"></codemirror>
+          <codemirror ref="html" :value="html" :options="htmlOpts" v-if="htmlLoaded"></codemirror>
+          <loader v-if="!htmlLoaded"></loader>
         </tab>
       </tabs>
     </SplitArea>
@@ -39,20 +41,21 @@
 
 <script>
 import { sortBy } from 'lodash';
-import hljs from 'highlight.js';
 import axios from 'axios';
 import VueJsonPretty from 'vue-json-pretty';
-import Highlight from 'vue-highlight-component';
 import Tabs from './Tabs.vue';
 import Tab from './Tab.vue';
 import LogViewer from './LogViewer.vue';
+import Loader from './Loader.vue';
 
 export default {
   name: 'viewer',
   props: ['component'],
-  components: { Highlight, VueJsonPretty, Tabs, Tab, LogViewer },
+  components: { VueJsonPretty, Tabs, Tab, LogViewer, Loader },
   data() {
     return {
+      previewLoaded: false,
+      htmlLoaded: false,
       htmlOpts: {
         mode: 'htmlmixed',
         lineNumbers: true,
@@ -65,10 +68,7 @@ export default {
   asyncComputed: {
     async html() {
       try {
-        const response = await axios.get(`/render/${this.component.name}`, {
-          responseType: 'text'
-        });
-        return response.data;
+        return this.fetchHTML();
       } catch (err) {
         return 'Error rendering component preview.';
       }
@@ -90,6 +90,21 @@ export default {
     },
     view() {
       return this.component.view.contents;
+    }
+  },
+  methods: {
+    async fetchHTML() {
+      const response = await axios.get(`/render/${this.component.name}`, {
+        responseType: 'text'
+      });
+      this.htmlLoaded = true;
+      return response.data;
+    }
+  },
+  watch: {
+    component() {
+      this.previewLoaded = false;
+      this.htmlLoaded = false;
     }
   }
 };
@@ -149,5 +164,9 @@ export default {
   border: 0;
   width: 100%;
   height: 100%;
+  display: none;
+  &.loaded {
+    display: block;
+  }
 }
 </style>

@@ -8,6 +8,7 @@ import io from 'socket.io-client';
 import AsyncComputed from 'vue-async-computed';
 import VueSplit from 'vue-split-panel';
 import VueCodemirror from 'vue-codemirror';
+import Icon from 'vue-awesome/components/Icon';
 import App from './App.vue';
 import store from './store';
 
@@ -16,6 +17,7 @@ import 'codemirror/mode/htmlmixed/htmlmixed.js';
 import 'codemirror/addon/display/autorefresh.js';
 
 Vue.component('v-select', VueSelect);
+Vue.component('v-icon', Icon);
 
 if (window.ui.dev) {
   Vue.use(VueSocketio, io(), { store });

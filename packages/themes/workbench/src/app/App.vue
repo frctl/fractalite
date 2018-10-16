@@ -7,20 +7,19 @@
       </header>
       <viewer :component="component"></viewer>
     </template>
-    <div class="loading" v-else>
-      <p>Initialising...</p>
-    </div>
+    <loader v-else></loader>
   </div>
 </template>
 
 <script>
 import { sortBy } from 'lodash';
 import Viewer from './components/Viewer.vue';
+import Loader from './components/Loader.vue';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'app',
-  components: { Viewer },
+  components: { Viewer, Loader },
   data() {
     return {
       selectedComponent: null
