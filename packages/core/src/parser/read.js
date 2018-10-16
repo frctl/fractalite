@@ -2,6 +2,7 @@ const { parse, dirname, relative } = require('path');
 const globby = require('globby');
 const globBase = require('glob-base');
 const { stat } = require('fs-extra');
+const slash = require('slash');
 const { normalizeName } = require('@fractalite/support/utils');
 
 module.exports = async function(path, opts = {}) {
@@ -10,9 +11,10 @@ module.exports = async function(path, opts = {}) {
     gitignore: !(opts.gitignore === false)
   });
   const glob = globBase(path);
-  const root = glob.isGlob ? glob.base : path;
+  const root = slash(glob.isGlob ? glob.base : path);
   return Promise.all(
     paths.map(async p => {
+      p = slash(p);
       const { ext, base, name } = parse(p);
       const stats = await stat(p);
       return {
