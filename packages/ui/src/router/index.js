@@ -7,55 +7,65 @@ const generators = require('./generators');
 
 class Router {
   constructor(routes, ctx) {
-    this._routes = cloneDeep(
-      uniqBy(routes, 'name').map(config => {
-        const route = Object.assign({}, config, {
-          name: config.name || nanoid(),
-          matcher: config.url ? new UrlPattern(config.url) : null
-        });
+    let mergedRoutes = [];
 
-        let { handler } = config;
-        let handlerName;
-        if (typeof handler === 'string') {
-          if (!handlers[handler]) {
-            throw new Error(`The route handler '${handler}' was not recognised`);
-          }
-          handlerName = handler;
-          handler = handlers[handler](route);
+    for (const route of routes) {
+      let existingRoute = mergedRoutes.find(r => r.name === route.name);
+      if (existingRoute) {
+        existingRoute = Object.assign(existingRoute, route);
+      } else {
+        mergedRoutes.push(route);
+      }
+    }
+    mergedRoutes = mergedRoutes.reverse();
+
+    this._routes = mergedRoutes.map(config => {
+      const route = Object.assign({}, config, {
+        name: config.name || nanoid(),
+        matcher: config.url ? new UrlPattern(config.url) : null
+      });
+
+      let { handler } = config;
+      let handlerName;
+      if (typeof handler === 'string') {
+        if (!handlers[handler]) {
+          throw new Error(`The route handler '${handler}' was not recognised`);
         }
-        if (!handler && route.view) {
-          handler = function() {
-            return this.render(route.view);
-          };
-        }
-        if (!handler) {
-          throw new Error(`Could not resolve handler for route '${route.name}'`);
-        }
-        route.handler = ({ url, params, error }) => {
-          const request = { url, route, params };
-          const handlerCtx = ctx({ request, error });
-          const boundHandler = handler.bind(handlerCtx);
-          return boundHandler(Object.assign({ request, params, error }, route.ctx || {}));
+        handlerName = handler;
+        handler = handlers[handler](route);
+      }
+      if (!handler && route.view) {
+        handler = function() {
+          return this.render(route.view);
         };
+      }
+      if (!handler) {
+        throw new Error(`Could not resolve handler for route '${route.name}'`);
+      }
+      route.handler = ({ url, params, error }) => {
+        const request = { url, route, params };
+        const handlerCtx = ctx({ request, error });
+        const boundHandler = handler.bind(handlerCtx);
+        return boundHandler(Object.assign({ request, params, error }, route.ctx || {}));
+      };
 
-        let { generator } = config;
-        if (!generator && handlerName) {
-          generator = handlerName;
-        }
-        if (typeof generator === 'string') {
+      let { generator } = config;
+      if (!generator && handlerName) {
+        generator = handlerName;
+      }
+      if (typeof generator === 'string') {
+        if (!generators[generator]) {
+          generator = pluralize(generator);
           if (!generators[generator]) {
-            generator = pluralize(generator);
-            if (!generators[generator]) {
-              throw new Error(`The route generator '${generator}' was not recognised`);
-            }
+            throw new Error(`The route generator '${generator}' was not recognised`);
           }
-          generator = generators[generator];
         }
-        route.generator = generator;
+        generator = generators[generator];
+      }
+      route.generator = generator;
 
-        return route;
-      })
-    );
+      return route;
+    });
   }
 
   urlFor(name, params) {

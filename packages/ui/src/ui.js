@@ -1,4 +1,4 @@
-const { mapValues, pick } = require('lodash');
+const { mapValues, pick, cloneDeep } = require('lodash');
 const { toArray } = require('@fractalite/support/utils');
 const Router = require('./router');
 const Engine = require('./engine');
@@ -10,6 +10,7 @@ module.exports = function(app, opts = {}) {
   const config = resolveConfig(opts);
   const env = {};
   const state = app.getState();
+
   const ui = { app, config, env, state };
 
   /*
@@ -85,7 +86,7 @@ module.exports = function(app, opts = {}) {
     };
   }
 
-  config.routes = config.routes.map(route => {
+  config.routes = cloneDeep(config.routes).map(route => {
     route.ctx = Object.assign({ app, config, env, state }, route.ctx || {});
     return route;
   });

@@ -11,6 +11,7 @@ class Fractal {
   constructor(config = {}) {
     this._config = resolveConfig(config);
 
+    this._initialised = false;
     this._state = new State();
     this._parser = new Parser(this.get('src.path'), this.get('src.opts'));
     this._emitter = new EventEmitter2({ wildcard: true });
@@ -67,13 +68,17 @@ class Fractal {
     return this;
   }
 
-  init() {
-    return this.updateState();
+  async init() {
+    if (!this._initialised) {
+      await this.updateState();
+      this._initialised = true;
+    }
+    return this.getState();
   }
 
   async updateState() {
     this._state.update(await this.parser.run());
-    return this._state;
+    return this.getState();
   }
 
   watch(callback) {

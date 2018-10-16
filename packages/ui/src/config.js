@@ -1,4 +1,4 @@
-const { get, compact, cloneDeep, isString } = require('lodash');
+const { get, compact, cloneDeep, isString, isPlainObject } = require('lodash');
 const { defaultsDeep } = require('@fractalite/support/utils');
 const { mergeSrcRefs } = require('@fractalite/support/helpers');
 const importCwd = require('import-cwd');
@@ -7,7 +7,7 @@ const defaults = require('../defaults');
 module.exports = function(opts = {}) {
   let [theme, themeOpts] = [].concat(opts.theme);
   theme = isString(theme) ? importCwd(theme) : theme;
-  const themeConfig = theme(themeOpts);
+  const themeConfig = isPlainObject(theme) ? theme : theme(themeOpts);
   const config = cloneDeep([defaults(), themeConfig, opts]);
 
   return {
@@ -22,7 +22,7 @@ module.exports = function(opts = {}) {
     parser: {
       plugins: concat(config, 'parser.plugins')
     },
-    routes: concatReverse(config, 'routes'),
+    routes: concat(config, 'routes'),
     assets: concatAssets(config),
     develop: assign(config, 'develop'),
     build: assign(config, 'build'),
