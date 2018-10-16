@@ -14,7 +14,10 @@ class Engine {
     this._loader = viewLoader;
     this._engine = engine;
     this._opts = opts;
-    each(opts.globals || {}, (val, name) => engine.addGlobal(name, val));
+    each(opts.globals || {}, (val, name) => this.setGlobal(name, val));
+    this.addFilters(opts.filters);
+    this.addHelpers(opts.helpers);
+    this.addExtensions(opts.extensions);
   }
 
   setGlobal(name, value) {

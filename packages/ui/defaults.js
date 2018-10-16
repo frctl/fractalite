@@ -28,19 +28,19 @@ module.exports = {
     {
       url: '/',
       name: 'index',
-      handler: ({ engine }) => engine.render('index')
+      view: 'index'
     },
     {
       name: 'error',
-      handler: ({ engine }) => engine.render('error')
+      view: 'error'
     },
     {
       name: '404',
-      handler: async ({ engine }) => {
+      handler: async function() {
         try {
-          return await engine.render('404');
+          return await this.render('404');
         } catch (err) {
-          return engine.render('error');
+          return this.render('error');
         }
       }
     },

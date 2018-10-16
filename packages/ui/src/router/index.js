@@ -6,7 +6,7 @@ const handlers = require('./handlers');
 const generators = require('./generators');
 
 class Router {
-  constructor(routes) {
+  constructor(routes, ctx) {
     this._routes = cloneDeep(
       uniqBy(routes, 'name').map(config => {
         const route = Object.assign({}, config, {
@@ -16,9 +16,6 @@ class Router {
 
         let { handler } = config;
         let handlerName;
-        if (!handler && route.view) {
-          handler = ({ engine }) => engine.render(route.view);
-        }
         if (typeof handler === 'string') {
           if (!handlers[handler]) {
             throw new Error(`The route handler '${handler}' was not recognised`);
@@ -26,7 +23,20 @@ class Router {
           handlerName = handler;
           handler = handlers[handler](route);
         }
-        route.handler = handler;
+        if (!handler && route.view) {
+          handler = function() {
+            return this.render(route.view);
+          };
+        }
+        if (!handler) {
+          throw new Error(`Could not resolve handler for route '${route.name}'`);
+        }
+        route.handler = ({ url, params, error }) => {
+          const request = { url, route, params };
+          const handlerCtx = ctx({ request, error });
+          const boundHandler = handler.bind(handlerCtx);
+          return boundHandler(Object.assign({ request, params, error }, route.ctx || {}));
+        };
 
         let { generator } = config;
         if (!generator && handlerName) {
@@ -34,7 +44,7 @@ class Router {
         }
         if (typeof generator === 'string') {
           if (!generators[generator]) {
-            generator = pluralize(handlerName);
+            generator = pluralize(generator);
             if (!generators[generator]) {
               throw new Error(`The route generator '${generator}' was not recognised`);
             }
@@ -55,11 +65,6 @@ class Router {
       }
     }
     throw new Error(`Could not find route with name '${name}'`);
-  }
-
-  decorate(fn) {
-    this._routes = this._routes.map(route => fn(route));
-    return this;
   }
 
   async handle(url) {

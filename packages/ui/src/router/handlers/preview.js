@@ -1,10 +1,9 @@
 const { isString } = require('lodash');
 const stripIndent = require('strip-indent');
-const UiError = require('../../error');
 const { getComponent, getComponentAndVariant } = require('./utils');
 
 module.exports = function(route) {
-  return async ({ params, state, engine, app, config }) => {
+  return async function({ params, state }) {
     let component;
     let variant;
     let variants = [];
@@ -26,7 +25,7 @@ module.exports = function(route) {
       const propKeys = ['head', 'foot', 'contents'];
       for (const key of propKeys) {
         const str = component.preview[key] || '';
-        props.push(engine.renderString(str, { component, variants, variant }));
+        props.push(this.renderString(str, { component, variants, variant }));
       }
 
       const resolvedProps = await Promise.all(props);
@@ -41,11 +40,11 @@ module.exports = function(route) {
       }
 
       if (isString(component.preview.view)) {
-        return engine.renderString(component.preview.view, context);
+        return this.renderString(component.preview.view, context);
       }
-      return engine.render(route.view, context);
+      return this.render(route.view, context);
     } catch (err) {
-      throw new UiError(`Error rendering preview template.\n${err.message}`, 400);
+      this.throw(`Error rendering preview template.\n${err.message}`, 400);
     }
   };
 };

@@ -1,8 +1,8 @@
 const { getComponent } = require('./utils');
 
 module.exports = function(route) {
-  return ({ params, state, engine }) => {
+  return function({ params, state }) {
     const component = getComponent(params, state);
-    return engine.render(route.view, { component });
+    return this.render(route.view, { component });
   };
 };
