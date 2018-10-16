@@ -39,7 +39,7 @@ class Assets {
     if (isFunction(callback)) {
       this._watcherCallbacks.push(callback);
     }
-    if (this._watcher) {
+    if (this._watchers) {
       return this._watchers;
     }
     const sources = this.sources.filter(s => s.watch !== false);

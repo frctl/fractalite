@@ -11,6 +11,7 @@
     "glob-base": "^0.3.0",
     "glob-watcher": "^5.0.1",
     "globby": "^8.0.1",
+    "gray-matter": "^4.0.1",
     "html-url-attributes": "^1.0.0",
     "ip": "^1.1.5",
     "import-cwd": "^2.1.0",

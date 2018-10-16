@@ -25,6 +25,7 @@ module.exports = function(opts = {}) {
     routes: concat(config, 'routes'),
     assets: concatAssets(config),
     develop: assign(config, 'develop'),
+    pages: assign(config, 'pages'),
     build: assign(config, 'build'),
     preview: mergePreviews(config),
     stylesheets: mergeRefs(config, 'stylesheets'),

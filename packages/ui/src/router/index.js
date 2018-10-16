@@ -119,6 +119,9 @@ class Router {
         const targets = await route.generator(state);
         return Promise.all(
           targets.map(async params => {
+            if (params.url) {
+              params['_'] = params.url;
+            }
             const url = route.matcher.stringify(params);
             return {
               url,

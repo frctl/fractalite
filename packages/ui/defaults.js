@@ -92,6 +92,14 @@ module.exports = function() {
     extensions: {
       markdown: require('./src/engine/extensions/markdown')
     },
+    pages: {
+      src: null,
+      ext: '.md',
+      frontmatter: {},
+      defaults: {
+        layout: null
+      }
+    },
     parser: {
       plugins: [
         require(`./src/plugins/file-urls`),

@@ -5,7 +5,7 @@ const { titlize } = require('@fractalite/support/utils');
 
 module.exports = function tree(items, [opts = {}]) {
   const key = opts.key || 'relative';
-  const sort = opts.sort || 'label';
+  const sort = opts.sort || ['position', 'label'];
 
   items = Collection.isCollection(items) ? items.toArray() : items;
 

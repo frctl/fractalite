@@ -1,4 +1,5 @@
 module.exports = {
   component: require('./component'),
-  preview: require('./preview')
+  preview: require('./preview'),
+  page: require('./page')
 };
