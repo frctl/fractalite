@@ -46,13 +46,26 @@ class Engine {
     const md = opts.markdown;
     if (md === 'pre') {
       const html = await this.renderMarkdownFile(path);
-      return this.renderString(html, context);
+      return this.renderNunjucksString(html, context);
     }
     if (md === true || md === 'post' || (md !== false && extname(path) === '.md')) {
-      const html = await this.renderFile(path, context);
+      const html = await this.renderNunjucksFile(path, context);
       return this.renderMarkdownString(html);
     }
-    return this.renderFile(path, context);
+    return this.renderNunjucksFile(path, context);
+  }
+
+  async renderString(str, context = {}, opts = {}) {
+    const md = opts.markdown;
+    if (md === 'pre') {
+      const html = await this.renderMarkdownString(str);
+      return this.renderNunjucksString(html, context);
+    }
+    if (md === true || md === 'post') {
+      const html = await this.renderNunjucksString(str, context);
+      return this.renderMarkdownString(html);
+    }
+    return this.renderNunjucksString(str, context);
   }
 
   async renderMarkdownString(str) {
@@ -74,7 +87,7 @@ class Engine {
     return this.renderMarkdownString(file.src);
   }
 
-  renderString(str, context = {}) {
+  renderNunjucksString(str, context = {}) {
     return new Promise((resolve, reject) => {
       this._engine.renderString(str, context, (err, result) => {
         if (err) {
@@ -85,7 +98,7 @@ class Engine {
     });
   }
 
-  renderFile(path, context = {}) {
+  renderNunjucksFile(path, context = {}) {
     return new Promise((resolve, reject) => {
       this._engine.render(path, context, (err, result) => {
         if (err) {
