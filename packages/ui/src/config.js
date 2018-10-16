@@ -7,8 +7,8 @@ const defaults = require('../defaults');
 module.exports = function(opts = {}) {
   let [theme, themeOpts] = [].concat(opts.theme);
   theme = isString(theme) ? importCwd(theme) : theme;
-
-  const config = cloneDeep([defaults, theme, themeOpts, opts]);
+  const themeConfig = theme(themeOpts);
+  const config = cloneDeep([defaults(), themeConfig, opts]);
 
   return {
     engine: {
