@@ -1,41 +1,48 @@
 class State {
-  constructor(initialState = {}) {
-    const { components, files } = initialState;
-    this._components = components || [];
-    this._files = files || [];
+  constructor(stores = {}) {
+    this._stores = {};
+    this._getters = {};
+    Object.keys(stores).forEach(store => this.addStore(store, stores[store]));
   }
 
-  get components() {
-    return this._components;
+  addStore(key, initialValue = []) {
+    this._stores[key] = initialValue;
+    Object.defineProperty(this, key, {
+      get() {
+        return this._stores[key];
+      },
+      enumerable: true
+    });
   }
 
-  get files() {
-    return this._files;
+  addGetter(key, handler) {
+    this._getters[key] = handler;
+    Object.defineProperty(this, key, {
+      get() {
+        return handler(this._stores);
+      },
+      enumerable: true
+    });
   }
 
-  get views() {
-    return this._components
-      .map(component => {
-        return component.view ? Object.assign({ name: component.name }, component.view) : null;
-      })
-      .filter(view => view);
+  updateStore(key, value) {
+    this._stores[key] = value;
+    return this;
   }
 
-  update(newState = {}) {
-    const { components, files } = newState;
-    if (components) {
-      this._components = components;
-    }
-    if (files) {
-      this._files = files;
-    }
+  update(obj) {
+    Object.keys(obj).forEach(key => {
+      this.updateStore(key, obj[key]);
+    });
+    return this;
   }
 
   toJSON() {
-    return {
-      components: this.components,
-      files: this.files
-    };
+    const obj = Object.assign({}, this._stores);
+    Object.keys(this._getters).forEach(key => {
+      obj[key] = this[key];
+    });
+    return obj;
   }
 }
 

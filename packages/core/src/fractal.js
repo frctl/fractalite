@@ -9,10 +9,22 @@ const State = require('./state');
 
 class Fractal {
   constructor(config = {}) {
+    this._initialised = false;
     this._config = resolveConfig(config);
 
-    this._initialised = false;
-    this._state = new State();
+    const state = new State({
+      components: [],
+      files: []
+    });
+    state.addGetter('views', stores => {
+      return stores.components
+        .map(c => {
+          return c.view ? Object.assign({ name: c.name }, c.view) : null;
+        })
+        .filter(view => view);
+    });
+
+    this._state = state;
     this._parser = new Parser(this.get('src.path'), this.get('src.opts'));
     this._emitter = new EventEmitter2({ wildcard: true });
     this._watcher = null;
