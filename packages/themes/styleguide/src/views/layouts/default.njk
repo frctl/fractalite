@@ -8,13 +8,14 @@
 
   {% include "ui/stylesheets" %}
 
-  <title>{{ site.title }}</title>
+  <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
 </head>
 <body>
 
 {% block body %}
 
 {% set components = state.components | collect %}
+{% set pages = state.pages | collect %}
 
 <div class="container">
 
@@ -27,13 +28,17 @@
       </ul>
     </div>
     <div class="nav__section">
+      <h4 class="nav__label">Docs</h4>
+      {{ nav.tree('pages', pages | tree) }}
+    </div>
+    <div class="nav__section">
       <h4 class="nav__label">Components</h4>
-      {{ nav.tree(components | tree) }}
+      {{ nav.tree('components', components | tree) }}
     </div>
   </nav>
 
   <main class="content">
-  {% block content %}{% endblock %}
+  {% block main %}{% endblock %}
   </main>
 
 </div>

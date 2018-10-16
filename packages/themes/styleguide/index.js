@@ -1,6 +1,6 @@
 const { resolve } = require('path');
 
-module.exports = function() {
+module.exports = function(opts = {}) {
   return {
     views: [resolve(__dirname, 'src/views')],
     assets: [
@@ -31,6 +31,12 @@ module.exports = function() {
         name: 'component',
         view: 'component',
         handler: 'component'
+      },
+      {
+        url: '/pages/*',
+        name: 'page',
+        view: 'page',
+        handler: 'page'
       }
     ]
   };

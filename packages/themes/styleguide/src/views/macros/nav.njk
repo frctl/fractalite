@@ -1,12 +1,16 @@
-{% macro tree(nodes) %}
+{% macro tree(type, nodes) %}
 <ul class="tree">
   {% for node in nodes %}
   <li class="tree__item">
     {% if node.children %}
     <span class="tree__group">{{ node.label }}</span>
-    {{ tree(node.children) }}
+    {{ tree(type, node.children) }}
     {% else %}
-    <a class="tree__component" href="{{ route('component', { component: node.content.name } ) }}">{{ node.content.label }}</a>
+    {% if type == 'pages' %}
+    <a class="tree__component" href="{{ route('page', {urlPath: node.content.urlPath}) }}">{{ node.content.label }}</a>
+    {% elseif type == 'components' %}
+    <a class="tree__component" href="{{ route('component', {component: node.content.name }) }}">{{ node.content.label }}</a>
+    {% endif %}
     {% endif %}
   </li>
   {% endfor %}
