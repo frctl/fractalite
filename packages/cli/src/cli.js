@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-process-exit */
 
-const { relative, resolve } = require('path');
+const { relative, resolve, dirname } = require('path');
 const { promisify } = require('util');
 const { readdir } = require('fs');
 const { cyan } = require('kleur');
@@ -25,19 +25,25 @@ module.exports = async function(args, cwd) {
   };
 
   try {
-    const configFinder = cosmiconfig('fractal', {
-      stopDir: cwd
-    });
     let configFile;
 
     if (args.config) {
+      const configFinder = cosmiconfig('fractal');
       configFile = await configFinder.load(args.config);
     } else {
+      const configFinder = cosmiconfig('fractal', {
+        stopDir: cwd
+      });
       configFile = await configFinder.search();
     }
 
     if (configFile === null) {
       exit('Config file not found.');
+    }
+
+    const rootPath = dirname(configFile.filepath);
+    if (process.cwd() !== rootPath) {
+      process.chdir(rootPath);
     }
 
     logger.info(`Using config file ${cyan(`./${relative(cwd, configFile.filepath)}`)}`);
