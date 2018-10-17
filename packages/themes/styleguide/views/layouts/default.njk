@@ -1,16 +1,5 @@
+{% extends "ui/layout" %}
 {% import "ui/macros" as macros -%}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-  {% include "ui/stylesheets" %}
-
-  <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
-</head>
-<body>
 
 {% block body %}
 
@@ -48,10 +37,5 @@
   </main>
 
 </div>
+
 {% endblock %}
-
-{% include "ui/scripts" %}
-{% include "ui/reload" %}
-
-</body>
-</html>

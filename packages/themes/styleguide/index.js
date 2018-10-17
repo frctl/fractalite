@@ -22,10 +22,11 @@ module.exports = function(opts = {}) {
         version: require('./package.json').version
       },
       site: {
-        title: 'Project styleguide'
+        title: 'Styleguide'
       }
     },
     pages: {
+      src: [resolve(__dirname, 'pages')],
       defaults: {
         view: 'page'
       }

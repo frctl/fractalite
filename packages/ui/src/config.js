@@ -1,4 +1,4 @@
-const { get, compact, cloneDeep, isString, isPlainObject } = require('lodash');
+const { get, compact, flatten, cloneDeep, isString, isPlainObject } = require('lodash');
 const { defaultsDeep } = require('@fractalite/support/utils');
 const { mergeSrcRefs } = require('@fractalite/support/helpers');
 const importCwd = require('import-cwd');
@@ -25,7 +25,7 @@ module.exports = function(opts = {}) {
     routes: concatReverse(config, 'routes'),
     assets: concatAssets(config),
     develop: assign(config, 'develop'),
-    pages: blend(config, 'pages'),
+    pages: mergePages(config, 'pages'),
     build: assign(config, 'build'),
     preview: mergePreviews(config),
     stylesheets: mergeRefs(config, 'stylesheets'),
@@ -36,6 +36,14 @@ module.exports = function(opts = {}) {
     }
   };
 };
+
+function mergePages(configs) {
+  const path = 'pages';
+  const values = getValues(configs, path, []);
+  const srcValues = flatten(values.map(v => [].concat(v.src)));
+  const src = compact(srcValues).reverse();
+  return Object.assign(defaultsDeep(...values.reverse()), { src });
+}
 
 function concatAssets(configs) {
   const path = 'assets';

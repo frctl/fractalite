@@ -1,4 +1,1 @@
----
-label: Intro
----
-index
+# {{ site.title }}
