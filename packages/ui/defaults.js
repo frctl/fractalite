@@ -57,7 +57,10 @@ module.exports = function() {
     scripts: [],
     globals: {
       site: {
-        title: 'Component library'
+        title: 'Component library',
+        lang: 'en',
+        charset: 'utf-8',
+        dir: 'ltr'
       },
       theme: {
         name: 'default',
