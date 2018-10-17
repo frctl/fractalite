@@ -6,6 +6,9 @@ class State {
   }
 
   addStore(key, initialValue = []) {
+    if (this._stores[key]) {
+      return this;
+    }
     this._stores[key] = initialValue;
     Object.defineProperty(this, key, {
       get() {
@@ -13,9 +16,13 @@ class State {
       },
       enumerable: true
     });
+    return this;
   }
 
   addGetter(key, handler) {
+    if (this._getters[key]) {
+      return this;
+    }
     this._getters[key] = handler;
     Object.defineProperty(this, key, {
       get() {
@@ -23,6 +30,7 @@ class State {
       },
       enumerable: true
     });
+    return this;
   }
 
   updateStore(key, value) {

@@ -10,8 +10,10 @@ const { toArray, normalizePaths, defaultsDeep, titlize } = require('@fractalite/
 
 class Pages {
   constructor(opts, state) {
+    state.addStore('pages', []);
     this._src = normalizePaths(toArray(opts.src));
     this._opts = opts;
+    this._state = state;
     this._pages = [];
     this._initialised = false;
     this._watcher = null;
@@ -19,7 +21,7 @@ class Pages {
   }
 
   get pages() {
-    return this._pages;
+    return this._state.pages;
   }
 
   async init() {
@@ -31,12 +33,8 @@ class Pages {
   }
 
   async updatePages() {
-    this._pages.length = 0;
-    const pages = await this.read();
-    for (const page of pages) {
-      this._pages.push(page);
-    }
-    return this.pages;
+    this._state.updateStore('pages', await this.read());
+    return this._state.pages;
   }
 
   async read() {

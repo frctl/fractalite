@@ -110,8 +110,7 @@ module.exports = function(app, opts = {}) {
    * the pages array to the global state object.
    */
 
-  ui.pages = new Pages(config.pages);
-  state.addStore('pages', ui.pages.pages);
+  ui.pages = new Pages(config.pages, state);
 
   /*
    * Resolve the styleheet and script paths to expand

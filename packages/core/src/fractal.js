@@ -8,14 +8,13 @@ const Parser = require('./parser');
 const State = require('./state');
 
 class Fractal {
-  constructor(config = {}) {
+  constructor(config = {}, state) {
     this._initialised = false;
     this._config = resolveConfig(config);
 
-    const state = new State({
-      components: [],
-      files: []
-    });
+    state = state || new State();
+    state.addStore('components', []);
+    state.addStore('files', []);
     state.addGetter('views', stores => {
       return stores.components
         .map(c => {
