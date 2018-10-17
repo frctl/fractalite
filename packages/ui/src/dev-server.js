@@ -48,7 +48,7 @@ class DevServer extends Server {
             });
           }
           ctx.response.status = err.status || 500;
-          // ctx.response.message = err.message;
+          // Ctx.response.message = err.message;
           ctx.body = await router.handleError(ctx.url, err);
         }
       });

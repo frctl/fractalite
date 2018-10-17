@@ -43,7 +43,7 @@ class Pages {
     return flatten(
       await Promise.all(
         this._src.map(async src => {
-          let paths = await globby([src, '!**/node_modules'], {
+          const paths = await globby([src, '!**/node_modules'], {
             onlyFiles: true
           });
           const glob = globBase(src);

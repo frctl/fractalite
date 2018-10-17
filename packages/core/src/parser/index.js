@@ -28,7 +28,7 @@ class Parser {
 
   async transform(files) {
     let components = transform(files);
-    for (const { plugin, name } of this._plugins) {
+    for (const { plugin } of this._plugins) {
       // eslint-disable-next-line no-await-in-loop
       components = await plugin(components, { files });
     }

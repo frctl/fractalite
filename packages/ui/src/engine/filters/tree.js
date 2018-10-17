@@ -15,7 +15,7 @@ module.exports = function tree(items, [opts = {}]) {
       let path;
       const segments = [];
       for (const segment of get(item, key).split(sep)) {
-        const [str, order, name] = segment.match(/^(?:(\d+)-)?(.*)$/);
+        const [, order, name] = segment.match(/^(?:(\d+)-)?(.*)$/);
         path = path ? `${path}/${segment}` : segment;
         segments.push(name);
         paths.push({

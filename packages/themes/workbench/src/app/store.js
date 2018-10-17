@@ -1,3 +1,5 @@
+/* global window */
+
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
@@ -69,7 +71,7 @@ export default new Vuex.Store({
       return state.appState.components;
     },
     logs: state => {
-      return state.logs.length
+      return state.logs.length > 0
         ? state.logs
         : [{ message: 'No messages received', date: new Date() }];
     }

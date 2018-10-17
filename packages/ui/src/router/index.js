@@ -1,7 +1,7 @@
 const nanoid = require('nanoid');
 const UrlPattern = require('url-pattern');
 const pluralize = require('pluralize');
-const { flatten, compact, uniqBy, cloneDeep } = require('lodash');
+const { flatten, compact } = require('lodash');
 const handlers = require('./handlers');
 const generators = require('./generators');
 
@@ -120,7 +120,7 @@ class Router {
         return Promise.all(
           targets.map(async params => {
             if (params.url) {
-              params['_'] = params.url;
+              params._ = params.url;
             }
             const url = route.matcher.stringify(params);
             return {

@@ -37,7 +37,7 @@ module.exports = function() {
       },
       {
         name: '404',
-        handler: async function() {
+        async handler() {
           try {
             return await this.render('404');
           } catch (err) {

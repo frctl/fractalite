@@ -79,7 +79,3 @@ function blend(configs, path) {
 function concat(configs, path) {
   return compact([].concat(...getValues(configs, path)));
 }
-
-function concatReverse(configs, path) {
-  return compact([].concat(...getValues(configs, path).reverse()));
-}

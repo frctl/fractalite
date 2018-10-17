@@ -26,13 +26,13 @@ module.exports = function config(opts = {}) {
         const finder = cosmiconfig(name, cosmiOpts);
         const searchResult = await finder.search(path);
         let config = searchResult ? searchResult.config : {};
-        if (!searchResult) {
-          this.debug(`No config file found for component '${component.root.relative}'`);
-        } else {
+        if (searchResult) {
           component.configFile = component.files.find(file => file.path === searchResult.filepath);
           if (typeof config === 'function') {
             config = await config(component);
           }
+        } else {
+          this.debug(`No config file found for component '${component.root.relative}'`);
         }
         component.config = deepFreeze(defaultsDeep(config, opts.default || {}));
         return component;
