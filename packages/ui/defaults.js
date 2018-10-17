@@ -27,11 +27,6 @@ module.exports = function() {
         handler: 'preview'
       },
       {
-        url: '/state.json',
-        name: 'state',
-        view: 'ui/state'
-      },
-      {
         url: '/(*)',
         name: 'page',
         handler: 'page'

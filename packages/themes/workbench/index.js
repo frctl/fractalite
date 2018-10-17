@@ -28,6 +28,11 @@ module.exports = function() {
         name: 'render',
         view: 'render.njk',
         handler: 'preview'
+      },
+      {
+        url: '/state.json',
+        name: 'state',
+        view: 'ui/state'
       }
     ]
   };
