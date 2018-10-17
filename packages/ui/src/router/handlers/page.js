@@ -2,6 +2,13 @@ module.exports = function(route) {
   return async function({ params, state, config }) {
     const page = state.pages.find(page => page.urlPath === (params._ || ''));
     if (!page) {
+      if (!params._) {
+        try {
+          return await this.render('index');
+        } catch (err) {
+          return;
+        }
+      }
       return;
     }
     const context = { page };

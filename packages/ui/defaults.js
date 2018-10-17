@@ -37,11 +37,6 @@ module.exports = function() {
         handler: 'page'
       },
       {
-        url: '/',
-        name: 'index',
-        view: 'index'
-      },
-      {
         name: '404',
         async handler() {
           try {
