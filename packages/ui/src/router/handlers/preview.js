@@ -20,20 +20,8 @@ module.exports = function(route) {
 
     try {
       const context = { component, variants, variant };
-
-      const props = [];
-      const propKeys = ['head', 'foot', 'contents'];
-      for (const key of propKeys) {
-        const str = component.preview[key] || '';
-        props.push(this.renderString(str, { component, variants, variant }));
-      }
-
-      const resolvedProps = await Promise.all(props);
-
-      for (let i = 0; i < propKeys.length; i++) {
-        const key = propKeys[i];
-        context[key] = stripIndent(resolvedProps[i]);
-      }
+      const contentTpl = component.preview.content || '';
+      context.content = stripIndent(await this.renderString(contentTpl, context));
 
       for (const key of ['stylesheets', 'scripts']) {
         context[key] = component.preview[key];

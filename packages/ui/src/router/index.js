@@ -17,7 +17,7 @@ class Router {
         mergedRoutes.push(route);
       }
     }
-    mergedRoutes = mergedRoutes.reverse();
+    mergedRoutes = mergedRoutes;
 
     this._routes = mergedRoutes.map(config => {
       const route = Object.assign({}, config, {
@@ -84,10 +84,15 @@ class Router {
       }
       const params = route.matcher.match(url);
       if (params !== null) {
+        if (params.urlPath) {
+          params._ = params.urlPath;
+        }
         // eslint-disable-next-line no-await-in-loop
         const result = await route.handler({ url, params });
-        if (result !== null) {
+        if (result) {
           return result;
+        } else {
+          continue;
         }
       }
     }

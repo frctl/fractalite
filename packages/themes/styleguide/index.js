@@ -2,7 +2,7 @@ const { resolve } = require('path');
 
 module.exports = function(opts = {}) {
   return {
-    views: [resolve(__dirname, 'src/views')],
+    views: [resolve(__dirname, 'views')],
     assets: [
       {
         name: 'theme',
@@ -25,18 +25,17 @@ module.exports = function(opts = {}) {
         title: 'Project styleguide'
       }
     },
+    pages: {
+      defaults: {
+        view: 'page'
+      }
+    },
     routes: [
       {
         url: '/components/:component',
         name: 'component',
         view: 'component',
         handler: 'component'
-      },
-      {
-        url: '/pages/*',
-        name: 'page',
-        view: 'page',
-        handler: 'page'
       }
     ]
   };

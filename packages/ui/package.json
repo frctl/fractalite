@@ -32,7 +32,17 @@
     "remark": "^9.0.0",
     "remark-html": "^8.0.0",
     "slash": "^2.0.0",
+    "socket.io": "2.1.1",
     "strip-indent": "^2.0.0",
     "url-pattern": "^1.0.3"
+  },
+  "devDependencies": {
+    "cssnano": "^4.1.4",
+    "parcel-bundler": "^1.10.1",
+    "sass": "^1.14.2"
+  },
+  "scripts": {
+    "build": "parcel build ./assets/ui.js --no-source-maps",
+    "dev": "parcel watch ./assets/ui.js"
   }
 }

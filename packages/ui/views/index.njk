@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+{% extends "ui/layout" %}
 
-  <link rel="stylesheet" href="{{ asset('ui:ui.css') }}">
+{% set page = {
+  title: site.title | default('Fractalite UI')
+} %}
 
-  <title>{{ site.title | default('Fractalite UI') }}</title>
-</head>
-<body>
+{% block styles %}
+<link rel="stylesheet" href="{{ asset('ui:ui.css') }}">
+{% endblock %}
 
-  <h1>Fractalite UI is up and running!</h1>
-  <p>Install a theme to get started.</p>
-
-  {% include "ui/reload" %}
-
-</body>
-</html>
+{% block body %}
+<div class="fr-wrapper">
+  <div class="fr-content">
+    <h1>Fractalite UI is up and running!</h1>
+  </div>
+</div>
+{% endblock %}

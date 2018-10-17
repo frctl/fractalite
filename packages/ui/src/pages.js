@@ -58,7 +58,7 @@ class Pages {
               const page = defaultsDeep({}, this._opts.defaults, parsed.data || {}, {
                 path: slash(path),
                 relative: rel,
-                contents: parsed.content
+                content: parsed.content
               });
 
               const segments = rel
@@ -68,7 +68,7 @@ class Pages {
 
               page.urlPath = segments.join('/');
 
-              if (/^.*\/index$/.test(page.urlPath)) {
+              if (page.urlPath === 'index' || /^.*\/index$/.test(page.urlPath)) {
                 page.urlPath = segments.slice(0, -1).join('/');
                 page.index = true;
                 page.label = page.label || this._opts.indexLabel;

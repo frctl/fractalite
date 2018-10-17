@@ -1,3 +1,4 @@
+import './styleguide.scss';
 import { iframeResizer } from 'iframe-resizer';
 import * as hljs from 'highlightjs';
 import $ from 'jquery';

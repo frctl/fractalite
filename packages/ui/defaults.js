@@ -8,7 +8,7 @@ module.exports = function() {
     assets: [
       {
         name: 'ui',
-        src: resolve(__dirname, 'assets'),
+        src: resolve(__dirname, 'dist'),
         mount: '/assets/_ui/core',
         watch: false
       },
@@ -27,13 +27,19 @@ module.exports = function() {
         handler: 'preview'
       },
       {
+        url: '/state.json',
+        name: 'state',
+        view: 'ui/state'
+      },
+      {
+        url: '/(*)',
+        name: 'page',
+        handler: 'page'
+      },
+      {
         url: '/',
         name: 'index',
         view: 'index'
-      },
-      {
-        name: 'error',
-        view: 'error'
       },
       {
         name: '404',
@@ -46,17 +52,14 @@ module.exports = function() {
         }
       },
       {
-        url: '/state.json',
-        name: 'state',
-        view: 'ui/state'
+        name: 'error',
+        view: 'error'
       }
     ],
     theme: null,
     preview: {
       view: null,
-      contents: '{% for variant in variants %}{{ variant | render }}{% endfor %}',
-      head: null,
-      foot: null,
+      content: '{% for variant in variants %}{{ variant | render }}{% endfor %}',
       stylesheets: [],
       scripts: []
     },
@@ -98,7 +101,7 @@ module.exports = function() {
       frontmatter: {},
       indexLabel: 'Overview',
       defaults: {
-        layout: null
+        view: null
       }
     },
     parser: {

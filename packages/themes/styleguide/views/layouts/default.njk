@@ -21,19 +21,19 @@
 
   <nav class="nav">
     {% block sidebar %}
+
     <div class="nav__section">
+      {% if pages.length %}
+      {{ macros.tree('pages', pages | tree) }}
+      {% else %}
       <ul class="tree">
         <li>
           <a href="{{ route('index') }}">Overview</a>
         </li>
       </ul>
+      {% endif %}
     </div>
-    {% if pages.length %}
-    <div class="nav__section">
-      <h4 class="nav__label">Docs</h4>
-      {{ macros.tree('pages', pages | tree) }}
-    </div>
-    {% endif %}
+
     {% if components.length %}
     <div class="nav__section">
       <h4 class="nav__label">Components</h4>

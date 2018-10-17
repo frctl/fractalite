@@ -1,3 +1,6 @@
+import './ui.scss';
+import io from 'socket.io-client';
+
 function refreshCSS(path) {
   var sheets = [].slice.call(document.getElementsByTagName('link'));
   var head = document.getElementsByTagName('head')[0];
@@ -36,8 +39,8 @@ function debounce(func, wait, immediate) {
   };
 }
 
-var socket = io();
-var reload = debounce(state => window.location.reload(), 250, true);
+const socket = io();
+const reload = debounce(state => window.location.reload(), 200, true);
 socket.on('state_updated', reload);
 socket.on('asset_updated', function(path) {
   if (path.indexOf('.css') === -1) {

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  {%- block preStyles %}{% endblock %}
+  {%- block styles %}
+  {% include "ui/stylesheets" %}
+  {% endblock -%}
+  {%- block postStyles %}{% endblock -%}
+
+  <title>{% block title %}{{ page.title }}{% endblock %}</title>
+</head>
+<body>
+
+{%- block preBody %}{% endblock %}
+{%- block body %}{% endblock %}
+{%- block postbody %}{% endblock %}
+
+{%- block preScripts %}{% endblock %}
+{%- block scripts %}
+{% include "ui/scripts" %}
+{% endblock -%}
+{%- block postScripts %}{% endblock -%}
+
+{% block reload %}{% include "ui/reload" %}{% endblock %}
+
+</body>
+</html>

@@ -4,12 +4,12 @@ const { mergeSrcRefs } = require('@fractalite/support/helpers');
 module.exports = function uiPreview(opts, ui) {
   return function(components) {
     let configOpts = ui.config.preview;
-    configOpts = isString(configOpts) ? { contents: configOpts } : configOpts;
+    configOpts = isString(configOpts) ? { content: configOpts } : configOpts;
 
     return Promise.all(
       components.map(component => {
         let componentOpts = get(component, 'config.preview', {});
-        componentOpts = isString(componentOpts) ? { contents: componentOpts } : componentOpts;
+        componentOpts = isString(componentOpts) ? { content: componentOpts } : componentOpts;
 
         const fixRelPaths = paths => {
           paths = [].concat(paths);

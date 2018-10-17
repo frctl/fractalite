@@ -1,42 +1,42 @@
-*,
-*:before,
-*:after {
-  padding: 0;
+html,
+body {
   margin: 0;
-  box-sizing: border-box;
 }
 
-html {
+.fr-wrapper {
   font-size: 18px;
   color: #eee;
   background-color: #222;
   font-family: sans-serif;
   text-align: center;
-  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 100vh;
 }
 
-body {
+.fr-wrapper,
+.fr-wrapper * {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.fr-content {
   padding: 30px;
   max-width: 800px;
   margin: 0 auto;
 }
 
-h1 {
+.fr-content h1 {
   font-size: 22px;
   margin-bottom: 1em;
 }
 
-p {
+.fr-content p {
   opacity: 0.8;
 }
 
-.error {
+.fr-error {
   background-color: #9a0000;
-}
-
-.error-info {
-  font-family: monospace;
 }

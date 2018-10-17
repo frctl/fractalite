@@ -1,38 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "ui/layout" %}
 
-  {%- block preHead %}{% endblock %}
-  {%- block head %}
-  {{ head | safe }}
-  {%- for url in stylesheets -%}
-  <link rel="stylesheet" href="{{ url }}">
-  {% endfor -%}
-  {% endblock -%}
-  {%- block postHead %}{% endblock -%}
+{% block styles %}
+{%- for url in stylesheets -%}
+<link rel="stylesheet" href="{{ url }}">
+{% endfor -%}
+{% endblock %}
 
-  <title>{% block title %}{{ component.label }}{% if variant %} / {{ variant.label }}{% endif %}{% endblock %}</title>
-</head>
-<body>
+{% block title %}{{ component.label }}{% if variant %} / {{ variant.label }}{% endif %}{% endblock %}
 
-{%- block preContents %}{% endblock %}
-{%- block contents %}{{ contents | safe }}{% endblock %}
-{%- block postContents %}{% endblock %}
+{%- block body %}{{ content | safe }}{% endblock %}
 
-{%- block preFoot %}{% endblock %}
-{%- block foot %}
-{{ foot | safe }}
+{%- block scripts %}
 {%- for url in scripts -%}
 <script src="{{ url }}"></script>
 {% endfor -%}
 {% endblock -%}
-{%- block postFoot %}{% endblock -%}
-
-{%- block scripts -%}
-{% include "ui/reload" %}
-{% endblock -%}
-
-</body>
-</html>

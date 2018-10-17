@@ -5,7 +5,7 @@ const importCwd = require('import-cwd');
 const defaults = require('../defaults');
 
 module.exports = function(opts = {}) {
-  let [theme, themeOpts] = [].concat(opts.theme);
+  let [theme = {}, themeOpts] = [].concat(opts.theme);
   theme = isString(theme) ? importCwd(theme) : theme;
   const themeConfig = isPlainObject(theme) ? theme : theme(themeOpts);
   const config = cloneDeep([defaults(), themeConfig, opts]);
@@ -22,10 +22,10 @@ module.exports = function(opts = {}) {
     parser: {
       plugins: concat(config, 'parser.plugins')
     },
-    routes: concat(config, 'routes'),
+    routes: concatReverse(config, 'routes'),
     assets: concatAssets(config),
     develop: assign(config, 'develop'),
-    pages: assign(config, 'pages'),
+    pages: blend(config, 'pages'),
     build: assign(config, 'build'),
     preview: mergePreviews(config),
     stylesheets: mergeRefs(config, 'stylesheets'),
@@ -78,4 +78,12 @@ function blend(configs, path) {
 
 function concat(configs, path) {
   return compact([].concat(...getValues(configs, path)));
+}
+
+function concatReverse(configs, path) {
+  const values = configs
+    .slice(0)
+    .reverse()
+    .map(c => get(c, path));
+  return compact([].concat(...values));
 }
