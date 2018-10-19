@@ -19,7 +19,13 @@ module.exports = function(opts = {}) {
     globals: {
       theme: {
         name: 'styleguide',
-        version: require('./package.json').version
+        version: require('./package.json').version,
+        components: {
+          title: 'Components'
+        },
+        pages: {
+          title: null
+        }
       },
       site: {
         title: 'Styleguide'

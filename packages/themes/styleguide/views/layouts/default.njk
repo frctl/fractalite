@@ -1,41 +1,25 @@
 {% extends "ui/layout" %}
-{% import "ui/macros" as macros -%}
-
-{% block body %}
 
 {% set components = state.components | collect %}
 {% set pages = state.pages | collect %}
 
-<div class="container">
-
-  <nav class="nav">
+{% block body %}
+<div class="fr-layout">
+  <header class="fr-layout__header fr-header">
+  {% block header %}
+  {% include "partials/header" %}
+  {% endblock %}
+  </header>
+  <div class="fr-layout__body">
+    <div class="fr-layout__sidebar fr-sidebar">
     {% block sidebar %}
-
-    <div class="nav__section">
-      {% if pages.length %}
-      {{ macros.tree('pages', pages | tree) }}
-      {% else %}
-      <ul class="tree">
-        <li>
-          <a href="{{ route('index') }}">Overview</a>
-        </li>
-      </ul>
-      {% endif %}
-    </div>
-
-    {% if components.length %}
-    <div class="nav__section">
-      <h4 class="nav__label">Components</h4>
-      {{ macros.tree('components', components | tree) }}
-    </div>
-    {% endif %}
+    {% include "partials/nav-pages" %}
+    {% include "partials/nav-components" %}
     {% endblock %}
-  </nav>
-
-  <main class="content">
-  {% block main %}{% endblock %}
-  </main>
-
+    </div>
+    <main class="fr-layout__main fr-main">
+    {% block main %}{% endblock %}
+    </main>
+  </div>
 </div>
-
 {% endblock %}

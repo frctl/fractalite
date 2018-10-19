@@ -68,7 +68,8 @@ module.exports = function() {
       }
     },
     markdown: {
-      opts: {}
+      opts: {},
+      plugins: []
     },
     filters: {
       render: require('./src/engine/filters/render'),

@@ -1,0 +1,20 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: sans-serif;
+  width: 100vw;
+  height: 100vh;
+  color: #333;
+  line-height: 1.4;
+}
+
+body {
+}
+
+a {
+  color: #0074d9;
+}

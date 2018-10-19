@@ -1,0 +1,7 @@
+{% import "ui/elements" as elements -%}
+
+{% if components.length %}
+{{ elements.componentsNav(components, {
+  title: theme.components.title
+}) }}
+{% endif %}
