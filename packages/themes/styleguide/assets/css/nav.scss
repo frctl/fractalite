@@ -1,0 +1,34 @@
+.fr-nav {
+}
+
+.fr-tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+
+  &__link,
+  &__label {
+    color: #333;
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+  }
+
+  &__label {
+    font-weight: bold;
+  }
+
+  &__link {
+    &:hover {
+      background-color: #eee;
+    }
+  }
+
+  @for $i from 1 through 6 {
+    [data-level='#{$i}'] &__link,
+    [data-level='#{$i}'] &__label {
+      padding-left: 16px * $i;
+    }
+  }
+}

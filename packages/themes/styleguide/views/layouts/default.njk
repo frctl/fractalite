@@ -1,25 +1,28 @@
 {% extends "ui/layout" %}
 
-{% set components = state.components | collect %}
-{% set pages = state.pages | collect %}
+
 
 {% block body %}
 <div class="fr-layout">
-  <header class="fr-layout__header fr-header">
-  {% block header %}
-  {% include "partials/header" %}
-  {% endblock %}
-  </header>
-  <div class="fr-layout__body">
-    <div class="fr-layout__sidebar fr-sidebar">
-    {% block sidebar %}
-    {% include "partials/nav-pages" %}
-    {% include "partials/nav-components" %}
+  <div class="fr-layout__sidebar fr-sidebar">
+  {% block sidebar %}
+
+    <header class="fr-header">
+    {% block header %}
+    {% include "partials/header" %}
     {% endblock %}
-    </div>
-    <main class="fr-layout__main fr-main">
-    {% block main %}{% endblock %}
-    </main>
+    </header>
+
+    <nav class="fr-nav">
+    {% block navigation %}
+    {% include "partials/navigation" %}
+    {% endblock %}
+    </nav>
+
+  {% endblock %}
   </div>
+  <main class="fr-layout__main fr-main">
+  {% block main %}{% endblock %}
+  </main>
 </div>
 {% endblock %}

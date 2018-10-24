@@ -1,4 +1,5 @@
 {% extends "layouts/default" %}
+{% import "ui/elements" as elements %}
 
 {% set page = {
   title: component.label
@@ -10,18 +11,9 @@
 {% block main %}
 <div class="component">
 
-  <header class="component__header">
-    <h1 class="component__label">{{ component.label }}</h1>
+  <header class="component__header component__section">
+    {% include "partials/component-header" %}
   </header>
-
-  {% if component.notes %}
-  <section class="component__section component__section--notes">
-    <h2 class="component__heading">Notes</h2>
-    <div class="notes">
-    {{ component.notes | markdown }}
-    </div>
-  </section>
-  {% endif %}
 
   <section class="component__section component__section--preview">
     {% if hasViewContents %}
@@ -36,10 +28,10 @@
       </div>
       <div class="variant__panels">
         <div class="variant__panel" id="{{ variant.name }}-preview">
-          <iframe class="preview" src="{{ route('preview', {component: component.name, variant: variant.name}) }}"></iframe>
+          {{ elements.preview({component: component.name, variant: variant.name}) }}
         </div>
         <div class="variant__panel" id="{{ variant.name }}-html">
-          <pre class="code"><code class="html">{{ variant | render | prettify | forceescape  }}</code></pre>
+          {{ variant | render | prettify | highlight('html') }}
         </div>
       </div>
     </div>
@@ -52,7 +44,16 @@
   {% if hasViewContents %}
   <section class="component__section component__section--template">
     <h2 class="component__heading">View Template</h2>
-    <pre class="code"><code>{{ component.view }}</code></pre>
+    {{ component.view | highlight }}
+  </section>
+  {% endif %}
+
+  {% if component.notes %}
+  <section class="component__section component__section--notes">
+    <h2 class="component__heading">Notes</h2>
+    <div class="notes">
+    {{ component.notes | markdown }}
+    </div>
   </section>
   {% endif %}
 

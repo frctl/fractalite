@@ -1,10 +1,10 @@
 import './styleguide.scss';
 import { iframeResizer } from 'iframe-resizer';
-import * as hljs from 'highlightjs';
+// import * as hljs from 'highlightjs';
 import $ from 'jquery';
 
 const iframes = iframeResizer();
-hljs.initHighlightingOnLoad();
+// hljs.initHighlightingOnLoad();
 
 const variants = $('.variant');
 

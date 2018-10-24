@@ -7,7 +7,6 @@
     "copy-assets": "mkdir -p ./dist && cp ./node_modules/iframe-resizer/js/iframeResizer.contentWindow.js ./dist/iframe.js"
   },
   "dependencies": {
-    "highlightjs": "^9.10.0",
     "iframe-resizer": "^3.5.15",
     "jquery": "^3.3.1",
     "normalize.css": "^8.0.0"

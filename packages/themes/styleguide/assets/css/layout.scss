@@ -1,23 +1,12 @@
 .fr-layout {
   display: flex;
-  flex-direction: column;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
 
-  &__header {
-    flex: 0;
-  }
-
-  &__body {
-    display: flex;
-    flex: 1 1 auto;
-    height: 100%;
-  }
-
   &__sidebar {
     flex: 0 1 20vw;
-    min-width: 180px;
+    min-width: 220px;
     max-width: 400px;
     height: 100%;
     overflow: auto;

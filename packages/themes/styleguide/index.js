@@ -24,7 +24,7 @@ module.exports = function(opts = {}) {
           title: 'Components'
         },
         pages: {
-          title: null
+          title: 'Documentation'
         }
       },
       site: {
