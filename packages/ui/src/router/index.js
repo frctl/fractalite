@@ -69,6 +69,11 @@ class Router {
   }
 
   urlFor(name, params) {
+    if (params && params.urlPath) {
+      params = Object.assign({}, params, {
+        _: params.urlPath
+      });
+    }
     for (const route of this._routes) {
       if (route.name === name) {
         return route.matcher.stringify(params);

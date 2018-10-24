@@ -1,46 +1,20 @@
-{% macro pagesNav(pages) %}
-<nav class="fr-nav">
-  {% if opts.title %}<h4 class="fr-nav__title">{{ opts.title }}</h4>{% endif -%}
-  {% if pages.length %}
-  {{ _tree('pages', pages | tree) }}
-  {% else %}
-  <ul class="fr-tree">
-    <li class="fr-tree__item">
-      <a class="fr-tree__link" href="{{ url('/') }}">Overview</a>
-    </li>
-  </ul>
-{% endif %}
-</nav>
-{% endmacro %}
-
-{% macro componentsNav(components, opts) %}
-<nav class="fr-nav">
-  {% if opts.title %}<h4 class="fr-nav__title">{{ opts.title }}</h4>{% endif -%}
-  {{ _tree('components', components | tree) }}
-</nav>
-{% endmacro %}
-
 {% macro preview(handle, opts) %}
 <div class="fr-preview{% if opts.resize %} fr-preview--resizable{% endif %}">
   <div class="fr-preview__wrapper">
-    <iframe class="fr-preview__iframe" src="{{ route('preview', _.handleToParams(handle)) }}"></iframe>
+    <iframe class="fr-preview__window" src="{{ route('preview', _.handleToParams(handle)) }}"></iframe>
   </div>
 </div>
 {% endmacro %}
 
-{% macro _tree(type, nodes, opts = {}, level = 1) %}
-<ul class="fr-tree fr-tree--{{ type }}" data-level="{{ level }}">
+{% macro tree(nodes, opts = {}, level = 1) %}
+<ul class="fr-tree" data-level="{{ level }}">
   {% for node in nodes %}
-  <li class="fr-tree__item {% if node.children %}fr-tree__branch{% else %}fr-tree__leaf{% endif %}">
+  <li class="fr-tree__item {% if node.children %}fr-tree__branch{% else %}{% if node.type === 'page' %}fr-tree__item--page{% else %}fr-tree__item--component{% endif %} fr-tree__leaf{% endif %}">
     {% if node.children %}
     <span class="fr-tree__label">{{ node.label }}</span>
-    {{ _tree(type, node.children, opts, level + 1) }}
+    {{ tree(node.children, opts, level + 1) }}
     {% else %}
-    {% if type == 'pages' %}
-    <a class="fr-tree__link" href="{{ route('page', {urlPath: node.content.urlPath}) }}">{{ node.content.label }}</a>
-    {% elseif type == 'components' %}
-    <a class="fr-tree__link" href="{{ route('component', {component: node.content.name }) }}">{{ node.content.label }}</a>
-    {% endif %}
+    <a class="fr-tree__link" href="{{ node.url }}">{{ node.label }}</a>
     {% endif %}
   </li>
   {% endfor %}

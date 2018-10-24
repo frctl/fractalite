@@ -78,7 +78,7 @@ module.exports = function() {
       json: require('./src/engine/filters/json'),
       pluralize: require('./src/engine/filters/pluralize'),
       prettify: require('./src/engine/filters/prettify'),
-      tree: require('./src/engine/filters/tree'),
+      highlight: require('./src/engine/filters/highlight'),
       markdown: require('./src/engine/filters/markdown')
     },
     helpers: {

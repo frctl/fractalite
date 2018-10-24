@@ -7,6 +7,7 @@ const Assets = require('./assets');
 const tplUtils = require('./engine/utils');
 const resolveConfig = require('./config');
 const UIError = require('./error');
+const navGetter = require('./nav');
 
 module.exports = function(app, opts = {}) {
   const config = resolveConfig(opts);
@@ -111,6 +112,12 @@ module.exports = function(app, opts = {}) {
    */
 
   ui.pages = new Pages(config.pages, state);
+
+  /*
+   * Add a custom state getter to generate navigation tree
+   */
+
+  state.addGetter('nav', state => navGetter(state, ui));
 
   /*
    * Resolve the styleheet and script paths to expand

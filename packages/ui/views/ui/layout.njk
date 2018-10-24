@@ -4,6 +4,8 @@
   <meta charset="{{ site.charset }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  {% block reload %}{% include "ui/reload" %}{% endblock %}
+
   {%- block preStyles %}{% endblock %}
   {%- block styles %}
   {% include "ui/stylesheets" %}
@@ -23,8 +25,6 @@
 {% include "ui/scripts" %}
 {% endblock -%}
 {%- block postScripts %}{% endblock -%}
-
-{% block reload %}{% include "ui/reload" %}{% endblock %}
 
 </body>
 </html>

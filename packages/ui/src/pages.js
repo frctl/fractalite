@@ -58,7 +58,8 @@ class Pages {
               const page = defaultsDeep({}, this._opts.defaults, parsed.data || {}, {
                 path: slash(path),
                 relative: rel,
-                content: parsed.content
+                content: parsed.content,
+                isPage: true
               });
 
               const segments = rel
@@ -75,8 +76,10 @@ class Pages {
                 page.order = page.order || 1;
               }
 
+              page.name = name;
               page.label = page.label || titlize(name);
               page.title = page.title || page.label;
+
               return page;
             })
           );
