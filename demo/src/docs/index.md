@@ -1,3 +1,0 @@
-# {{ site.title }}
-
-{{ components.length }}
