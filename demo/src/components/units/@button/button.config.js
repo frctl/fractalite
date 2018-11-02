@@ -1,32 +1,56 @@
 const data = require('%/shared');
 
 module.exports = {
-  preview: {
-    content: `
-      {% for variant in variants %}
-      <div style="margin-bottom: 10px;">{{ variant | render }}</div>
-      {% endfor %}
-    `,
-    scripts: ['./preview.js']
-  },
-  defaults: {
-    iconPos: 'after'
-  },
   variants: [
     {
+      name: 'primary',
+      props: {
+        modifier: 'primary'
+      },
+      previewProps: [
+        {
+          label: data.buttons.getRandomLabel()
+        },
+        {
+          label: 'A primary button with a long label'
+        }
+      ]
+    },
+    {
+      name: 'secondary',
+      props: {
+        modifier: 'secondary'
+      },
+      previewProps: [
+        {
+          label: data.buttons.getRandomLabel()
+        },
+        {
+          label: 'A secondary button with a long label'
+        }
+      ]
+    },
+    {
       name: 'next',
-      context: {
-        label: data.buttons.getRandomLabel(),
-        icon: '@icon/next'
+      props: {
+        label: 'Next',
+        modifier: 'action',
+        icon: '@icon/next',
+        iconPos: 'after'
       }
     },
     {
       name: 'prev',
-      context: {
-        label: data.buttons.getRandomLabel(),
+      props: {
+        label: 'Prev',
+        modifier: 'action',
         icon: '@icon/prev',
         iconPos: 'before'
       }
     }
-  ]
+  ],
+
+  preview: {
+    scripts: ['./preview.js']
+  }
 };

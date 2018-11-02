@@ -5,7 +5,6 @@
   title: component.label
 } %}
 
-{% set variants = component.variants | collect %}
 {% set hasViewContents = component.view and component.view.contents %}
 
 {% block main %}
@@ -15,7 +14,11 @@
     {% include "partials/component-header" %}
   </header>
 
-  <section class="component__section component__section--preview">
+  <section class="component__preview">
+  {{ elements.preview({component: component.name, variant: variant.name}) }}    
+  </section>
+
+  {# <section class="component__section component__section--preview">
     {% if hasViewContents %}
     {% for variant in variants %}
     <div class="variant">
@@ -55,7 +58,7 @@
     {{ component.notes | markdown }}
     </div>
   </section>
-  {% endif %}
+  {% endif %} #}
 
 </div>
 

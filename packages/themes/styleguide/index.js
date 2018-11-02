@@ -1,4 +1,5 @@
 const { resolve } = require('path');
+const navGetter = require('./src/state-nav');
 
 module.exports = function(opts = {}) {
   return {
@@ -16,6 +17,9 @@ module.exports = function(opts = {}) {
     },
     stylesheets: ['theme:styleguide.css'],
     scripts: ['theme:styleguide.js'],
+    parser: {
+      plugins: [require('./src/parser-plugin-urls')]
+    },
     globals: {
       theme: {
         name: 'styleguide',
@@ -32,18 +36,22 @@ module.exports = function(opts = {}) {
       }
     },
     pages: {
-      src: [resolve(__dirname, 'pages')],
+      // src: [resolve(__dirname, 'pages')],
       defaults: {
         view: 'page'
       }
     },
     routes: [
       {
-        url: '/components/:component',
-        name: 'component',
-        view: 'component',
-        handler: 'component'
+        url: '/components/:component/:variant',
+        name: 'variant',
+        view: 'variant',
+        handler: 'variant'
       }
-    ]
+    ],
+    init(ui) {
+      // Add a custom state getter to generate navigation tree
+      ui.state.addGetter('nav', state => navGetter(state, ui));
+    }
   };
 };

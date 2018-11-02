@@ -13,6 +13,7 @@
     display: block;
     padding: 8px 16px;
     text-decoration: none;
+    transition: background-color 0.1s;
   }
 
   &__label {
@@ -23,6 +24,10 @@
     &:hover {
       background-color: #eee;
     }
+  }
+
+  &__item.is-active &__link {
+    background-color: #e5e5e5;
   }
 
   @for $i from 1 through 6 {

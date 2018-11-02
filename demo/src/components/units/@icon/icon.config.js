@@ -4,7 +4,7 @@ module.exports = function({ files }) {
     variants: svgs.map(file => {
       return {
         name: file.name,
-        context: {
+        props: {
           icon: {
             path: `@icon/${file.relative}`,
             alt: file.name

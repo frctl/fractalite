@@ -18,6 +18,10 @@ module.exports = function(ui) {
       return this.url(ui.router.urlFor(name, params));
     },
 
+    hasRoute(name) {
+      return ui.router.has(name);
+    },
+
     resolveUrlRefs(str, component) {
       return str.replace(urlAttrs, (...args) => {
         const [matched, attr, quoteOpen, assetPath, quoteClose] = args;

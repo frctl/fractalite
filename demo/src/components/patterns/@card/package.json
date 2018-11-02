@@ -5,9 +5,12 @@
     "variants": [
       {
         "name": "example",
-        "context": {
+        "props": {
           "title": "A test title",
-          "text": "Some dummy text for the card"
+          "text": "Some dummy text for the card",
+          "button": {
+            "label": "Do this thing"
+          }
         }
       }
     ]

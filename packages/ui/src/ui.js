@@ -1,4 +1,4 @@
-const { mapValues, cloneDeep } = require('lodash');
+const { mapValues, cloneDeep, pick } = require('lodash');
 const { toArray } = require('@fractalite/support/utils');
 const Router = require('./router');
 const Engine = require('./engine');
@@ -7,7 +7,6 @@ const Assets = require('./assets');
 const tplUtils = require('./engine/utils');
 const resolveConfig = require('./config');
 const UIError = require('./error');
-const navGetter = require('./nav');
 
 module.exports = function(app, opts = {}) {
   const config = resolveConfig(opts);
@@ -32,9 +31,9 @@ module.exports = function(app, opts = {}) {
    * provide access to the `ui` object within them.
    */
 
-  const engineConfig = config.engine;
+  const engineConfig = pick(config, ['cache', 'globals', 'views']);
 
-  engineConfig.filters = mapValues(engineConfig.filters, filter => {
+  engineConfig.filters = mapValues(config.filters, filter => {
     const wrapped = function(...args) {
       const input = args.shift();
       if (filter.async === true) {
@@ -50,14 +49,14 @@ module.exports = function(app, opts = {}) {
     return wrapped;
   });
 
-  engineConfig.helpers = mapValues(engineConfig.helpers, helper => {
+  engineConfig.helpers = mapValues(config.helpers, helper => {
     return function(...args) {
       const handler = helper.bind(this);
       return handler(args, ui);
     };
   });
 
-  engineConfig.extensions = mapValues(engineConfig.extensions, Ext => new Ext(ui));
+  engineConfig.extensions = mapValues(config.extensions, Ext => new Ext(ui));
 
   const engine = new Engine(engineConfig);
   ui.engine = engine;
@@ -114,12 +113,6 @@ module.exports = function(app, opts = {}) {
   ui.pages = new Pages(config.pages, state);
 
   /*
-   * Add a custom state getter to generate navigation tree
-   */
-
-  state.addGetter('nav', state => navGetter(state, ui));
-
-  /*
    * Resolve the styleheet and script paths to expand
    * `source:target.css` format paths to proper URLs.
    */
@@ -135,6 +128,8 @@ module.exports = function(app, opts = {}) {
   engine.setGlobal('ui', ui.env);
   engine.setGlobal('state', ui.state);
   engine.setGlobal('_', tplUtils(ui));
+
+  config.init(ui);
 
   return ui;
 };

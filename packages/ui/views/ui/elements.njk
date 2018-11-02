@@ -6,13 +6,15 @@
 </div>
 {% endmacro %}
 
-{% macro tree(nodes, opts = {}, level = 1) %}
+{% macro tree(nodes, request, level = 1) %}
 <ul class="fr-tree" data-level="{{ level }}">
-  {% for node in nodes %}
-  <li class="fr-tree__item {% if node.children %}fr-tree__branch{% else %}{% if node.type === 'page' %}fr-tree__item--page{% else %}fr-tree__item--component{% endif %} fr-tree__leaf{% endif %}">
+  {% for node in nodes.reject('hidden') %}
+  <li class="fr-tree__item
+    {%- if request.url and request.url === node.url %} is-active{% endif %}
+    {%- if node.children %} fr-tree__branch{% else %} fr-tree__item--{{ node.type }} fr-tree__leaf{% endif %}">
     {% if node.children %}
     <span class="fr-tree__label">{{ node.label }}</span>
-    {{ tree(node.children, opts, level + 1) }}
+    {{ tree(node.children, request, level + 1) }}
     {% else %}
     <a class="fr-tree__link" href="{{ node.url }}">{{ node.label }}</a>
     {% endif %}

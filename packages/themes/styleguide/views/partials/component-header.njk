@@ -1,1 +1,5 @@
-<h1 class="component__title">{{ component.title | default(component.label) }}</h1>
+<h1 class="component__title">
+  <strong class="component__component-title">{{ component.title | default(component.label) }}</strong>
+  /
+  <span class="variant-title">{{ variant.title | default(variant.label) }}</span>
+</h1>

@@ -515,12 +515,16 @@ h6 {
   display: block;
   padding: 8px 16px;
   text-decoration: none;
+  transition: background-color 0.1s;
 }
 .fr-tree__label {
   font-weight: bold;
 }
 .fr-tree__link:hover {
   background-color: #eee;
+}
+.fr-tree__item.is-active .fr-tree__link {
+  background-color: #e5e5e5;
 }
 [data-level="1"] .fr-tree__link, [data-level="1"] .fr-tree__label {
   padding-left: 16px;
