@@ -12,25 +12,23 @@ module.exports = function(route) {
       const targets = getComponentAndVariant(params, state);
       component = targets.component;
       variant = targets.variant;
-      variants = [variant];
     } else {
       component = getComponent(params, state);
-      variants = component.variants;
     }
 
     try {
-      const context = { component, variants, variant };
-      const contentTpl = component.preview.content || '';
-      context.content = stripIndent(await this.renderString(contentTpl, context));
+      let { content, meta } = component.preview;
+      const context = { component, variants, variant, meta };
 
       for (const key of ['stylesheets', 'scripts']) {
         context[key] = component.preview[key];
       }
 
-      if (isString(component.preview.view)) {
-        return this.renderString(component.preview.view, context);
+      if (route.view) {
+        return this.render(route.view, context);
       }
-      return this.render(route.view, context);
+
+      return this.render(component.preview[variant ? 'variant' : 'component'], context);
     } catch (err) {
       this.throw(`Error rendering preview template.\n${err.message}`, 400);
     }

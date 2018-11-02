@@ -1,7 +1,7 @@
 const nanoid = require('nanoid');
 const UrlPattern = require('url-pattern');
 const pluralize = require('pluralize');
-const { flatten, compact } = require('lodash');
+const { flatten, compact, pick } = require('lodash');
 const handlers = require('./handlers');
 const generators = require('./generators');
 
@@ -17,22 +17,24 @@ class Router {
         mergedRoutes.push(route);
       }
     }
-    mergedRoutes = mergedRoutes;
 
-    this._routes = mergedRoutes.map(config => {
-      const route = Object.assign({}, config, {
+    mergedRoutes = mergedRoutes.map(config => {
+      return Object.assign({}, config, {
         name: config.name || nanoid(),
         matcher: config.url ? new UrlPattern(config.url) : null
       });
+    });
 
-      let { handler } = config;
+    // resolve handlers and generators
+    this._routes = mergedRoutes.map(route => {
+      let { handler } = route;
       let handlerName;
       if (typeof handler === 'string') {
         if (!handlers[handler]) {
           throw new Error(`The route handler '${handler}' was not recognised`);
         }
         handlerName = handler;
-        handler = handlers[handler](route);
+        handler = handlers[handler](route, mergedRoutes);
       }
       if (!handler && route.view) {
         handler = function() {
@@ -43,13 +45,18 @@ class Router {
         throw new Error(`Could not resolve handler for route '${route.name}'`);
       }
       route.handler = ({ url, params, error }) => {
-        const request = { url, route, params };
+        const request = {
+          url,
+          params: params || {},
+          route: pick(route, ['url', 'name', 'view'])
+        };
+
         const handlerCtx = ctx({ request, error });
         const boundHandler = handler.bind(handlerCtx);
         return boundHandler(Object.assign({ request, params, error }, route.ctx || {}));
       };
 
-      let { generator } = config;
+      let { generator } = route;
       if (!generator && handlerName) {
         generator = handlerName;
       }
@@ -68,6 +75,14 @@ class Router {
     });
   }
 
+  get routes() {
+    return this.routes;
+  }
+
+  has(name) {
+    return Boolean(this.routes.find(r => r.name === name));
+  }
+
   urlFor(name, params) {
     if (params && params.urlPath) {
       params = Object.assign({}, params, {
@@ -80,6 +95,18 @@ class Router {
       }
     }
     throw new Error(`Could not find route with name '${name}'`);
+  }
+
+  call(name, params = {}) {
+    const route = this._routes.find(r => r.name === name);
+    if (!route) {
+      throw new Error(`The route '${name}' could not be found`);
+    }
+    if (params.url) {
+      params._ = params.url;
+    }
+    const url = route.matcher.stringify(params);
+    return route.handler({ url, params });
   }
 
   async handle(url) {

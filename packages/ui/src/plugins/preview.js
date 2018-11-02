@@ -1,5 +1,6 @@
 const { get, isString, flatten, compact } = require('lodash');
 const { mergeSrcRefs } = require('@fractalite/support/helpers');
+const { toArray } = require('@fractalite/support/utils');
 
 module.exports = function uiPreview(opts, ui) {
   return function(components) {
@@ -10,6 +11,8 @@ module.exports = function uiPreview(opts, ui) {
       components.map(component => {
         let componentOpts = get(component, 'config.preview', {});
         componentOpts = isString(componentOpts) ? { content: componentOpts } : componentOpts;
+
+        // Merge stylesheet and scripts and resolve references
 
         const fixRelPaths = paths => {
           paths = [].concat(paths);

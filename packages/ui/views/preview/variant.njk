@@ -1,0 +1,9 @@
+{% extends "ui/preview" %}
+
+{% block title %}{{ component.label }} / {{ variant.label }}{% endblock %}
+
+{% block body %}
+{%- for props in variant.previewProps -%}
+{{ variant | render(props) }}
+{%- endfor -%}
+{% endblock %}

@@ -6,9 +6,7 @@
 {% endfor -%}
 {% endblock %}
 
-{% block title %}{{ component.label }}{% if variant %} / {{ variant.label }}{% endif %}{% endblock %}
-
-{%- block body %}{{ content | safe }}{% endblock %}
+{%- block body %}{% endblock %}
 
 {%- block scripts %}
 {%- for url in scripts -%}

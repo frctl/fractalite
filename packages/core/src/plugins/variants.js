@@ -1,4 +1,4 @@
-const { titlize, slugify } = require('@fractalite/support/utils');
+const { titlize, slugify, toArray } = require('@fractalite/support/utils');
 
 module.exports = function variants(opts = {}) {
   return function(components) {
@@ -10,9 +10,14 @@ module.exports = function variants(opts = {}) {
           counter++;
           const name = slugify(config.name || `${component.name}-${counter}`);
           const label = config.label || titlize(name);
-          const context = config.context || {};
+          const props = config.props || {};
+          const previewProps = toArray(config.previewProps || {});
 
-          const variant = { name, label, context };
+          if (previewProps.length === 0) {
+            previewProps.push({}); // always need at least one set of previewProps
+          }
+
+          const variant = { name, label, props, previewProps };
           Object.defineProperty(variant, '_component', {
             get() {
               return component.name;

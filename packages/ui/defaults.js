@@ -23,7 +23,6 @@ module.exports = function() {
       {
         url: '/preview/:component(/:variant)',
         name: 'preview',
-        view: 'preview',
         handler: 'preview'
       },
       {
@@ -48,8 +47,8 @@ module.exports = function() {
     ],
     theme: null,
     preview: {
-      view: null,
-      content: '{% for variant in variants %}{{ variant | render }}{% endfor %}',
+      component: 'preview/component',
+      variant: 'preview/variant',
       stylesheets: [],
       scripts: []
     },
@@ -66,10 +65,6 @@ module.exports = function() {
         name: 'default',
         version: require('./package.json').version
       }
-    },
-    markdown: {
-      opts: {},
-      plugins: []
     },
     filters: {
       render: require('./src/engine/filters/render'),
@@ -88,6 +83,10 @@ module.exports = function() {
     },
     extensions: {
       markdown: require('./src/engine/extensions/markdown')
+    },
+    markdown: {
+      opts: {},
+      plugins: []
     },
     pages: {
       src: null,

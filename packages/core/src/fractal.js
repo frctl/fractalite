@@ -126,7 +126,7 @@ class Fractal {
       if (!component) {
         throw new Error('Component not found');
       }
-      context = opts.merge === false ? context : defaultsDeep(context, variant.context);
+      context = opts.merge === false ? context : defaultsDeep(context, variant.props);
     } else {
       component = target;
     }

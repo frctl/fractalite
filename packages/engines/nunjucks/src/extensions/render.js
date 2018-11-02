@@ -39,7 +39,7 @@ module.exports = class RenderExtension {
           )
         );
       }
-      context = shouldMerge === false ? context : defaultsDeep(context, variant.context);
+      context = shouldMerge === false ? context : defaultsDeep(context, variant.props);
     }
 
     env.render(nameParts.component, context, (err, result) => {
