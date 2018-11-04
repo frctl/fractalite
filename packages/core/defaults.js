@@ -1,10 +1,5 @@
 module.exports = {
-  src: {
-    path: null,
-    opts: {
-      gitignore: false
-    }
-  },
+  engine: null,
   plugins: [
     require('./src/plugins/config'),
     require('./src/plugins/name'),
@@ -13,12 +8,7 @@ module.exports = {
     require('./src/plugins/notes'),
     require('./src/plugins/variants')
   ],
-  engine: '@fractalite/engine-nunjucks',
-  watch: {
-    opts: {},
-    paths: []
-  },
-  opts: {
+  pluginOpts: {
     config: {
       defaults: {},
       finder: {
@@ -40,5 +30,6 @@ module.exports = {
     view: {
       match: 'view.*'
     }
-  }
+  },
+  transform: require('./src/transform')
 };
