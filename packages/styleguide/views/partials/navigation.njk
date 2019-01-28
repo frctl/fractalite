@@ -1,0 +1,27 @@
+<div class="fr-nav">
+
+  <div class="fr-nav__section">
+    <h4>Components</h4>
+    <ul>
+      {% for component in components.sortBy('name') %}
+        <li>
+          <span>{{ component.label }}</span>
+          <ul>
+            {% for variant in component.variants.sortBy('name') %}
+            <li><a href="{{ variant.url }}">{{ variant.label }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="fr-nav__section">
+    <h4>Pages</h4>
+    <ul>
+      {% for page in pages.sortBy('basename') %}
+      <li><a href="{{ page.url }}">{{ page.label }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

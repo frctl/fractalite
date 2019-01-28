@@ -1,0 +1,37 @@
+{% extends "layouts/default" %}
+
+{% block main %}
+
+<div class="fr-inspector">
+
+  <div class="fr-inspector__header">
+    <h1>{{ component.label }} / {{ variant.label }}</h1>
+  </div>
+
+  <div class="fr-inspector__preview">
+
+    <iframe src="{{ variant.previewUrl }}" frameborder="0" class="fr-preview"></iframe>
+
+  </div>
+
+  <div class="fr-inspector__info">
+
+    <div class="fr-panels">
+
+    {% for panel in app.inspector.panels %}
+      {% if panel.display({ component: component }) %}
+      <div class="fr-panels__panel">
+        <label class="fr-panels__label">{{ panel.label }}</label>
+        <div class="fr-panels__content">
+        {% render %}{{ panel.content | safe }}{% endrender %}
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

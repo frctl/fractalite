@@ -1,0 +1,13 @@
+.fr-brand {
+  padding: 16px;
+
+  a {
+    color: #333;
+    text-decoration: none;
+  }
+
+  &__brand {
+    font-weight: bold;
+    font-size: 20px;
+  }
+}
