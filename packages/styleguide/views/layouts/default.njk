@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="{{ app.meta.lang }}" dir="{{ app.meta.dir }}">
+<head>
+  <meta charset="{{ app.meta.charset }}">
+  <meta name="viewport" content="{{ app.meta.viewport }}">
+
+  {% for url in app.stylesheets | stack -%}
+  <link rel="stylesheet" href="{{ staticUrl(url) }}">
+  {%- endfor %}
+
+  <title>{{ app.meta.title }}</title>
+</head>
+<body>
+
+<a href="/">{{ app.title }}</a>
+
+<hr>
+
+{% block body %}{% endblock %}
+
+{% for url in app.scripts | stack -%}
+<script src="{{ staticUrl(url) }}"></script>
+{%- endfor %}
+
+</body>
+</html>

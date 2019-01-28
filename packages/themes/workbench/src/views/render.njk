@@ -1,5 +1,0 @@
-{% for variant in variants -%}
-<!-- @{{ component.name }}/{{ variant.name }} -->
-{% for scenario in variant.scenarios -%}{{ variant | render(scenario) | prettify | safe }}
-{% endfor -%}
-{% endfor -%}

@@ -1,3 +1,5 @@
+const pupa = require('pupa');
+const multimatch = require('multimatch');
 const {
   compact,
   find,
@@ -8,7 +10,8 @@ const {
   orderBy,
   uniq,
   uniqBy,
-  cloneDeep
+  cloneDeep,
+  flatMap
 } = require('lodash');
 
 const iter = (...args) => iteratee(args.length === 2 ? [...args] : args[0]);
@@ -105,6 +108,18 @@ class Collection {
     return item;
   }
 
+  match(prop, matcher, replacements = {}) {
+    matcher = [].concat(matcher).map(match => pupa(match, replacements));
+    return this.filter(item => {
+      return multimatch(item[prop], matcher).length;
+    });
+  }
+
+  matchOne(...args) {
+    const matches = this.match(...args);
+    return matches.length ? matches.first() : null;
+  }
+
   filter(...args) {
     const items = filter(this._items, iter(...args));
     return this._new(items);
@@ -134,11 +149,27 @@ class Collection {
   }
 
   map(...args) {
-    return this._new(this._items.map(...args));
+    return this._items.map(...args);
+  }
+
+  mapToCollection(...args) {
+    return this._new(this.map(...args));
+  }
+
+  flatMap(...args) {
+    return flatMap(this._items, ...args);
+  }
+
+  flatMapToCollection(...args) {
+    return this._new(this.flatMap(...args));
   }
 
   reduce(...args) {
     return this._items.reduce(...args);
+  }
+
+  includes(...args) {
+    return this._items.includes(...args);
   }
 
   reverse() {

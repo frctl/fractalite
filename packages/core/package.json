@@ -2,22 +2,23 @@
   "name": "@fractalite/core",
   "version": "0.0.0",
   "dependencies": {
-    "@fractalite/engine-nunjucks": "^0.0.0",
     "@fractalite/support": "^0.0.0",
-    "@fractalite/compiler": "^0.0.0",
     "cosmiconfig": "^5.0.6",
     "deep-freeze": "^0.0.1",
     "enhanced-require": "^0.5.0-beta6",
+    "lodash": "^4.17.10",
+    "nanoid": "^1.2.1",
+    "common-tags": "^1.8.0",
+    "chokidar": "^2.0.4",
     "import-cwd": "^2.1.0",
     "lodash": "^4.17.10",
+    "ow": "^0.8.0",
     "multimatch": "^2.1.0",
-    "nanoid": "^1.2.1",
-    "pupa": "^1.0.0"
-  },
-  "devDependencies": {
-    "mocha": "^5.2.0"
-  },
-  "scripts": {
-    "test": "mocha test/integration"
+    "pupa": "^1.0.0",
+    "glob-base": "^0.3.0",
+    "globby": "^8.0.1",
+    "slash": "^2.0.0",
+    "asyncro": "^3.0.0",
+    "cosmiconfig": "^5.0.6"
   }
 }
