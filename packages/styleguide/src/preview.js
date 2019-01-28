@@ -10,7 +10,7 @@ module.exports = function(opts = {}) {
   return function previewPlugin(app) {
     app.addRoute('preview', `/${opts.mount || 'preview'}/:variant(.+)`, async (ctx, next) => {
       return ctx.renderString(
-        opts.content || `{{ api.renderPreview(variant, component.preview) | await | safe }}`
+        opts.content || `{{ renderPreview(variant, component.preview) | await | safe }}`
       );
     });
 

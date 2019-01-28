@@ -12,7 +12,7 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
     title: config.title || 'Styleguide',
     stylesheets: ['styleguide:app.css'],
     scripts: ['styleguide:app.js', 'styleguide:reload.js'],
-    component: {
+    inspector: {
       panels: []
     }
   });
@@ -28,11 +28,11 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
     }
   });
 
-  app.addRoute('detail', '/detail/:variant(.+)', async (ctx, next) => {
-    return ctx.render('detail');
+  app.addRoute('inspect', '/inspect/:variant(.+)', async (ctx, next) => {
+    return ctx.render('inspector');
   });
 
-  app.addBuildStep('detail', ({ requestRoute }) => {
+  app.addBuildStep('inspect', ({ requestRoute }) => {
     app.api.variants.forEach(variant => requestRoute('detail', { variant }));
   });
 
@@ -61,7 +61,7 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
         file.url = app.url('src', { file });
       });
       component.variants.forEach(variant => {
-        variant.url = app.url('detail', { variant });
+        variant.url = app.url('inspect', { variant });
       });
     });
     assets.forEach(asset => {
@@ -95,6 +95,10 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
     config.init(app);
   }
 
+  app.set(
+    'inspector.panels',
+    app.get('inspector.panels').map(panel => Object.assign({ display: () => true }, panel))
+  );
   app.addViewGlobal('app', app.props());
 
   return app;

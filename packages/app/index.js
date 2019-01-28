@@ -53,14 +53,14 @@ module.exports = function(opts = {}) {
   app.use(async (ctx, next) => {
     ctx.state.api = ctx.api;
     ctx.state.mode = ctx.mode;
-    ctx.state.components = ctx.api.components;
-    ctx.state.assets = ctx.api.assets;
     ctx.state.request = {
       params: ctx.params,
       path: ctx.path,
       url: ctx.url,
       route: ctx.route
     };
+    // all api methods are added as top-level helpers
+    Object.keys(ctx.api).forEach(key => (ctx.state[key] = ctx.api[key]));
     return next();
   });
 

@@ -1,36 +1,7 @@
-{% extends "layouts/default" %}
+{% extends "page" %}
 
-{% block body %}
+{% block page %}
 
-<p>{{ title }}</p>
-
-<h1>homepage </h1>
-
-<p>components: {{ components.length }}</p>
-
-<ul>
-{% for component in components.sortBy('name') %}
-  <li>
-    <span>{{ component.label }}</span>
-    <ul>
-      {% for variant in component.variants.sortBy('name') %}
-      <li><a href="{{ variant.url }}">{{ variant.label }}</a></li>
-      {% endfor %}
-    </ul>
-  </li>
-{% endfor %}
-</ul>
-
-<p>assets: {{ assets.length }}</p>
-
-{% for asset in assets.sortBy('name') %}
-<li><a href="{{ asset.url }}">{{ asset.handle }}</a></li>
-{% endfor %}
-
-<p>pages: {{ pages.length }}</p>
-
-{% for page in pages.sortBy('basename') %}
-<li><a href="{{ page.url }}">{{ page.label }}</a></li>
-{% endfor %}
+<h1>Welcome</h1>
 
 {% endblock %}

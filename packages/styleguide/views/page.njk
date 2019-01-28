@@ -1,9 +1,14 @@
 {% extends "layouts/default" %}
 
-{% block body %}
+{% block main %}
 
-<h2>{{ page.title }}</h2>
+<div class="fr-page">
+{% block page %}
 
-{{ page.content | safe }}
+  <h2>{{ page.title | default(page.label) }}</h2>
+
+  {{ page.content | safe }}
+{% endblock %}
+</div>
 
 {% endblock %}

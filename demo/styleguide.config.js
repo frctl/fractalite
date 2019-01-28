@@ -18,6 +18,7 @@ module.exports = {
   // build: {},
 
   opts: {
+    // notes: false,
     pages: {
       src: resolve(__dirname, './src/pages'),
       indexLabel: 'Overview'

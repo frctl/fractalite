@@ -347,3 +347,101 @@ template {
 [hidden] {
   display: none;
 }
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue";
+  width: 100vw;
+  height: 100vh;
+  color: #333;
+  line-height: 1.4;
+  font-size: 18px;
+}
+
+a {
+  color: #0074d9;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+
+.fr-layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.fr-layout__sidebar {
+  flex: 0 1 20vw;
+  min-width: 220px;
+  max-width: 400px;
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.fr-layout__main {
+  flex: 1 1 auto;
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fr-sidebar {
+  background: #f4f4f4;
+  border-right: 1px solid #ddd;
+}
+
+.fr-brand {
+  padding: 16px;
+}
+.fr-brand a {
+  color: #333;
+  text-decoration: none;
+}
+.fr-brand__brand {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.fr-nav__section {
+  padding: 0 16px;
+}
+
+.fr-inspector {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+.fr-inspector__header {
+  flex: none;
+  padding: 16px;
+  border-bottom: 1px solid #ddd;
+}
+.fr-inspector__preview {
+  flex: 1 1 auto;
+}
+.fr-inspector__info {
+  flex: 1 1 50%;
+  border-top: 1px solid #ddd;
+}
+
+.fr-preview {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.fr-page {
+  padding: 16px;
+}
