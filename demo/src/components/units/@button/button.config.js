@@ -6,8 +6,7 @@ module.exports = {
         label: 'Next',
         modifier: 'action',
         icon: './arrow-right.svg',
-        iconPos: 'after',
-        icons: ['./arrow-right.svg', './arrow-left.svg']
+        iconPos: 'after'
       }
     },
     {
@@ -17,7 +16,15 @@ module.exports = {
         modifier: 'action',
         icon: './arrow-left.svg',
         iconPos: 'before'
-      }
+      },
+      previewProps: [
+        {
+          label: 'Go back'
+        },
+        {
+          label: 'Return'
+        }
+      ]
     }
   ]
 };

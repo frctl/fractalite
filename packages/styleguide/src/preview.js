@@ -1,16 +1,36 @@
 const { extname } = require('path');
 const { flatMap } = require('lodash');
 const { stack, resolveFileUrl, rewriteUrls } = require('@fractalite/support/helpers');
-const { defaultsDeep } = require('@fractalite/support/utils');
+const { defaultsDeep, toArray } = require('@fractalite/support/utils');
 const { File, Asset } = require('@fractalite/core');
 const { get } = require('lodash');
 const { map } = require('asyncro');
 
 module.exports = function(opts = {}) {
   return function previewPlugin(app) {
+    app.set(
+      'preview.snippets.setHtml',
+      `
+      {% set html = '' %}
+      {% if variant.previewProps %}
+        {% asyncEach props in variant.previewProps %}
+          {% set props = mergeProps(variant, props) %}
+          {% set output = render(variant, props) | await %}
+          {% set html = html + output %}
+        {% endeach %}
+      {% else %}
+        {% set html = render(variant) | await %}
+      {% endif %}
+    `
+    );
+
     app.addRoute('preview', `/${opts.mount || 'preview'}/:variant(.+)`, async (ctx, next) => {
       return ctx.renderString(
-        opts.content || `{{ renderPreview(variant, component.preview) | await | safe }}`
+        opts.content ||
+          `
+        ${app.get('preview.snippets.setHtml')}
+        {{ renderPreview(html, component.preview) | await | safe }}
+        `
       );
     });
 
@@ -26,6 +46,17 @@ module.exports = function(opts = {}) {
       components.forEach(component => {
         component.variants.forEach(variant => {
           variant.previewUrl = app.url('preview', { variant });
+        });
+      });
+    });
+
+    app.compiler.use(async function({ components, assets }, next) {
+      await next();
+      components.forEach(component => {
+        component.variants.forEach(variant => {
+          if (variant.config.previewProps) {
+            variant.previewProps = toArray(variant.config.previewProps);
+          }
         });
       });
     });

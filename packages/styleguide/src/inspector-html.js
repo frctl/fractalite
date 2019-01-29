@@ -6,7 +6,8 @@ module.exports = function(opts = {}) {
     if (opts === false) return;
 
     const content = `
-      <pre><code>{{ render(variant) | await }}</code></pre>
+      ${app.get('preview.snippets.setHtml')}
+      <pre><code>{{ html }}</code></pre>
     `;
 
     app.get('inspector.panels').push({

@@ -1,4 +1,5 @@
 const { titlize, slugify, toArray } = require('@fractalite/support/utils');
+const deepFreeze = require('deep-freeze');
 const Variant = require('../entities/variant');
 
 module.exports = function() {
@@ -15,14 +16,13 @@ module.exports = function() {
           return this._handle || `${component.name}/${this.name}`;
         };
 
-        /*
-          const previewProps = toArray(config.previewProps || {});
-          if (previewProps.length === 0) {
-            previewProps.push({}); // always need at least one set of previewProps
-          }
-        */
-
-        return new Variant({ name, label, props, handle /*, previewProps */ });
+        return new Variant({
+          name,
+          label,
+          props,
+          handle,
+          config: deepFreeze(config)
+        });
       });
     });
   };

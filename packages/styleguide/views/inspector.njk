@@ -6,18 +6,17 @@
 
   <div class="fr-inspector__header">
     <h1>{{ component.label }} / {{ variant.label }}</h1>
+    <ul class="fr-inspector__header-items">
+      <li><a href="{{ variant.previewUrl }}">Preview</a></li>
+    </ul>
   </div>
 
   <div class="fr-inspector__preview">
-
     <iframe src="{{ variant.previewUrl }}" frameborder="0" class="fr-preview"></iframe>
-
   </div>
 
   <div class="fr-inspector__info">
-
     <div class="fr-panels">
-
     {% for panel in app.inspector.panels %}
       {% if panel.display({ component: component }) %}
       <div class="fr-panels__panel">
@@ -28,9 +27,7 @@
       </div>
       {% endif %}
     {% endfor %}
-
     </div>
-
   </div>
 
 </div>

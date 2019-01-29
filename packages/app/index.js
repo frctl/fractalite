@@ -21,7 +21,12 @@ module.exports = function(opts = {}) {
     ctx.response.renderString = ctx.renderString = async function(str, locals = {}, opts) {
       const state = Object.assign({}, ctx.state, locals);
       ctx.type = 'text/html';
-      ctx.body = await views.renderStringAsync(str, state, opts);
+      try {
+        ctx.body = await views.renderStringAsync(str, state, opts);
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
     };
 
     ctx.loadView = path => views.getTemplateAsync(path);

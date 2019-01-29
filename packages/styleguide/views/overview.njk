@@ -1,7 +1,11 @@
-{% extends "page" %}
+{% setAsync 'foo' %}
+{{ renderPreview('asdasd') }}
+{% endset %}
+{{ foo }}
+{# {% extends "page" %}
 
 {% block page %}
 
 <h1>Welcome</h1>
 
-{% endblock %}
+{% endblock %} #}

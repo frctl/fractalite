@@ -46,7 +46,7 @@ const args = mri(process.argv.slice(2));
       const server = await app();
       const port = server.address().port;
 
-      logger.success(`Dev server started`);
+      logger.success(`Styleguide server started`);
       logger.log(stripIndent`
         ---
         Local:   ${cyan(`http://localhost:${port}`)}
@@ -56,7 +56,7 @@ const args = mri(process.argv.slice(2));
 
       process.on('SIGINT', () => {
         server.close();
-        logger.success('Dev server stopped');
+        logger.success('Styleguide server stopped');
         process.exit(0);
       });
 
@@ -68,7 +68,7 @@ const args = mri(process.argv.slice(2));
 
       await app();
 
-      logger.success(`Static site build complete.`);
+      logger.success(`Styleguide static build complete.`);
       // logger.log(stripIndent`
       //   ---
       //   * ${cyan(`${pages.length} pages`)}
