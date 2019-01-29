@@ -1,6 +1,0 @@
----
-label: 'Home'
----
-
-s
-sasd

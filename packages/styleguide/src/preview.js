@@ -1,6 +1,6 @@
 const { extname } = require('path');
 const { flatMap } = require('lodash');
-const { stack, resolveFileUrl, collect, rewriteUrls } = require('@fractalite/support/helpers');
+const { stack, resolveFileUrl, rewriteUrls } = require('@fractalite/support/helpers');
 const { defaultsDeep } = require('@fractalite/support/utils');
 const { File, Asset } = require('@fractalite/core');
 const { get } = require('lodash');
@@ -53,8 +53,7 @@ module.exports = function(opts = {}) {
     /*
      * Resolve preview asset URLs. Run after user-defined plugins.
      *
-     * Paths that begin with `./` are relative to the component,
-     * paths that begin with `@name/` are from other components,
+     * Paths that begin with `@name/` are component file url,
      * and other paths are assumed to be asset lookups.
      */
     app.compiler.use(async function({ components, assets }, next) {
@@ -88,28 +87,6 @@ module.exports = function(opts = {}) {
     });
 
     /*
-     * Compiler middleware to expand the relative urls into @component urls
-     * for later replacement in the post-render stage.
-     */
-    app.compiler.use(async function({ components, assets }, next) {
-      await next();
-      await map(components, async component => {
-        const view = collect(component.files).matchOne(
-          'basename',
-          app.adapter.opts.view,
-          component
-        );
-        if (view) {
-          let contents = await view.getContents();
-          contents = rewriteUrls(contents, function(path) {
-            return path.startsWith('./') ? path.replace(/^.\//, `@${component.name}/`) : path;
-          });
-          view.setContents(contents);
-        }
-      });
-    });
-
-    /*
      * Post-render adapter plugin to re-write url
      * attribute values in rendered output.
      */
@@ -117,10 +94,6 @@ module.exports = function(opts = {}) {
       return rewriteUrls(str, function(path) {
         if (path[0] === '@' && !extname(path)) {
           return app.url('preview', { variant: path.replace('@', '') });
-        }
-        const file = resolveFileUrl(path, component.files, api.files, api.assets);
-        if (file) {
-          return Asset.isAsset(file) ? app.url('asset', { asset: file }) : app.url('src', { file });
         }
       });
     });

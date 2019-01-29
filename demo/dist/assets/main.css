@@ -1,3 +1,30 @@
 * {
-  color: red;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+body {
+  padding: 20px;
+}
+
+.button {
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  background: #f4f4f4;
+  cursor: pointer;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+}
+.button__label {
+  font-size: 16px;
+}
+.button__icon {
+  width: 14px;
+}
+.button__label + .button__icon {
+  margin-left: 10px;
+}
+.button__icon + .button__label {
+  margin-left: 10px;
 }

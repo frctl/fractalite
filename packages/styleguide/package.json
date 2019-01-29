@@ -8,6 +8,7 @@
     "asyncro": "^3.0.0",
     "chokidar": "^2.0.4",
     "common-tags": "^1.8.0",
+    "flat": "^4.1.0",
     "fs-extra": "^7.0.0",
     "gray-matter": "^4.0.1",
     "highlightjs": "^9.12.0",

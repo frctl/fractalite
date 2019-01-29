@@ -429,10 +429,11 @@ h6 {
   border-bottom: 1px solid #ddd;
 }
 .fr-inspector__preview {
-  flex: 1 1 auto;
+  flex: 1 1 50%;
+  position: relative;
 }
 .fr-inspector__info {
-  flex: 1 1 50%;
+  flex: 1 1 auto;
   border-top: 1px solid #ddd;
 }
 
@@ -440,6 +441,11 @@ h6 {
   width: 100%;
   height: 100%;
   border: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .fr-page {

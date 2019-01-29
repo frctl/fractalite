@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 
 module.exports = {
-  title: 'Fractalite demo!',
+  title: 'Fractalite demo',
 
   adapter: require('../packages/adapter-nunjucks')(),
 
@@ -23,6 +23,13 @@ module.exports = {
       src: resolve(__dirname, './src/pages'),
       indexLabel: 'Overview'
     },
+    inspector: {
+      notes: {}
+    },
+    fileRefs: {
+      // relative: true
+    },
+    // relativeUrls: true,
     preview: {
       scripts: [],
       stylesheets: ['main.css']

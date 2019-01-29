@@ -74,7 +74,7 @@ const helpers = {
     });
   },
 
-  resolveFileUrl(url, localFiles, allFiles, assets) {
+  resolveFileUrl(url, localFiles, allFiles = [], assets = []) {
     if (url.startsWith('./')) {
       return localFiles.find(f => f.relative === url.replace(/^\.\//, ''));
     } else if (url.startsWith('@')) {

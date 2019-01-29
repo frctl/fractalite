@@ -11,11 +11,12 @@
   }
 
   &__preview {
-    flex: 1 1 auto;
+    flex: 1 1 50%;
+    position: relative;
   }
 
   &__info {
-    flex: 1 1 50%;
+    flex: 1 1 auto;
     border-top: 1px solid #ddd;
   }
 }
