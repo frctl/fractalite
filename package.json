@@ -12,7 +12,7 @@
     "lint:fix": "xo --fix",
     "test": "xo && lerna run test",
     "build:styleguide": "cd packages/styleguide && npm run build",
-    "demo": "cd demo && npm run start"
+    "demo": "npm run bootstrap && cd demo && npm run start"
   },
   "xo": {
     "extends": "@frctl/eslint-config-frctl",
