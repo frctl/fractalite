@@ -1,4 +1,5 @@
 const { isFunction } = require('lodash');
+const { toArray } = require('@fractalite/support/utils');
 const tags = require('@fractalite/support/html');
 const { html } = require('common-tags');
 
@@ -36,8 +37,8 @@ class Adapter {
     return this.getSourceString(component, ctx);
   }
 
-  async renderPreview(content, props) {
-    const { stylesheets = [], scripts = [], meta = {} } = props;
+  async generatePreview(content, opts, ctx) {
+    const { stylesheets = [], scripts = [], meta = {} } = opts;
     return html`
       <!DOCTYPE html>
       <html lang="${meta.lang || 'en'}" dir="${meta.dir || 'ltr'}">

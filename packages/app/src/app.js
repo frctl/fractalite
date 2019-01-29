@@ -15,22 +15,23 @@ module.exports = function(opts = {}) {
   let { compiler, adapter } = opts;
   const props = {};
   const middleware = [];
+  const state = {};
 
   const mode = getMode(opts.mode);
   const router = new Router();
   const static = new StaticRouter();
   const views = new Views({ cache: mode.cache });
   const emitter = new Emitter();
+  const api = new Api(state, adapter);
 
   async function app() {
-    const state = {};
     const koa = new Koa();
     const socket = new IO();
     socket.attach(koa);
 
     koa.silent = true;
     koa.context.mode = mode;
-    koa.context.api = new Api(state, adapter);
+    koa.context.api = app.api;
 
     middleware.forEach(mw => koa.use(mw));
 
@@ -64,7 +65,7 @@ module.exports = function(opts = {}) {
     return server;
   }
 
-  Object.assign(app, { router, static, views, emitter, adapter, compiler });
+  Object.assign(app, { router, static, views, emitter, adapter, compiler, api });
 
   app.mode = mode.mode;
 

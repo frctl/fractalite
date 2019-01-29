@@ -1,5 +1,5 @@
 const { extname } = require('path');
-const { flatMap } = require('lodash');
+const { flatMap, isFunction, pick } = require('lodash');
 const { stack, resolveFileUrl, rewriteUrls } = require('@fractalite/support/helpers');
 const { defaultsDeep, toArray } = require('@fractalite/support/utils');
 const { File, Asset } = require('@fractalite/core');
@@ -8,30 +8,46 @@ const { map } = require('asyncro');
 
 module.exports = function(opts = {}) {
   return function previewPlugin(app) {
-    app.set(
-      'preview.snippets.setHtml',
-      `
-      {% set html = '' %}
-      {% if variant.previewProps %}
-        {% asyncEach props in variant.previewProps %}
-          {% set props = mergeProps(variant, props) %}
-          {% set output = render(variant, props) | await %}
-          {% set html = html + output %}
-        {% endeach %}
-      {% else %}
-        {% set html = render(variant) | await %}
-      {% endif %}
-    `
-    );
-
     app.addRoute('preview', `/${opts.mount || 'preview'}/:variant(.+)`, async (ctx, next) => {
       return ctx.renderString(
-        opts.content ||
-          `
-        ${app.get('preview.snippets.setHtml')}
-        {{ renderPreview(html, component.preview) | await | safe }}
-        `
+        opts.content || `{{ renderPreview(variant, variant.previewProps) | await | safe }}`
       );
+    });
+
+    app.addViewGlobal('renderPreview', async (target, props = [], runtimeOpts = {}) => {
+      const { api } = app;
+      const items = await api.renderAll(target, props);
+      const { component, variant } = api.resolveComponent(target);
+
+      const componentOpts = component.preview || {};
+      const mergedOpts = defaultsDeep(
+        runtimeOpts,
+        componentOpts,
+        pick(opts, ['meta', 'wrap', 'wrapEach'])
+      );
+
+      // wrap rendered preview items
+      const { wrap, wrapEach } = mergedOpts;
+      const ctx = { component, variant };
+      let html = isFunction(wrapEach) ? items.map((...args) => wrapEach(...args, ctx)) : items;
+      html = html.join('\n');
+      html = isFunction(wrap) ? wrap(html, ctx) : html;
+
+      // resolve asset references for stylesheets and scripts
+      const lookupFile = path => {
+        const file = resolveFileUrl(path, component.files, api.files, api.assets);
+        if (file) {
+          return Asset.isAsset(file) ? app.url('asset', { asset: file }) : app.url('src', { file });
+        }
+        return path;
+      };
+
+      const stylesheets = stack(opts.stylesheets, componentOpts.stylesheets).map(lookupFile);
+      const scripts = stack(opts.scripts, componentOpts.scripts).map(lookupFile);
+
+      Object.assign(mergedOpts, { scripts, stylesheets });
+
+      return app.adapter.generatePreview(html, mergedOpts, { api });
     });
 
     // app.addBuildStep('preview', ({ requestRoute, api }) => {
@@ -50,60 +66,20 @@ module.exports = function(opts = {}) {
       });
     });
 
-    app.compiler.use(async function({ components, assets }, next) {
-      await next();
-      components.forEach(component => {
-        component.variants.forEach(variant => {
-          if (variant.config.previewProps) {
-            variant.previewProps = toArray(variant.config.previewProps);
-          }
-        });
-      });
-    });
-
     /*
-     * Middleware to read preview data from config files.
+     * Middleware to add preview data from config files.
      */
     app.compiler.use(async function({ components }) {
       await map(components, async component => {
-        const { config } = component;
-        const stylesheets = stack(opts.stylesheets || [], get(config, 'preview.stylesheets', []));
-        const scripts = stack(opts.scripts || [], get(config, 'preview.scripts', []));
-        component.preview = defaultsDeep(config.preview || {}, {
+        component.preview = defaultsDeep(component.config.preview || {}, {
           meta: {
             title: `${component.label} | Preview`
-          }
+          },
+          scripts: [],
+          stylesheets: []
         });
-        component.preview = Object.assign(component.preview, {
-          scripts,
-          stylesheets
-        });
-      });
-    });
-
-    /*
-     * Resolve preview asset URLs. Run after user-defined plugins.
-     *
-     * Paths that begin with `@name/` are component file url,
-     * and other paths are assumed to be asset lookups.
-     */
-    app.compiler.use(async function({ components, assets }, next) {
-      await next();
-      const allFiles = flatMap(components, c => c.files);
-      components.forEach(component => {
-        const { preview, files } = component;
-        const lookupFile = path => {
-          const file = resolveFileUrl(path, files, allFiles, assets);
-          if (file) {
-            return Asset.isAsset(file)
-              ? app.url('asset', { asset: file })
-              : app.url('src', { file });
-          }
-          return path;
-        };
-        Object.assign(component.preview, {
-          scripts: preview.scripts.map(lookupFile),
-          stylesheets: preview.stylesheets.map(lookupFile)
+        component.variants.forEach(variant => {
+          variant.previewProps = toArray(variant.config.previewProps || {});
         });
       });
     });

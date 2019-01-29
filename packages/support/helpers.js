@@ -1,6 +1,6 @@
 const { toArray, defaultsDeep, normalizePaths } = require('./utils');
 const { extname } = require('path');
-const { isString, isPlainObject, get, flatten } = require('lodash');
+const { isString, isPlainObject, get, flatten, compact } = require('lodash');
 const pupa = require('pupa');
 const multimatch = require('multimatch');
 const Collection = require('./collection');
@@ -45,7 +45,7 @@ const helpers = {
   },
 
   stack(...args) {
-    const values = flatten(args);
+    const values = compact(flatten(args));
     let result = [];
     for (const value of values) {
       if (!value) {

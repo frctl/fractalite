@@ -1,6 +1,8 @@
 const { isString } = require('lodash');
+const { map } = require('asyncro');
 const { deepCollect } = require('@fractalite/support/helpers');
 const { defaultsDeep } = require('@fractalite/support/utils');
+const Collection = require('@fractalite/support/collection');
 const Component = require('./entities/component');
 const Asset = require('./entities/asset');
 const Variant = require('./entities/variant');
@@ -90,26 +92,25 @@ module.exports = function(state, adapter) {
     return defaultsDeep(...targets.reverse());
   };
 
+  api.getSourceString = async target => {
+    const { component } = resolveComponentTarget(target, api.components);
+    return adapter.getSourceString(component, { api });
+  };
+
   api.render = async (target, props = {}) => {
     const { component, variant } = resolveComponentTarget(target, api.components);
     const mergedProps = api.mergeProps(variant, props);
     return adapter.render(component, mergedProps, { variant, api });
   };
 
-  api.getSourceString = async target => {
-    const { component } = resolveComponentTarget(target, api.components);
-    return adapter.getSourceString(component, { api });
-  };
-
-  api.renderPreview = async (content, opts = {}) => {
-    if (Component.isComponent(content) || Variant.isVariant(content)) {
-      content = api.render(content);
+  api.renderAll = async (target, props = []) => {
+    if (Array.isArray(props) || Collection.isCollection(props)) {
+      return map(props, p => api.render(target, p));
     }
-    content = await content;
-    return adapter.renderPreview(content, opts, { api });
+    return [await api.render(target, props)];
   };
 
-  function resolveTarget(target) {}
+  api.resolveComponent = target => resolveComponentTarget(target, api.components);
 
   return api;
 };

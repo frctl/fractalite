@@ -30,5 +30,9 @@ module.exports = [
   {
     key: 'opts.inspector.html',
     handler: require('./inspector-html')
+  },
+  {
+    key: 'opts.inspector.props',
+    handler: require('./inspector-props')
   }
 ];

@@ -7,7 +7,15 @@ module.exports = {
         modifier: 'action',
         icon: './arrow-right.svg',
         iconPos: 'after'
-      }
+      },
+      previewProps: [
+        {
+          label: 'Go forward'
+        },
+        {
+          label: 'This way'
+        }
+      ]
     },
     {
       name: 'prev',
@@ -26,5 +34,11 @@ module.exports = {
         }
       ]
     }
-  ]
+  ],
+
+  preview: {
+    wrapEach(html) {
+      return `<div style="margin-bottom: 10px">${html}</div>`;
+    }
+  }
 };

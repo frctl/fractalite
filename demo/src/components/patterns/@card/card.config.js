@@ -4,7 +4,8 @@ module.exports = {
       name: 'Call to action',
       props: {
         title: 'Sign up now',
-        content: 'Click the button below to do this thing'
+        content: 'Click the button below to do this thing',
+        button: 'button/next'
       }
     }
   ]
