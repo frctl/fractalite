@@ -1,0 +1,25 @@
+.button {
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  background: #f4f4f4;
+  cursor: pointer;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+
+  &__label {
+    font-size: 16px;
+  }
+
+  &__icon {
+    width: 14px;
+  }
+
+  &__label + &__icon {
+    margin-left: 10px;
+  }
+
+  &__icon + &__label {
+    margin-left: 10px;
+  }
+}

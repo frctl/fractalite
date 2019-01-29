@@ -1,0 +1,11 @@
+* {
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+body {
+  padding: 20px;
+}
+
+@import '../components/units/@button/button.scss';
+@import '../components/patterns/@card/card.scss';

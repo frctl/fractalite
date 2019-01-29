@@ -1,0 +1,5 @@
+<button type="button" class="button{% if modifier %} button--{{ modifier }}{% endif %}">
+  {% if icon and iconPos == 'before' %}<img src="{{ icon }}" class="button__icon">{% endif %}
+  <span class="button__label">{{ label }}</span>
+  {% if icon and iconPos == 'after' %}<img src="{{ icon }}" class="button__icon">{% endif %}
+</button>
