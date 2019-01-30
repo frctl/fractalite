@@ -1,12 +1,10 @@
 const { resolve } = require('path');
-const { forEach, isArray, get } = require('lodash');
-const { map } = require('asyncro');
+const { forEach, get } = require('lodash');
 const App = require('@fractalite/app');
-const { File, Asset } = require('@fractalite/core');
 const corePlugins = require('./src/plugins');
 
 module.exports = function({ compiler, adapter, mode, ...config }) {
-  const app = App({ compiler, adapter, mode });
+  const app = new App({ compiler, adapter, mode });
 
   app.props({
     title: config.title || 'Styleguide',
@@ -28,7 +26,7 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
     }
   });
 
-  app.addRoute('inspect', '/inspect/:variant(.+)', async (ctx, next) => {
+  app.addRoute('inspect', '/inspect/:variant(.+)', (ctx, next) => {
     return ctx.render('inspector');
   });
 
@@ -36,13 +34,13 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
     app.api.variants.forEach(variant => requestRoute('detail', { variant }));
   });
 
-  app.addRoute('asset', '/assets/:asset(.+)', async ctx => ctx.sendFile(ctx.asset));
+  app.addRoute('asset', '/assets/:asset(.+)', ctx => ctx.sendFile(ctx.asset));
 
   app.addBuildStep('asset', ({ copyFile, api }) => {
     app.api.assets.forEach(asset => copyFile(asset.path, app.url('asset', { asset })));
   });
 
-  app.addRoute('src', '/src/:file(.+)', async ctx => ctx.sendFile(ctx.file));
+  app.addRoute('src', '/src/:file(.+)', ctx => ctx.sendFile(ctx.file));
 
   app.addBuildStep('src', ({ copyFile, api }) => {
     app.api.files.forEach(file => copyFile(file.path, app.url('src', { file })));
@@ -54,7 +52,7 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
   /*
    * Compiler middleware to add url properties to entities
    */
-  app.compiler.use(async function({ components, assets }, next) {
+  app.compiler.use(async ({ components, assets }, next) => {
     await next();
     components.forEach(component => {
       component.files.forEach(file => {

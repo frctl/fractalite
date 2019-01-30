@@ -5,7 +5,7 @@ module.exports = function compose(middleware) {
   }
 
   return function(context, next) {
-    // last called middleware #
+    // Last called middleware #
     let index = -1;
     return dispatch(0);
     async function dispatch(i) {
@@ -16,8 +16,8 @@ module.exports = function compose(middleware) {
       if (!fn) return Promise.resolve(context);
       try {
         let called = false;
-        let trigger = dispatch.bind(null, i + 1);
-        const rawResult = fn(context, function() {
+        const trigger = dispatch.bind(null, i + 1);
+        const rawResult = fn(context, () => {
           called = true;
           return trigger();
         });

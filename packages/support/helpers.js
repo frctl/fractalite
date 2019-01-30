@@ -1,10 +1,7 @@
-const { toArray, defaultsDeep, normalizePaths } = require('./utils');
-const { extname } = require('path');
 const { isString, isPlainObject, get, flatten, compact } = require('lodash');
-const pupa = require('pupa');
-const multimatch = require('multimatch');
-const Collection = require('./collection');
 const attributes = require('html-url-attributes');
+const Collection = require('./collection');
+const { toArray, defaultsDeep, normalizePaths } = require('./utils');
 
 const urlAttrs = new RegExp(
   // eslint-disable-next-line no-useless-escape
@@ -33,7 +30,6 @@ const helpers = {
   },
 
   normalizeSrc(src, defaults = {}) {
-    const resolvedSrc = {};
     if (isString(src) || Array.isArray(src)) {
       src = {
         paths: toArray(src)
@@ -77,13 +73,14 @@ const helpers = {
   resolveFileUrl(url, localFiles, allFiles = [], assets = []) {
     if (url.startsWith('./')) {
       return localFiles.find(f => f.relative === url.replace(/^\.\//, ''));
-    } else if (url.startsWith('@')) {
+    }
+    if (url.startsWith('@')) {
       return allFiles.find(f => f.handle === url.replace(/^@/, ''));
     }
     return assets.find(a => a.handle === url);
   }
 
-  // matchFile(files, matcher, props = {}) {
+  // MatchFile(files, matcher, props = {}) {
   //   matcher = [].concat(matcher).map(match => pupa(match, props));
   //   return files.find(f => {
   //     return multimatch(f.path, matcher, { matchBase: true }).length;

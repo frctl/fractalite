@@ -1,4 +1,4 @@
-const { stat, readFile } = require('fs-extra');
+const { readFile } = require('fs-extra');
 const Entity = require('./entity');
 
 class File extends Entity {

@@ -1,6 +1,4 @@
 const { SafeString } = require('nunjucks').runtime;
-const { defaultsDeep } = require('@fractalite/support/utils');
-const { parseHandle } = require('@fractalite/support/helpers');
 
 module.exports = class ComponentExtension {
   constructor() {

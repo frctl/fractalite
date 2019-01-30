@@ -1,1 +1,1 @@
-The button component.
+The standard button component.

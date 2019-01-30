@@ -19,7 +19,7 @@ module.exports = function(opts = {}) {
       content: opts.content || content
     });
 
-    app.compiler.use(async function({ components }) {
+    app.compiler.use(async ({ components }) => {
       await map(components, async component => {
         const readme = component.files.find(file => file.basename.toLowerCase() === filename);
         if (readme) {

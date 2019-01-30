@@ -92,12 +92,12 @@ module.exports = function(state, adapter) {
     return defaultsDeep(...targets.reverse());
   };
 
-  api.getSourceString = async target => {
+  api.getSourceString = target => {
     const { component } = resolveComponentTarget(target, api.components);
     return adapter.getSourceString(component, { api });
   };
 
-  api.render = async (target, props = {}) => {
+  api.render = (target, props = {}) => {
     const { component, variant } = resolveComponentTarget(target, api.components);
     const mergedProps = api.mergeProps(variant, props);
     return adapter.render(component, mergedProps, { variant, api });
@@ -124,7 +124,7 @@ function resolveComponentTarget(target, components) {
     if (!found) {
       throw new Error(`Could not resolve target '${target}'`);
     }
-    target = found; // either a component or a variant
+    target = found; // Either a component or a variant
   }
   if (Variant.isVariant(target)) {
     variant = target;

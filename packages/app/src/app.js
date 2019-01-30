@@ -1,4 +1,4 @@
-const { omit, assign, cloneDeep, get, set, mapValues } = require('lodash');
+const { assign, cloneDeep, get, set, mapValues } = require('lodash');
 const getPort = require('get-port');
 const Koa = require('koa');
 const compress = require('koa-compress');
@@ -7,19 +7,19 @@ const Emitter = require('@fractalite/support/emitter');
 const { Api } = require('@fractalite/core');
 const { permalinkify, defaultsDeep } = require('@fractalite/support/utils');
 const Router = require('./router');
-const StaticRouter = require('./static-router');
+const Resources = require('./resources');
 const Views = require('./views');
 const getMode = require('./mode');
 
 module.exports = function(opts = {}) {
-  let { compiler, adapter } = opts;
+  const { compiler, adapter } = opts;
   const props = {};
   const middleware = [];
   const state = {};
 
   const mode = getMode(opts.mode);
   const router = new Router();
-  const static = new StaticRouter();
+  const resources = new Resources();
   const views = new Views({ cache: mode.cache });
   const emitter = new Emitter();
   const api = new Api(state, adapter);
@@ -36,13 +36,13 @@ module.exports = function(opts = {}) {
     middleware.forEach(mw => koa.use(mw));
 
     koa.use(compress());
-    koa.use(static.routes());
+    koa.use(resources.routes());
     koa.use(router.errors());
     koa.use(router.routes());
     koa.use(router.allowedMethods());
 
-    const server = await new Promise(async (resolve, reject) => {
-      const port = await getPort({ port: mode.port });
+    const port = await getPort({ port: mode.port });
+    const server = await new Promise((resolve, reject) => {
       const httpServer = koa.listen(port, err => (err ? reject(err) : resolve(httpServer)));
     });
 
@@ -65,7 +65,7 @@ module.exports = function(opts = {}) {
     return server;
   }
 
-  Object.assign(app, { router, static, views, emitter, adapter, compiler, api });
+  Object.assign(app, { router, resources, views, emitter, adapter, compiler, api });
 
   app.mode = mode.mode;
 
@@ -79,7 +79,7 @@ module.exports = function(opts = {}) {
   app.push = (key, value) => {
     const current = app.get(key, []);
     if (!Array.isArray(current)) {
-      throw new Error(`${key} is not an array`);
+      throw new TypeError(`${key} is not an array`);
     }
     current.push(value);
     return app.set(key, current);
@@ -99,18 +99,18 @@ module.exports = function(opts = {}) {
   };
 
   app.addStaticDir = (name, path, mount) => {
-    static.add(name, path, mount);
+    resources.add(name, path, mount);
     return app;
   };
 
   app.addRoute = (name, url, handler, builder) => {
     router.add({ name, url, handler });
-    // web.addBuildStep(name, builder || (({ requestRoute }) => requestRoute(name)));
+    // Web.addBuildStep(name, builder || (({ requestRoute }) => requestRoute(name)));
     return app;
   };
 
   app.addBuildStep = (...args) => {
-    // web.addBuildStep(...args);
+    // Web.addBuildStep(...args);
     return app;
   };
 
@@ -128,8 +128,8 @@ module.exports = function(opts = {}) {
     return permalinkify(decodeURIComponent(router.url(name, stringParams)), mode);
   };
 
-  app.staticUrl = (name, path) => {
-    const url = decodeURIComponent(static.url(name, path));
+  app.resourceUrl = (name, path) => {
+    const url = decodeURIComponent(resources.url(name, path));
     return permalinkify(url, mode);
   };
 

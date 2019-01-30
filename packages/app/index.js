@@ -5,20 +5,20 @@ const App = require('./src/app');
 const RenderExtension = require('./src/render-extension');
 
 module.exports = function(opts = {}) {
-  const app = App(opts);
-  const { router, views, api } = app;
+  const app = new App(opts);
+  const { router, views } = app;
 
   /*
    * Nunjucks rendering middleware
    */
-  app.use(async function(ctx, next) {
-    ctx.response.render = ctx.render = async function(path, locals = {}, opts) {
+  app.use((ctx, next) => {
+    ctx.response.render = async function(path, locals = {}, opts) {
       const state = Object.assign({}, ctx.state, locals);
       ctx.type = 'text/html';
       ctx.body = await views.renderAsync(path, state, opts);
     };
 
-    ctx.response.renderString = ctx.renderString = async function(str, locals = {}, opts) {
+    ctx.response.renderString = async function(str, locals = {}, opts) {
       const state = Object.assign({}, ctx.state, locals);
       ctx.type = 'text/html';
       try {
@@ -31,14 +31,17 @@ module.exports = function(opts = {}) {
 
     ctx.loadView = path => views.getTemplateAsync(path);
 
+    ctx.render = ctx.response.render;
+    ctx.renderString = ctx.response.renderString;
+
     return next();
   });
 
   /*
    * File sending middleware
    */
-  app.use(async function(ctx, next) {
-    ctx.response.sendFile = ctx.sendFile = async function(file) {
+  app.use((ctx, next) => {
+    ctx.response.sendFile = function(file) {
       if (!File.isFile(file)) {
         throw new Error('Only Files can be sent');
       }
@@ -48,6 +51,8 @@ module.exports = function(opts = {}) {
       ctx.type = ctx.response.type || 'text/plain';
       ctx.body = fs.createReadStream(file.path);
     };
+
+    ctx.sendFile = ctx.response.sendFile;
     return next();
   });
 
@@ -55,17 +60,20 @@ module.exports = function(opts = {}) {
    * Middleware to add useful properties to state object
    * so that they will be available to templates.
    */
-  app.use(async (ctx, next) => {
+  app.use((ctx, next) => {
     ctx.state.api = ctx.api;
     ctx.state.mode = ctx.mode;
+    ctx.state.error = ctx.error;
     ctx.state.request = {
       params: ctx.params,
       path: ctx.path,
       url: ctx.url,
       route: ctx.route
     };
-    // all api methods are added as top-level helpers
-    Object.keys(ctx.api).forEach(key => (ctx.state[key] = ctx.api[key]));
+    // All api methods are added as top-level helpers
+    Object.keys(ctx.api).forEach(key => {
+      ctx.state[key] = ctx.api[key];
+    });
     return next();
   });
 
@@ -131,7 +139,7 @@ module.exports = function(opts = {}) {
    */
   views.addExtension('render', new RenderExtension());
   views.addGlobal('url', (name, params) => app.url(name, params));
-  views.addGlobal('staticUrl', (name, path) => app.staticUrl(name, path));
+  views.addGlobal('resourceUrl', (name, path) => app.resourceUrl(name, path));
   views.addFilter('stack', stack);
 
   return app;

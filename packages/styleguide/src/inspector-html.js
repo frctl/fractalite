@@ -1,6 +1,3 @@
-const { readFile } = require('fs-extra');
-const { map } = require('asyncro');
-
 module.exports = function(opts = {}) {
   return function inspectorHTMLPlugin(app) {
     if (opts === false) return;

@@ -1,5 +1,3 @@
-const { isFunction } = require('lodash');
-const { toArray } = require('@fractalite/support/utils');
 const tags = require('@fractalite/support/html');
 const { html } = require('common-tags');
 
@@ -28,6 +26,7 @@ class Adapter {
   async render(component, props, ctx) {
     let html = await this.renderComponent(component, props, ctx);
     for (const formatter of this.formatters) {
+      // eslint-disable-next-line no-await-in-loop
       html = await formatter(html, { component, ...ctx });
     }
     return html;
@@ -37,7 +36,7 @@ class Adapter {
     return this.getSourceString(component, ctx);
   }
 
-  async generatePreview(content, opts, ctx) {
+  generatePreview(content, opts, ctx) {
     const { stylesheets = [], scripts = [], meta = {} } = opts;
     return html`
       <!DOCTYPE html>

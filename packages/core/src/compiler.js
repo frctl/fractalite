@@ -68,10 +68,10 @@ module.exports = function(config = {}) {
 
   function watchHandler(parseEvents) {
     let lastResult = null;
-    return debounce(async function(evt, path) {
+    return debounce(async (evt, path) => {
       if (['addDir', 'unlinkDir'].includes(evt)) return; // ignore these events
       try {
-        // only re-parse for 'primary' events, otherwise just notify of changes
+        // Only re-parse for 'primary' events, otherwise just notify of changes
         lastResult = parseEvents.includes(evt) ? await app.parse() : lastResult;
         watchCallbacks.forEach(cb => cb(null, lastResult));
       } catch (err) {

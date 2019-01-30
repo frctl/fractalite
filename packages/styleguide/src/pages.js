@@ -1,5 +1,5 @@
 const { relative, parse } = require('path');
-const { collect, normalizeSrc } = require('@fractalite/support/helpers');
+const { collect } = require('@fractalite/support/helpers');
 const { titlize } = require('@fractalite/support/utils');
 const { read } = require('@fractalite/core');
 const { watch } = require('chokidar');
@@ -23,15 +23,14 @@ module.exports = function(opts = {}) {
       return next();
     });
 
-    app.addRoute('page', ':path(.*)', async (ctx, next) => {
+    app.addRoute('page', ':path(.*)', (ctx, next) => {
       const page = pages.find({ url: ctx.params.path });
       if (page) {
         ctx.page = page;
         if (page.view) {
           return ctx.render(page.view, { page });
-        } else {
-          ctx.body = page.content;
         }
+        ctx.body = page.content;
       }
       return next();
     });
@@ -42,7 +41,7 @@ module.exports = function(opts = {}) {
 
     if (app.mode === 'develop') {
       await setPages();
-      watch(opts.src, { ignoreInitial: true }).on('all', async function() {
+      watch(opts.src, { ignoreInitial: true }).on('all', async () => {
         await setPages();
         app.emit('updated');
       });
@@ -59,7 +58,7 @@ module.exports = function(opts = {}) {
             const content = await file.getContents();
             const parsed = matter(Object.assign({ content }, opts.frontmatter));
             const rel = slash(relative(opts.src, file.path));
-            const { ext, base, name } = parse(file.path);
+            const { ext } = parse(file.path);
             const { data } = parsed;
 
             const page = Object.assign({}, data);

@@ -1,12 +1,11 @@
 const { isFunction, isPlainObject } = require('lodash');
-const Collection = require('@fractalite/support/collection');
 const { titlize } = require('@fractalite/support/utils');
-const { Variant, Component, Asset, File } = require('@fractalite/core');
+const { Variant, Component, File } = require('@fractalite/core');
 
 module.exports = function(opts = {}) {
   return function navigationPlugin(app) {
     const nav = {};
-    let items = opts.items || [];
+    const items = opts.items || [];
 
     Object.defineProperty(nav, 'items', {
       get() {

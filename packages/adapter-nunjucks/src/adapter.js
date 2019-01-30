@@ -13,7 +13,7 @@ class NunjucksAdapter extends Adapter {
   }
 
   renderString(str, props, ctx) {
-    this.env.api = ctx.api; // for use in extensions/filters etc
+    this.env.api = ctx.api; // For use in extensions/filters etc
 
     /*
      * Empty views array and then replace with

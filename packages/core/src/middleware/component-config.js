@@ -47,11 +47,11 @@ module.exports = function(opts = {}) {
       let config = searchResult ? searchResult.config : {};
       if (searchResult) {
         component.configFile = component.files.find(file => file.path === searchResult.filepath);
-        if (typeof config === 'function') {
+        if (isFunction(config)) {
           config = await config(ctx);
         }
       } else {
-        // this.debug(`No config file found for component '${component.root.relative}'`);
+        // This.debug(`No config file found for component '${component.root.relative}'`);
       }
       config = defaultsDeep(config, opts.defaults || {});
       component.config = deepFreeze(opts.process(config));

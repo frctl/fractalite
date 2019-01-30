@@ -19,7 +19,7 @@ module.exports = {
 
   opts: {
     nav: {
-      items: function({ components, assets }) {
+      items: function({ components, pages }) {
         return [
           {
             label: 'Overview',
@@ -30,8 +30,8 @@ module.exports = {
             children: components.toTree()
           },
           {
-            label: 'Assets',
-            children: []
+            label: 'Pages',
+            children: pages.toTree()
           }
         ];
       }

@@ -1,7 +1,7 @@
 const { normalize } = require('path');
 const { Environment } = require('nunjucks');
 const { SafeString } = require('nunjucks').runtime;
-const { each, merge, compact, isPlainObject } = require('lodash');
+const { each, merge, isPlainObject } = require('lodash');
 const ViewLoader = require('./views-loader');
 
 const defaults = {

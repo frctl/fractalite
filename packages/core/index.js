@@ -5,7 +5,7 @@ const Adapter = require('./src/adapter');
 const coreMiddleware = require('./src/middleware');
 
 function init(config = {}) {
-  const compiler = Compiler(config);
+  const compiler = new Compiler(config);
 
   coreMiddleware.forEach(({ key, handler }) => {
     const opts = get(config, key, {});
@@ -40,5 +40,6 @@ module.exports.Asset = require('./src/entities/asset');
 module.exports.Component = require('./src/entities/component');
 module.exports.Variant = require('./src/entities/variant');
 module.exports.Entity = require('./src/entities/entity');
+
 module.exports.middleware = coreMiddleware;
 module.exports.read = require('./src/read');

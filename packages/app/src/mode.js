@@ -22,7 +22,7 @@ module.exports = function(opts) {
   ];
 
   opts = typeof opts === 'string' ? { opts } : opts;
-  let mode = modes.find(m => m.mode === opts.mode);
+  const mode = modes.find(m => m.mode === opts.mode);
   if (!mode) {
     throw new Error(`Invalid mode '${opts.mode}'`);
   }

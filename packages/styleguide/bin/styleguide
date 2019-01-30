@@ -92,6 +92,9 @@ const args = mri(process.argv.slice(2));
 })();
 
 function onError(err) {
+  if (err.message.indexOf('ECONNRESET') >= 0) {
+    return;
+  }
   if (err.status === 404) {
     logger.warn(`${err.message} ${dim(`[${err.path}]`)}`);
   } else {

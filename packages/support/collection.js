@@ -12,8 +12,7 @@ const {
   uniq,
   uniqBy,
   cloneDeep,
-  flatMap,
-  trim
+  flatMap
 } = require('lodash');
 
 const iter = (...args) => iteratee(args.length === 2 ? [...args] : args[0]);
@@ -119,7 +118,7 @@ class Collection {
 
   matchOne(...args) {
     const matches = this.match(...args);
-    return matches.length ? matches.first() : null;
+    return matches.length > 0 ? matches.first() : null;
   }
 
   filter(...args) {

@@ -1,5 +1,4 @@
-const { find, uniq, clone } = require('lodash');
-const { toArray } = require('@fractalite/support/utils');
+const { find } = require('lodash');
 const Router = require('koa-router');
 const pathToRegExp = require('path-to-regexp');
 
@@ -8,19 +7,19 @@ module.exports = function() {
   const errorHandlers = [];
 
   router.add = function(route) {
-    let { name, url, handler } = route;
+    const { name, url, handler } = route;
 
-    // decorate the callback
-    const callback = async function(ctx, next) {
+    // Decorate the callback
+    const callback = function(ctx, next) {
       ctx.route = route;
       return handler ? handler(ctx, next) : next();
     };
 
     const existingRoute = router.route(name);
     if (existingRoute) {
-      // if the route has already been created,
+      // If the route has already been created,
       // override any specified properties
-      const { path, stack, opts } = existingRoute;
+      const { stack, opts } = existingRoute;
       if (url) {
         existingRoute.path = url;
         existingRoute.paramNames = [];
@@ -28,7 +27,7 @@ module.exports = function() {
       }
       existingRoute.stack = handler ? [callback] : stack;
     } else if (url) {
-      router.get(name, url, callback); // add route to the router
+      router.get(name, url, callback); // Add route to the router
     } else {
       errorHandlers.push({ name, callback });
     }
@@ -49,10 +48,10 @@ module.exports = function() {
           ctx.throw(404, 'Page not found');
         }
       } catch (err) {
-        ctx.state.error = ctx.error = err;
+        ctx.error = err;
         err.path = ctx.path;
         ctx.status = err.status || 500;
-        handler = getErrorHandler(ctx.status);
+        const handler = getErrorHandler(ctx.status);
         if (handler) {
           await handler(ctx, next);
           ctx.body = ctx.body || err.message;

@@ -1,4 +1,4 @@
-const { join, relative, isAbsolute } = require('path');
+const { join, relative } = require('path');
 const { flatten } = require('lodash');
 const serve = require('koa-static');
 const mount = require('koa-mount');

@@ -4,9 +4,7 @@ const globby = require('globby');
 const globBase = require('glob-base');
 const { stat } = require('fs-extra');
 const slash = require('slash');
-const pupa = require('pupa');
 const { map } = require('asyncro');
-const multimatch = require('multimatch');
 const { normalizeName, toArray } = require('@fractalite/support/utils');
 const File = require('./entities/file');
 
@@ -31,7 +29,7 @@ async function toFile(path, root) {
   return new File({
     root,
     relative: relative(root, path),
-    path: path,
+    path,
     basename: base,
     dirname: dirname(path),
     extname: ext,

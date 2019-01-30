@@ -1,4 +1,4 @@
-const { File, Asset } = require('@fractalite/core');
+const { Asset } = require('@fractalite/core');
 const { mapValues } = require('lodash');
 const { resolveFileUrl, collect, rewriteUrls } = require('@fractalite/support/helpers');
 const flatten = require('flat');
@@ -12,7 +12,7 @@ module.exports = function(opts = {}) {
       /*
        * Compiler middleware to expand the relative urls in view templates
        */
-      app.compiler.use(async function({ components, assets }, next) {
+      app.compiler.use(async ({ components, assets }, next) => {
         await next();
         await map(components, async component => {
           const view = collect(component.files).matchOne(
@@ -22,10 +22,10 @@ module.exports = function(opts = {}) {
           );
           if (view) {
             let contents = await view.getContents();
-            contents = rewriteUrls(contents, function(path) {
+            contents = rewriteUrls(contents, path => {
               if (path.startsWith('./')) {
                 const file = resolveFileUrl(path, component.files);
-                return file ? path.replace(/^.\//, `@${component.name}/`) : value;
+                return file ? path.replace(/^.\//, `@${component.name}/`) : null;
               }
             });
             view.setContents(contents);
@@ -36,7 +36,7 @@ module.exports = function(opts = {}) {
       /*
        * Compiler middleware to expand any relative urls in variant prop values
        */
-      app.compiler.use(async function({ components, assets }, next) {
+      app.compiler.use(async ({ components, assets }, next) => {
         await next();
         components.forEach(component => {
           component.variants.forEach(variant => {
@@ -58,8 +58,8 @@ module.exports = function(opts = {}) {
      * Post-render adapter plugin to re-write url
      * attribute values in rendered output.
      */
-    app.adapter.use(function(str, { component, api }) {
-      return rewriteUrls(str, function(path) {
+    app.adapter.use((str, { component, api }) => {
+      return rewriteUrls(str, path => {
         const file = resolveFileUrl(path, component.files, api.files, api.assets);
         if (opts.relative === false && path.startsWith('./')) {
           return;

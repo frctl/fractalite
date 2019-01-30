@@ -1,9 +1,9 @@
-const { titlize, slugify, toArray } = require('@fractalite/support/utils');
+const { titlize, slugify } = require('@fractalite/support/utils');
 const deepFreeze = require('deep-freeze');
 const Variant = require('../entities/variant');
 
 module.exports = function() {
-  return async function componentVariants({ components }) {
+  return function componentVariants({ components }) {
     components.forEach(component => {
       const variants = component.config.variants || [{ name: 'default' }];
       let counter = 0;
