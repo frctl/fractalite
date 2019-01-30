@@ -79,6 +79,7 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
       await app.addPlugin(plugin);
     } catch (err) {
       console.log(err);
+      throw err;
     }
   });
 

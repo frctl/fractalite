@@ -1,10 +1,12 @@
-{% macro navTree(items) %}
-<ul>
+{% macro navTree(items, depth = 1) %}
+<ul class="fr-nav__items" data-depth="{{ depth }}">
 {% for item in items %}
   <li>
-    <span>{{ item.label }}</span>
-    {% if item.children %}
-      {{ navTree(item.children) }}
+    {% if item.url %}<a href="{{ item.url }}">{% else %}<span>{% endif -%}
+    {{ item.label }}
+    {%- if item.url %}</a>{% else %}</span>{% endif %}
+    {% if item.children and item.children.length %}
+      {{ navTree(item.children, depth + 1) }}
     {% endif %}
   </li>
 {% endfor %}
@@ -15,31 +17,4 @@
 
   {{ navTree(nav.items) }}
 
-
-
-  {# <div class="fr-nav__section"> #}
-
-    {# <h4>Components</h4>
-    <ul>
-      {% for component in components.sortBy('name') %}
-        <li>
-          <span>{{ component.label }}</span>
-          <ul>
-            {% for variant in component.variants.sortBy('name') %}
-            <li><a href="{{ variant.url }}">{{ variant.label }}</a></li>
-            {% endfor %}
-          </ul>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
-
-  <div class="fr-nav__section">
-    <h4>Pages</h4>
-    <ul>
-      {% for page in pages.sortBy('basename') %}
-      <li><a href="{{ page.url }}">{{ page.label }}</a></li>
-      {% endfor %}
-    </ul>
-  </div> #}
 </div>

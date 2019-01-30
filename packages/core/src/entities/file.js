@@ -17,6 +17,10 @@ class File extends Entity {
     return this._handle || this.relative;
   }
 
+  get treePath() {
+    return this.relative;
+  }
+
   get isFile() {
     return true;
   }

@@ -8,6 +8,10 @@ class Asset extends File {
   static isAsset(item) {
     return item instanceof Asset;
   }
+
+  get treePath() {
+    return this.relative;
+  }
 }
 
 module.exports = Asset;

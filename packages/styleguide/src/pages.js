@@ -94,6 +94,8 @@ module.exports = function(opts = {}) {
       );
 
       app.addViewGlobal('pages', pages);
+      app.api.pages = pages;
+      app.api.getPages = () => pages;
     }
   };
 };

@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 
 module.exports = {
-  title: 'Fractalite demo',
+  title: 'Component Styleguide',
 
   adapter: require('../packages/adapter-nunjucks')(),
 
@@ -19,22 +19,22 @@ module.exports = {
 
   opts: {
     nav: {
-      items: [
-        {
-          label: 'Overview',
-          url: '/'
-        },
-        {
-          label: 'Components',
-          url: '/components',
-          children: [
-            {
-              label: 'button',
-              url: 'button/next'
-            }
-          ]
-        }
-      ]
+      items: function({ components, assets }) {
+        return [
+          {
+            label: 'Overview',
+            url: '/'
+          },
+          {
+            label: 'Components',
+            children: components.toTree()
+          },
+          {
+            label: 'Assets',
+            children: []
+          }
+        ];
+      }
     },
     // notes: false,
     pages: {

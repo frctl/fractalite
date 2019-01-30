@@ -1,3 +1,4 @@
+const { dirname } = require('path');
 const pupa = require('pupa');
 const multimatch = require('multimatch');
 const {
@@ -11,7 +12,8 @@ const {
   uniq,
   uniqBy,
   cloneDeep,
-  flatMap
+  flatMap,
+  trim
 } = require('lodash');
 
 const iter = (...args) => iteratee(args.length === 2 ? [...args] : args[0]);
@@ -182,6 +184,46 @@ class Collection {
 
   clone() {
     return this._new(this.toArray().map(item => cloneDeep(item)));
+  }
+
+  toTree(pathProp) {
+    const nodes = this.flatMapToCollection(item => {
+      const path = item.treePath || item[pathProp] || '';
+      const nodes = makeNodes(path.trim('/'));
+      nodes[nodes.length - 1].node = item;
+      return nodes;
+    }).uniq('path');
+
+    return nodes.filter(node => node.depth === 1).map(node => {
+      node.children = getChildren(node, nodes);
+      return node;
+    });
+
+    function getChildren(parent, nodes) {
+      const children = nodes.filter(node => {
+        return node.depth === parent.depth + 1 && dirname(node.path) === parent.path;
+      });
+      for (const child of children) {
+        child.children = getChildren(child, nodes);
+      }
+      return children;
+    }
+
+    function makeNodes(path = '') {
+      const nodes = [];
+      let tmpPath;
+      const segments = [];
+      for (const segment of path.split('/')) {
+        tmpPath = tmpPath ? `${tmpPath}/${segment}` : segment;
+        segments.push(segment);
+        nodes.push({
+          name: segment,
+          path: tmpPath,
+          depth: segments.length
+        });
+      }
+      return nodes;
+    }
   }
 
   toArray() {

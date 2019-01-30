@@ -12,6 +12,10 @@ class Component extends Entity {
     return this._handle || this.name;
   }
 
+  get treePath() {
+    return this.relative;
+  }
+
   get isComponent() {
     return true;
   }

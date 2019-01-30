@@ -8,16 +8,16 @@ module.exports = [
     handler: require('./preview')
   },
   {
+    key: 'opts.pages',
+    handler: require('./pages')
+  },
+  {
     key: 'opts.meta',
     handler: require('./metadata')
   },
   {
     key: 'opts.fileRefs',
     handler: require('./file-refs')
-  },
-  {
-    key: 'opts.pages',
-    handler: require('./pages')
   },
   {
     key: 'opts.nav',
