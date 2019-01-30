@@ -20,6 +20,10 @@ module.exports = [
     handler: require('./pages')
   },
   {
+    key: 'opts.nav',
+    handler: require('./navigation')
+  },
+  {
     key: 'opts.inspector.notes',
     handler: require('./inspector-notes')
   },

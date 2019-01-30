@@ -18,6 +18,24 @@ module.exports = {
   // build: {},
 
   opts: {
+    nav: {
+      items: [
+        {
+          label: 'Overview',
+          url: '/'
+        },
+        {
+          label: 'Components',
+          url: '/components',
+          children: [
+            {
+              label: 'button',
+              url: 'button/next'
+            }
+          ]
+        }
+      ]
+    },
     // notes: false,
     pages: {
       src: resolve(__dirname, './src/pages'),
