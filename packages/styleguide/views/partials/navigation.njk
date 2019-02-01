@@ -1,12 +1,14 @@
-{% macro navTree(items, depth = 1) %}
-<ul class="fr-nav__items" data-depth="{{ depth }}">
+{% macro navTree(items, level = 1) %}
+<ul class="fr-nav__items" data-level="{{ level }}">
 {% for item in items %}
   <li>
-    {% if item.url %}<a href="{{ item.url }}">{% else %}<span>{% endif -%}
-    {{ item.label }}
-    {%- if item.url %}</a>{% else %}</span>{% endif %}
+    {% if item.url %}
+    <a href="{{ item.url }}" class="fr-nav__label fr-nav__link"><span>{{ item.label }}</span></a>
+    {% else %}
+    <span class="fr-nav__label fr-nav__toggle"><span>{{ item.label }}</span></span>
+    {% endif %}
     {% if item.children and item.children.length %}
-      {{ navTree(item.children, depth + 1) }}
+      {{ navTree(item.children, level + 1) }}
     {% endif %}
   </li>
 {% endfor %}

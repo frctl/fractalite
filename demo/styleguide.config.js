@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 
 module.exports = {
-  title: 'Component Styleguide',
+  title: 'Styleguide',
 
   adapter: require('../packages/adapter-nunjucks')(),
 

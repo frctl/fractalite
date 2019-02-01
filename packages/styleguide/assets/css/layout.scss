@@ -5,9 +5,9 @@
   overflow: hidden;
 
   &__sidebar {
-    flex: 0 1 20vw;
-    min-width: 220px;
-    max-width: 400px;
+    flex: 0 0 240px;
+    // min-width: 220px;
+    // max-width: 400px;
     height: 100%;
     overflow: auto;
     -webkit-overflow-scrolling: touch;

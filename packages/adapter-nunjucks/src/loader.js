@@ -9,14 +9,15 @@ module.exports = Loader.extend({
     if (view) {
       try {
         const contents = await view.getContents();
-        callback(null, {
+        return callback(null, {
           src: contents,
           path: lookup,
           noCache: true
         });
       } catch (err) {
-        callback(err);
+        return callback(err);
       }
     }
+    callback(new Error(`Nunjucks adapter: Template '${lookup}' not found`));
   }
 });

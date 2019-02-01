@@ -1,6 +1,8 @@
 * {
   box-sizing: border-box;
   font-family: sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -35,4 +37,8 @@ body {
 }
 .card__title {
   font-size: 20px;
+  margin-bottom: 20px;
+}
+.card__content {
+  margin-bottom: 20px;
 }

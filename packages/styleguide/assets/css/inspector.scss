@@ -3,13 +3,18 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
+  background: #e8ebee;
+  padding: 0 12px 12px 12px;
 
   &__header {
     flex: none;
     display: flex;
     align-items: center;
-    padding: 16px;
-    border-bottom: 1px solid #ddd;
+    padding: 14px 0;
+  }
+
+  &__title {
+    font-size: 20px;
   }
 
   &__header-items {
@@ -18,13 +23,28 @@
   }
 
   &__preview {
+    border: 1px solid rgba(70, 81, 94, 0.25);
+    background-color: #fff;
     flex: 1 1 50%;
     min-height: 40%;
     position: relative;
+    margin-bottom: 12px;
   }
 
   &__info {
     flex: 1 1 auto;
-    border-top: 1px solid #ddd;
+    border: 1px solid rgba(70, 81, 94, 0.25);
+    background-color: #fff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__tabs {
+    flex: none;
+  }
+
+  &__panels {
+    flex: 1 1 auto;
   }
 }

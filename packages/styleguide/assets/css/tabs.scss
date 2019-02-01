@@ -1,0 +1,29 @@
+.fr-tabs {
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid rgba(70, 81, 94, 0.25);
+  align-items: stretch;
+
+  &__tab {
+    flex: 1;
+  }
+
+  &__tab a {
+    color: #222;
+    display: block;
+    font-size: 14px;
+    padding: 10px 0;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  &__tab:hover a {
+    border-bottom: 1px solid #ccc;
+  }
+
+  &__tab.is-active a,
+  &__tab:first-child a {
+    font-weight: bold;
+    border-bottom: 1px solid #333;
+  }
+}

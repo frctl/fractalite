@@ -31,7 +31,7 @@ module.exports = function(config = {}) {
   njk.addFilter = function(name, filter) {
     const wrapped = function(...args) {
       const done = args.pop();
-      Promise.resolve(filter(...args))
+      Promise.resolve(filter.bind(this)(...args))
         .then(result => done(null, result))
         .catch(err => done(err));
     };
@@ -84,7 +84,15 @@ module.exports = function(config = {}) {
     };
   });
 
-  njk.addFilter('await', promise => promise);
+  njk.addFilter('await', async (promise, catchError) => {
+    try {
+      return await promise;
+    } catch (err) {
+      if (catchError) {
+        return err;
+      }
+    }
+  });
 
   njk.SafeString = SafeString;
 

@@ -13,44 +13,58 @@ module.exports = function(opts = {}) {
     });
 
     app.addViewGlobal('renderPreview', async (target, props = [], runtimeOpts = {}) => {
-      const { api } = app;
-      const items = await api.renderAll(target, props);
-      const { component, variant } = api.resolveComponent(target);
+      try {
+        const { api } = app;
+        const items = await api.renderAll(target, props, false);
+        const { component, variant } = api.resolveComponent(target);
 
-      const componentOpts = component.preview || {};
-      const mergedOpts = defaultsDeep(
-        runtimeOpts,
-        componentOpts,
-        pick(opts, ['meta', 'wrap', 'wrapEach'])
-      );
+        const componentOpts = component.preview || {};
+        const mergedOpts = defaultsDeep(
+          runtimeOpts,
+          componentOpts,
+          pick(opts, ['meta', 'wrap', 'wrapEach'])
+        );
 
-      // Wrap rendered preview items
-      const { wrap, wrapEach } = mergedOpts;
-      const ctx = { component, variant };
-      let html = isFunction(wrapEach) ? items.map((...args) => wrapEach(...args, ctx)) : items;
-      html = html.join('\n');
-      html = isFunction(wrap) ? wrap(html, ctx) : html;
+        // Wrap rendered preview items
+        const { wrap, wrapEach } = mergedOpts;
+        const ctx = { component, variant };
+        let html = isFunction(wrapEach) ? items.map((...args) => wrapEach(...args, ctx)) : items;
+        html = html.join('\n');
+        html = isFunction(wrap) ? wrap(html, ctx) : html;
 
-      // Resolve asset references for stylesheets and scripts
-      const lookupFile = path => {
-        const file = resolveFileUrl(path, component.files, api.files, api.assets);
-        if (file) {
-          return Asset.isAsset(file) ? app.url('asset', { asset: file }) : app.url('src', { file });
-        }
-        return path;
-      };
+        // Resolve asset references for stylesheets and scripts
+        const lookupFile = path => {
+          const file = resolveFileUrl(path, component.files, api.files, api.assets);
+          if (file) {
+            return Asset.isAsset(file)
+              ? app.url('asset', { asset: file })
+              : app.url('src', { file });
+          }
+          return path;
+        };
 
-      const stylesheets = stack(opts.stylesheets, componentOpts.stylesheets).map(lookupFile);
-      const scripts = stack(opts.scripts, componentOpts.scripts).map(lookupFile);
+        const stylesheets = stack(opts.stylesheets, componentOpts.stylesheets).map(lookupFile);
+        const scripts = stack(opts.scripts, componentOpts.scripts).map(lookupFile);
 
-      Object.assign(mergedOpts, { scripts, stylesheets });
+        Object.assign(mergedOpts, { scripts, stylesheets });
 
-      return app.adapter.generatePreview(html, mergedOpts, { api });
+        return app.adapter.generatePreview(html, mergedOpts, { api });
+      } catch (err) {
+        app.emit('error', new Error(`Preview render error - ${err.message}`));
+        return app.views.renderAsync('error', {
+          error: err
+        });
+      }
     });
 
     // App.addBuildStep('preview', ({ requestRoute, api }) => {
     //   app.api.variants.forEach(variant => requestRoute('preview', { variant }));
     // });
+
+    app.get('inspector.actions').push({
+      label: 'Preview',
+      url: ({ variant }) => app.url('preview', { variant })
+    });
 
     /*
      * Middleware to add preview urls to variants.

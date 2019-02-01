@@ -5,9 +5,13 @@
 <div class="fr-inspector">
 
   <div class="fr-inspector__header">
-    <h1>{{ component.label }} / {{ variant.label }}</h1>
-    <ul class="fr-inspector__header-items">
-      <li><a href="{{ variant.previewUrl }}">Preview</a></li>
+    <h1 class="fr-inspector__title">{{ component.label }} / {{ variant.label }}</h1>
+    <ul class="fr-actions">
+      <li class="fr-actions__action">
+        {% for action in app.inspector.actions %}
+        <a class="fr-actions__link" href="{{ action.url | resolve }}">{{ action.label | resolve }}</a>
+        {% endfor %}
+      </li>
     </ul>
   </div>
 
@@ -16,14 +20,20 @@
   </div>
 
   <div class="fr-inspector__info">
-    <div class="fr-panels">
+    <ul class="fr-tabs fr-inspector__tabs">
+      {% for panel in app.inspector.panels %}
+        {% if panel.display | resolve %}
+        <li class="fr-tabs__tab">
+          <a href="#">{{ panel.label | resolve }}</a>
+        </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+    <div class="fr-panels fr-inspector__panels">
     {% for panel in app.inspector.panels %}
-      {% if panel.display({ component: component }) %}
+      {% if panel.display | resolve %}
       <div class="fr-panels__panel">
-        <label class="fr-panels__label">{{ panel.label }}</label>
-        <div class="fr-panels__content">
-        {% render %}{{ panel.content | safe }}{% endrender %}
-        </div>
+        {{ panel.content | resolve | render | safe  }}
       </div>
       {% endif %}
     {% endfor %}

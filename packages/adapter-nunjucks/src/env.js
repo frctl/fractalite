@@ -1,17 +1,10 @@
 const { Environment } = require('nunjucks');
 const ComponentExtension = require('./extension-component');
-const FsLoader = require('./fs-loader');
-const ViewLoader = require('./view-loader');
+const Loader = require('./loader');
 
-module.exports = function nunjucks(views = [], config = {}) {
-  const loaders = [].concat(config.loaders || []);
-  if (config.viewPaths) {
-    loaders.push(new FsLoader(config.viewPaths));
-  }
-
-  const viewLoader = new ViewLoader();
-  viewLoader.views = views;
-  const env = new Environment([viewLoader, ...loaders]);
+module.exports = function nunjucks(config = {}) {
+  const loader = new Loader();
+  const env = new Environment([loader]);
 
   env.addExtension('component', new ComponentExtension());
 
@@ -26,6 +19,8 @@ module.exports = function nunjucks(views = [], config = {}) {
       env.addFilter(key, config.filters[key], config.filters[key].async)
     );
   }
+
+  env.loader = loader;
 
   return env;
 };

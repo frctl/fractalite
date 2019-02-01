@@ -28,15 +28,15 @@ module.exports = [
     handler: require('./inspector-notes')
   },
   {
-    key: 'opts.inspector.files',
-    handler: require('./inspector-files')
-  },
-  {
     key: 'opts.inspector.html',
     handler: require('./inspector-html')
   },
   {
     key: 'opts.inspector.props',
     handler: require('./inspector-props')
+  },
+  {
+    key: 'opts.inspector.files',
+    handler: require('./inspector-files')
   }
 ];

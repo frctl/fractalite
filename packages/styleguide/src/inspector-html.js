@@ -3,7 +3,7 @@ module.exports = function(opts = {}) {
     if (opts === false) return;
 
     const content = `
-      <pre><code>{{ renderAll(variant, variant.previewProps) | await | join('\n') }}</code></pre>
+      <pre><code>{{ renderAll(variant, variant.previewProps) | await(true) }}</code></pre>
     `;
 
     app.get('inspector.panels').push({

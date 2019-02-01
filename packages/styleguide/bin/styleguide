@@ -50,12 +50,14 @@ const args = mri(process.argv.slice(2));
       const port = server.address().port;
 
       logger.success(`Styleguide server started`);
+      logger.log('')
       logger.log(stripIndent`
         ---
         Local:   ${cyan(`http://localhost:${port}`)}
         Network: ${cyan(`http://${ip.address()}:${port}`)}
         ---
       `);
+      logger.log('')
 
       process.on('SIGINT', () => {
         server.close();

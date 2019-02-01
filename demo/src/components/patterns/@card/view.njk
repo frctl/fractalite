@@ -1,5 +1,8 @@
 <div class="card">
   <h2 class="card__title">{{ title }}</h2>
-  <p>{{ content }}</p>
+  <div class="card__content">
+    {{ content | safe }}
+  </div>
   {% component button %}
+  {% include './subtemplate.njk' %}
 </div>

@@ -103,11 +103,16 @@ module.exports = function(state, adapter) {
     return adapter.render(component, mergedProps, { variant, api });
   };
 
-  api.renderAll = async (target, props = []) => {
-    if (Array.isArray(props) || Collection.isCollection(props)) {
-      return map(props, p => api.render(target, p));
+  api.renderAll = async (target, props = [], join = true) => {
+    let results;
+    if (join === true) {
+      join = '\n';
     }
-    return [await api.render(target, props)];
+    if (Array.isArray(props) || Collection.isCollection(props)) {
+      results = await map(props, p => api.render(target, p));
+    }
+    results = await Promise.all([api.render(target, props)]);
+    return join ? results.join(join) : results;
   };
 
   api.resolveComponent = target => resolveComponentTarget(target, api.components);

@@ -7,23 +7,40 @@ const defaults = {
 
 class NunjucksAdapter extends Adapter {
   constructor(opts = {}) {
-    super(Object.assign({}, defaults, opts));
-    this.views = [];
-    this.env = nunjucksEnv(this.views, opts);
+    opts = Object.assign({}, defaults, opts);
+    super(opts);
+    this.opts = opts;
   }
 
   renderString(str, props, ctx) {
-    this.env.api = ctx.api; // For use in extensions/filters etc
+    const env = nunjucksEnv(this.opts);
+    const { views } = env.loader;
+    env.api = ctx.api; // For use in extensions/filters etc
 
     /*
      * Empty views array and then replace with
      * updated set of view tempates.
      */
-    this.views.length = 0;
+    views.length = 0;
     ctx.api.getComponents().forEach(component => {
-      this.views.push({
-        name: component.name,
+      // Lookup view by handle: {% include 'button' %}
+      views.push({
+        name: component.handle,
         getContents: () => this.getSourceString(component)
+      });
+      // Lookup file by handle
+      ctx.api.files.forEach(file => {
+        views.push({
+          name: file.handle,
+          getContents: () => file.getContents()
+        });
+      });
+      // Lookup component-relative file by `./filename.ext` path
+      component.files.forEach(file => {
+        views.push({
+          name: `./${file.relative}`,
+          getContents: () => file.getContents()
+        });
       });
     });
 
@@ -32,13 +49,9 @@ class NunjucksAdapter extends Adapter {
      * render it asynchronously.
      */
     return new Promise((resolve, reject) => {
-      try {
-        this.env.renderString(str, props, (err, result) => {
-          return err ? reject(err) : resolve(result);
-        });
-      } catch (err) {
-        reject(err);
-      }
+      env.renderString(str, props, (err, result) => {
+        return err ? reject(err) : resolve(result);
+      });
     });
   }
 

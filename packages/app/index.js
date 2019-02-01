@@ -1,8 +1,8 @@
 const fs = require('fs');
+const { isFunction } = require('lodash');
 const { File } = require('@fractalite/core');
 const { stack } = require('@fractalite/support/helpers');
 const App = require('./src/app');
-const RenderExtension = require('./src/render-extension');
 
 module.exports = function(opts = {}) {
   const app = new App(opts);
@@ -134,13 +134,17 @@ module.exports = function(opts = {}) {
     return next();
   });
 
-  /*
-   * A few view additions
-   */
-  views.addExtension('render', new RenderExtension());
   views.addGlobal('url', (name, params) => app.url(name, params));
   views.addGlobal('resourceUrl', (name, path) => app.resourceUrl(name, path));
   views.addFilter('stack', stack);
+
+  views.addFilter('resolve', function(variable) {
+    return isFunction(variable) ? variable(this.ctx) : variable;
+  });
+
+  views.addFilter('render', async function(content) {
+    return views.renderStringAsync(await content, this.ctx);
+  });
 
   return app;
 };

@@ -11,6 +11,7 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
     stylesheets: ['styleguide:app.css'],
     scripts: ['styleguide:app.js', 'styleguide:reload.js'],
     inspector: {
+      actions: [],
       panels: []
     }
   });

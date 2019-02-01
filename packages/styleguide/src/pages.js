@@ -70,7 +70,7 @@ module.exports = function(opts = {}) {
 
             let urlPath = segments.join('/');
             if (urlPath === 'index' || /^.*\/index$/.test(urlPath)) {
-              urlPath = segments.slice(0, -1).join('/');
+              // urlPath = segments.splice(0, -1, 'overview').join('/');
               page.index = true;
               page.label = page.label || opts.indexLabel || 'Overview';
               page.order = page.order || 1;
@@ -82,6 +82,7 @@ module.exports = function(opts = {}) {
               page.view = opts.view === false ? false : 'page';
             }
 
+            page.treePath = urlPath;
             page.url = app.url('page', { path: '/' + urlPath });
             page.content = await app.views.renderStringAsync(parsed.content || '', { page });
             page.content = app.markdown.render(page.content);

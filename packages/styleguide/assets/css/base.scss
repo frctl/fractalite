@@ -12,6 +12,8 @@ html {
   color: #333;
   line-height: 1.4;
   font-size: 18px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
