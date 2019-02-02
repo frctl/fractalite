@@ -118,6 +118,23 @@ const utils = {
       return [];
     }
     return [].concat(args);
+  },
+
+  resolveValue(value, ctx) {
+    return _.isFunction(value) ? value(ctx) : value;
+  },
+
+  async mapValuesAsync(obj, asyncFn) {
+    const keys = Object.keys(obj);
+    const promises = keys.map(async key => {
+      return { key, value: await asyncFn(obj[key]) };
+    });
+    const values = await Promise.all(promises);
+    const newObj = {};
+    values.forEach(v => {
+      newObj[v.key] = v.value;
+    });
+    return newObj;
   }
 };
 

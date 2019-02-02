@@ -1,0 +1,15 @@
+{% extends "layouts/default" %}
+
+{% block navigation %}
+<navigation></navigation>
+{% endblock %}
+
+{% block main %}
+<router-view></router-view>
+{% endblock %}
+
+{% block preScripts %}
+{% include "partials/navigation" %}
+{% include "partials/inspector" %}
+{% include "partials/page" %}
+{% endblock %}

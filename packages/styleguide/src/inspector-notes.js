@@ -1,4 +1,7 @@
+const { extname } = require('path');
+const { Asset } = require('@fractalite/core');
 const { readFile } = require('fs-extra');
+const { resolveFileUrl, rewriteUrls } = require('@fractalite/support/helpers');
 const { map } = require('asyncro');
 
 module.exports = function(opts = {}) {
@@ -7,16 +10,24 @@ module.exports = function(opts = {}) {
 
     const filename = (opts.filename || 'readme.md').toLowerCase();
 
-    const content = `
-      <div>
-      {{ component.notes | default('_No notes available_') | markdown | safe }}
-      </div>
-    `;
-
     app.get('inspector.panels').push({
       label: opts.label || 'Notes',
-      display: ({ component }) => component.notes,
-      content: opts.content || content
+      async content(ctx) {
+        const { component } = ctx;
+        const notes = component.notes ? component.notes : '_No notes available_';
+        let rendered = await app.renderMarkdown(notes);
+        return rewriteUrls(rendered, path => {
+          const file = resolveFileUrl(path, component.files, app.api.files, app.api.assets);
+          if (file) {
+            return Asset.isAsset(file)
+              ? app.url('asset', { asset: file })
+              : app.url('src', { file });
+          }
+          if (path[0] === '@' && !extname(path)) {
+            return app.url('inspect', { variant: path.replace('@', '') });
+          }
+        });
+      }
     });
 
     app.compiler.use(async ({ components }) => {

@@ -16,30 +16,29 @@
 </head>
 <body>
 
-{%- block preBody %}{% endblock %}
-{% block body %}
-<div class="fr-layout">
-  <div class="fr-layout__sidebar fr-sidebar">
-  {% block sidebar %}
+<div id="app">
+  {%- block preBody %}{% endblock %}
+  {% block body %}
+  <div class="fr-layout">
+    <div class="fr-layout__sidebar fr-sidebar">
+    {% block sidebar %}
 
-    <header class="fr-branding">
-    {% block header %}
-    {% include "partials/branding" %}
+      <header class="fr-branding">
+      {% block header %}{% include "partials/branding" %}{% endblock %}
+      </header>
+
+      {% block navigation %}{% endblock %}
+
     {% endblock %}
-    </header>
-
-    {% block navigation %}
-    {% include "partials/navigation" %}
-    {% endblock %}
-
-  {% endblock %}
+    </div>
+    <main class="fr-layout__main fr-main">
+    {% block main %}{% endblock %}
+    </main>
   </div>
-  <main class="fr-layout__main fr-main">
-  {% block main %}{% endblock %}
-  </main>
+  {% endblock %}
+  {%- block postbody %}{% endblock %}
+
 </div>
-{% endblock %}
-{%- block postbody %}{% endblock %}
 
 {%- block preScripts %}{% endblock %}
 {%- block scripts %}

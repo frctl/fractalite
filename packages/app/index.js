@@ -14,19 +14,14 @@ module.exports = function(opts = {}) {
   app.use((ctx, next) => {
     ctx.response.render = async function(path, locals = {}, opts) {
       const state = Object.assign({}, ctx.state, locals);
-      ctx.type = 'text/html';
+      ctx.type = ctx.type || 'text/html';
       ctx.body = await views.renderAsync(path, state, opts);
     };
 
     ctx.response.renderString = async function(str, locals = {}, opts) {
       const state = Object.assign({}, ctx.state, locals);
-      ctx.type = 'text/html';
-      try {
-        ctx.body = await views.renderStringAsync(str, state, opts);
-      } catch (err) {
-        console.log(err);
-        throw err;
-      }
+      ctx.type = ctx.type || 'text/html';
+      ctx.body = await views.renderStringAsync(str, state, opts);
     };
 
     ctx.loadView = path => views.getTemplateAsync(path);
@@ -36,6 +31,10 @@ module.exports = function(opts = {}) {
 
     return next();
   });
+
+  // app.use((ctx, next) => {
+  //   ctx.response.
+  // });
 
   /*
    * File sending middleware

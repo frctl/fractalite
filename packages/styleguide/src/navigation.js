@@ -4,18 +4,38 @@ const { Variant, Component, File } = require('@fractalite/core');
 
 module.exports = function(opts = {}) {
   return function navigationPlugin(app) {
-    const nav = {};
-    const items = opts.items || [];
+    const items =
+      opts.items ||
+      function({ components, pages }) {
+        return [
+          {
+            label: 'Overview',
+            url: '/'
+          },
+          {
+            label: 'Components',
+            children: components.toTree()
+          },
+          {
+            label: 'Pages',
+            children: pages.reject({ url: '/' }).toTree()
+          }
+        ];
+      };
 
-    Object.defineProperty(nav, 'items', {
-      get() {
-        let tree = isFunction(items) ? items(app.api) : items;
-        tree = expandValues(tree, app.api);
-        return tree;
-      }
+    app.addRoute('api.navigation', '/api/navigation.json', ctx => {
+      ctx.body = {
+        items: generateNavItems()
+      };
     });
 
-    app.addViewGlobal('nav', nav);
+    app.addViewGlobal('nav', generateNavItems);
+
+    function generateNavItems() {
+      let tree = isFunction(items) ? items(app.api) : items;
+      tree = expandValues(tree, app.api);
+      return tree;
+    }
 
     function expandValues(items, api) {
       return items.map(item => {

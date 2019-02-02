@@ -1,6 +1,8 @@
 {% extends "layouts/default" %}
 
 {% block body %}
-<h1>Error</h1>
-<p>{{ error }}</p>
+<div class="fr-error">
+  <h1 class="fr-error__title">Error</h1>
+  <p class="fr-error__message">{{ error }}</p>  
+</div>
 {% endblock %}

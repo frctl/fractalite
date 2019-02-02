@@ -60,10 +60,10 @@ module.exports = function(opts = {}) {
      */
     app.adapter.use((str, { component, api }) => {
       return rewriteUrls(str, path => {
-        const file = resolveFileUrl(path, component.files, api.files, api.assets);
         if (opts.relative === false && path.startsWith('./')) {
           return;
         }
+        const file = resolveFileUrl(path, component.files, api.files, api.assets);
         if (file) {
           return Asset.isAsset(file) ? app.url('asset', { asset: file }) : app.url('src', { file });
         }

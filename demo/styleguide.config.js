@@ -18,24 +18,7 @@ module.exports = {
   // build: {},
 
   opts: {
-    nav: {
-      items: function({ components, pages }) {
-        return [
-          {
-            label: 'Overview',
-            url: '/'
-          },
-          {
-            label: 'Components',
-            children: components.toTree()
-          },
-          {
-            label: 'Pages',
-            children: pages.toTree()
-          }
-        ];
-      }
-    },
+    nav: {},
     // notes: false,
     pages: {
       src: resolve(__dirname, './src/pages'),

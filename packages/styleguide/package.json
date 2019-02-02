@@ -6,6 +6,7 @@
     "@fractalite/core": "^0.0.0",
     "@fractalite/support": "^0.0.0",
     "asyncro": "^3.0.0",
+    "axios": "^0.18.0",
     "chokidar": "^2.0.4",
     "common-tags": "^1.8.0",
     "flat": "^4.1.0",
@@ -18,13 +19,19 @@
     "pretty-error": "^2.2.0-rc.1",
     "signale": "^1.2.1",
     "slash": "^2.0.0",
-    "socket.io-client": "^2.2.0"
+    "socket.io-client": "^2.2.0",
+    "vue-socket.io-extended": "^3.2.1"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.7.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
     "iframe-resizer": "^3.5.15",
     "normalize.css": "^8.0.0",
     "parcel-bundler": "^1.10.1",
-    "sass": "^1.14.1"
+    "sass": "^1.14.1",
+    "vue": "^2.5.22",
+    "vue-router": "^3.0.2"
   },
   "scripts": {
     "build": "npm run copy-assets && parcel build ./assets/app.js ./assets/reload.js --no-source-maps",

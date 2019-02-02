@@ -17,22 +17,21 @@
     font-size: 20px;
   }
 
-  &__header-items {
-    display: flex;
+  &__actions {
     margin-left: auto;
   }
 
   &__preview {
     border: 1px solid rgba(70, 81, 94, 0.25);
     background-color: #fff;
-    flex: 1 1 50%;
+    flex: 0 0 50%;
     min-height: 40%;
     position: relative;
     margin-bottom: 12px;
   }
 
   &__info {
-    flex: 1 1 auto;
+    flex: 0 0 50%;
     border: 1px solid rgba(70, 81, 94, 0.25);
     background-color: #fff;
     overflow: hidden;

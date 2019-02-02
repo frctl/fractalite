@@ -110,8 +110,9 @@ module.exports = function(state, adapter) {
     }
     if (Array.isArray(props) || Collection.isCollection(props)) {
       results = await map(props, p => api.render(target, p));
+    } else {
+      results = await Promise.all([api.render(target, props)]);
     }
-    results = await Promise.all([api.render(target, props)]);
     return join ? results.join(join) : results;
   };
 

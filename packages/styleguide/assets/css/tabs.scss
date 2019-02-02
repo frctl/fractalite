@@ -21,8 +21,7 @@
     border-bottom: 1px solid #ccc;
   }
 
-  &__tab.is-active a,
-  &__tab:first-child a {
+  &__tab.is-current a {
     font-weight: bold;
     border-bottom: 1px solid #333;
   }

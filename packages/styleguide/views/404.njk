@@ -2,7 +2,16 @@
 
 {% block main %}
 
-<h1>404: {{ error.message }}</h1>
-{{ request.path }}
+<div class="fr-page">
+{% block page %}
+
+  <h1 class="fr-page__title">{{ error.message }}</h1>
+
+  <div class="fr-prose fr-page__content">
+  {{ request.path }}
+  </div>
+
+{% endblock %}
+</div>
 
 {% endblock %}

@@ -1,0 +1,41 @@
+<script type="text/x-template" id="inspector">
+  {% raw %}
+  <div class="fr-inspector">
+    <div class="fr-inspector__header">
+      <h1 class="fr-inspector__title">{{ title }}</h1>
+      <ul class="fr-actions fr-inspector__actions">
+        <li class="fr-actions__action" v-for="action in actions">
+          <a class="fr-actions__link" :href="action.url">
+            <i class="fr-actions__icon" :class="action.icon"></i>
+            <label class="fr-actions__label">{{ action.label }}</label>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="fr-inspector__preview">
+      <iframe :src="variant.previewUrl" frameborder="0" class="fr-preview"></iframe>
+    </div>
+
+    <div class="fr-inspector__info">
+      <ul class="fr-tabs fr-inspector__tabs">
+
+          <li class="fr-tabs__tab" :class="{ 'is-current': currentTab === i }" v-for="(panel, i) in panels">
+            <a href="#" @click="selectTab(i)">{{ panel.label }}</a>
+          </li>
+
+      </ul>
+      <div class="fr-panels fr-inspector__panels">
+        <div
+          class="fr-panels__panel"
+          v-show="currentTab === i"
+          v-for="(panel, i) in panels"
+          v-html="panel.content">
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  {% endraw %}
+</script>

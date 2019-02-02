@@ -482,20 +482,19 @@ ol {
 .fr-inspector__title {
   font-size: 20px;
 }
-.fr-inspector__header-items {
-  display: flex;
+.fr-inspector__actions {
   margin-left: auto;
 }
 .fr-inspector__preview {
   border: 1px solid rgba(70, 81, 94, 0.25);
   background-color: #fff;
-  flex: 1 1 50%;
+  flex: 0 0 50%;
   min-height: 40%;
   position: relative;
   margin-bottom: 12px;
 }
 .fr-inspector__info {
-  flex: 1 1 auto;
+  flex: 0 0 50%;
   border: 1px solid rgba(70, 81, 94, 0.25);
   background-color: #fff;
   overflow: hidden;
@@ -521,7 +520,13 @@ ol {
 }
 
 .fr-page {
-  padding: 16px;
+  padding: 16px 24px;
+}
+.fr-page__title {
+  font-size: 24px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
 }
 
 .fr-tabs {
@@ -544,19 +549,37 @@ ol {
 .fr-tabs__tab:hover a {
   border-bottom: 1px solid #ccc;
 }
-.fr-tabs__tab.is-active a, .fr-tabs__tab:first-child a {
+.fr-tabs__tab.is-current a {
   font-weight: bold;
   border-bottom: 1px solid #333;
 }
 
+.fr-panels {
+  overflow: hidden;
+}
 .fr-panels__panel {
   background-color: #f7f8f9;
   padding: 12px;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  display: none;
   height: 100%;
 }
-.fr-panels__panel:first-child {
-  display: block;
+
+.fr-actions {
+  display: flex;
+  color: #333;
+  font-size: 18px;
+}
+.fr-actions__action + .fr-actions__action {
+  margin-left: 10px;
+}
+.fr-actions__icon {
+  color: #333;
+  transition: all 0.15s ease-out;
+}
+.fr-actions__icon:hover {
+  color: #be3144;
+}
+.fr-actions__label {
+  display: none;
 }

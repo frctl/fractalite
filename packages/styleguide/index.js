@@ -1,7 +1,9 @@
 const { resolve } = require('path');
-const { forEach, get } = require('lodash');
+const { forEach, get, mapValues } = require('lodash');
 const App = require('@fractalite/app');
+const { resolveValue, mapValuesAsync } = require('@fractalite/support/utils');
 const corePlugins = require('./src/plugins');
+const { map } = require('asyncro');
 
 module.exports = function({ compiler, adapter, mode, ...config }) {
   const app = new App({ compiler, adapter, mode });
@@ -9,7 +11,7 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
   app.props({
     title: config.title || 'Styleguide',
     stylesheets: ['styleguide:app.css'],
-    scripts: ['styleguide:app.js', 'styleguide:reload.js'],
+    scripts: ['styleguide:app.js'],
     inspector: {
       actions: [],
       panels: []
@@ -20,32 +22,44 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
 
   app.addStaticDir('styleguide', resolve(__dirname, './dist'), '/styleguide');
 
-  app.addRoute('overview', '/', async (ctx, next) => {
-    await next();
-    if (!ctx.page) {
-      return ctx.render('overview');
-    }
+  app.addRoute('overview', '/', async (ctx, next) => ctx.render('app'));
+
+  app.addRoute('api.component', '/api/components/:component.json', async (ctx, next) => {
+    ctx.body = ctx.component;
+    return next();
   });
 
-  app.addRoute('inspect', '/inspect/:variant(.+)', (ctx, next) => {
-    return ctx.render('inspector');
+  app.addRoute('api.inspect', '/api/inspect/:variant(.+).json', async (ctx, next) => {
+    ctx.body = {
+      title: `${ctx.component.label} / ${ctx.variant.label}`,
+      variant: ctx.variant,
+      actions: await map(app.get('inspector.actions'), action => {
+        return mapValuesAsync(action, value => resolveValue(value, ctx.state));
+      }),
+      panels: await map(app.get('inspector.panels'), panel => {
+        return mapValuesAsync(panel, value => resolveValue(value, ctx.state));
+      })
+    };
+    return next();
   });
 
-  app.addBuildStep('inspect', ({ requestRoute }) => {
-    app.api.variants.forEach(variant => requestRoute('detail', { variant }));
-  });
+  app.addRoute('inspect', '/inspect/:variant(.+)', (ctx, next) => ctx.render('app'));
+
+  // app.addBuildStep('inspect', ({ requestRoute }) => {
+  //   app.api.variants.forEach(variant => requestRoute('detail', { variant }));
+  // });
 
   app.addRoute('asset', '/assets/:asset(.+)', ctx => ctx.sendFile(ctx.asset));
 
-  app.addBuildStep('asset', ({ copyFile, api }) => {
-    app.api.assets.forEach(asset => copyFile(asset.path, app.url('asset', { asset })));
-  });
+  // app.addBuildStep('asset', ({ copyFile, api }) => {
+  //   app.api.assets.forEach(asset => copyFile(asset.path, app.url('asset', { asset })));
+  // });
 
   app.addRoute('src', '/src/:file(.+)', ctx => ctx.sendFile(ctx.file));
 
-  app.addBuildStep('src', ({ copyFile, api }) => {
-    app.api.files.forEach(file => copyFile(file.path, app.url('src', { file })));
-  });
+  // app.addBuildStep('src', ({ copyFile, api }) => {
+  //   app.api.files.forEach(file => copyFile(file.path, app.url('src', { file })));
+  // });
 
   app.addErrorHandler('404', ctx => ctx.render('404'));
   app.addErrorHandler(ctx => ctx.render('error'));
@@ -78,7 +92,7 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
       await app.addPlugin(plugin);
     } catch (err) {
       console.log(err);
-      throw err;
+      process.exit(1);
     }
   });
 
@@ -95,10 +109,6 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
     config.init(app);
   }
 
-  app.set(
-    'inspector.panels',
-    app.get('inspector.panels').map(panel => Object.assign({ display: () => true }, panel))
-  );
   app.addViewGlobal('app', app.props());
 
   return app;

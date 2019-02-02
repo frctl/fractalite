@@ -1,3 +1,10 @@
 .fr-page {
-  padding: 16px;
+  padding: 16px 24px;
+
+  &__title {
+    font-size: 24px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+  }
 }

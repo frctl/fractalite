@@ -1,13 +1,11 @@
 .fr-panels {
+  overflow: hidden;
+
   &__panel {
     background-color: #f7f8f9;
     padding: 12px;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-    display: none;
     height: 100%;
-  }
-  &__panel:first-child {
-    display: block;
   }
 }

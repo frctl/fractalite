@@ -17,6 +17,8 @@ body {
   border-radius: 4px;
   display: inline-flex;
   align-items: center;
+  color: #333;
+  text-decoration: none;
 }
 .button__label {
   font-size: 16px;

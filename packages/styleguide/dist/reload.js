@@ -9676,7 +9676,7 @@ function debounce(func, wait, immediate) {
     var context = this,
         args = arguments;
 
-    var later = function later() {
+    var later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
@@ -9688,10 +9688,8 @@ function debounce(func, wait, immediate) {
   };
 }
 
-var socket = (0, _socket.default)();
-var reload = debounce(function (state) {
-  return window.location.reload();
-}, 200, true);
+const socket = (0, _socket.default)();
+const reload = debounce(state => window.location.reload(), 200, true);
 socket.on('updated', reload); // socket.on('asset_updated', function(path) {
 //   if (path.indexOf('.css') === -1) {
 //     reload();
@@ -9726,7 +9724,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61597" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64713" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

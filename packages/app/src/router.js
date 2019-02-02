@@ -49,6 +49,7 @@ module.exports = function() {
         }
       } catch (err) {
         ctx.error = err;
+        ctx.state.error = err;
         err.path = ctx.path;
         ctx.status = err.status || 500;
         const handler = getErrorHandler(ctx.status);
