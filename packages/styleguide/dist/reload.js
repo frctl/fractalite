@@ -9686,17 +9686,20 @@ function debounce(func, wait, immediate) {
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
-}
-
-const socket = (0, _socket.default)();
-const reload = debounce(state => window.location.reload(), 200, true);
-socket.on('updated', reload); // socket.on('asset_updated', function(path) {
-//   if (path.indexOf('.css') === -1) {
-//     reload();
-//   } else {
-//     refreshCSS(path);
-//   }
-// });
+} //
+// try {
+//   const socket = io();
+//   const reload = debounce(state => window.location.reload(), 200, true);
+//   socket.on('updated', reload);
+//   socket.on('asset_updated', function(path) {
+//     if (path.indexOf('.css') === -1) {
+//       reload();
+//     } else {
+//       refreshCSS(path);
+//     }
+//   });
+//   socket.on('error', () => {});
+// } catch (err) {}
 },{"socket.io-client":"../node_modules/socket.io-client/lib/index.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -9724,7 +9727,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64713" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51162" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

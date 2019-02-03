@@ -1,5 +1,12 @@
 .fr-page {
-  padding: 16px 24px;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+
+  &__container {
+    padding: 16px 24px;
+  }
 
   &__title {
     font-size: 24px;

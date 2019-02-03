@@ -1,9 +1,12 @@
 const { resolve } = require('path');
 const { forEach, get, mapValues } = require('lodash');
+const jsonErrors = require('koa-json-error');
 const App = require('@fractalite/app');
 const { resolveValue, mapValuesAsync } = require('@fractalite/support/utils');
 const corePlugins = require('./src/plugins');
 const { map } = require('asyncro');
+const cleanStack = require('clean-stacktrace');
+const relativePaths = require('clean-stacktrace-relative-paths');
 
 module.exports = function({ compiler, adapter, mode, ...config }) {
   const app = new App({ compiler, adapter, mode });
@@ -33,6 +36,7 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
     ctx.body = {
       title: `${ctx.component.label} / ${ctx.variant.label}`,
       variant: ctx.variant,
+      preview: await app.renderPreview(ctx.variant, ctx.variant.previewProps),
       actions: await map(app.get('inspector.actions'), action => {
         return mapValuesAsync(action, value => resolveValue(value, ctx.state));
       }),
@@ -61,8 +65,34 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
   //   app.api.files.forEach(file => copyFile(file.path, app.url('src', { file })));
   // });
 
-  app.addErrorHandler('404', ctx => ctx.render('404'));
-  app.addErrorHandler(ctx => ctx.render('error'));
+  app.use(jsonErrors());
+
+  app.use(async (ctx, next) => {
+    if (ctx.path.startsWith('/api')) return next();
+    try {
+      await next();
+      const status = ctx.status || 404;
+      if (status === 404) {
+        ctx.throw(404, 'Page not found');
+      }
+    } catch (err) {
+      ctx.error = err;
+      ctx.state.error = err;
+      err.path = ctx.path;
+      ctx.status = err.status || 500;
+      ctx.app.emit('error', err, ctx);
+      return ctx.status === '404' ? ctx.render('404') : ctx.render('error');
+    }
+  });
+
+  app.use(async (ctx, next) => {
+    try {
+      await next();
+    } catch (err) {
+      err.stack = cleanStack(err.stack, relativePaths());
+      throw err;
+    }
+  });
 
   /*
    * Compiler middleware to add url properties to entities
@@ -86,14 +116,9 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
    * Load all core plugins, initialised with opts
    */
   corePlugins.forEach(async ({ key, handler }) => {
-    try {
-      const opts = get(config, key, {});
-      const plugin = handler(opts);
-      await app.addPlugin(plugin);
-    } catch (err) {
-      console.log(err);
-      process.exit(1);
-    }
+    const opts = get(config, key, {});
+    const plugin = handler(opts);
+    await app.addPlugin(plugin);
   });
 
   /*

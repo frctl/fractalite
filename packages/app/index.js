@@ -48,6 +48,11 @@ module.exports = function(opts = {}) {
       ctx.length = file.stats.size;
       ctx.type = file.ext;
       ctx.type = ctx.response.type || 'text/plain';
+      if (app.mode === 'develop') {
+        ctx.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+        ctx.set('Pragma', 'no-cache');
+        ctx.set('Expires', 0);
+      }
       ctx.body = fs.createReadStream(file.path);
     };
 

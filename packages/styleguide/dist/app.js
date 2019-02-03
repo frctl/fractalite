@@ -177,12 +177,18 @@ module.exports = reloadCSS;
         module.hot.dispose(reloadCSS);
         module.hot.accept(reloadCSS);
       
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../node_modules/highlightjs/styles/github.css":[function(require,module,exports) {
+
+        var reloadCSS = require('_css_loader');
+        module.hot.dispose(reloadCSS);
+        module.hot.accept(reloadCSS);
+      
 },{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"app.scss":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"normalize.css/normalize.css":"../node_modules/normalize.css/normalize.css","_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../node_modules/@fortawesome/fontawesome-free/js/all.js":[function(require,module,exports) {
+},{"normalize.css/normalize.css":"../node_modules/normalize.css/normalize.css","highlightjs/styles/github.css":"../node_modules/highlightjs/styles/github.css","_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../node_modules/@fortawesome/fontawesome-free/js/all.js":[function(require,module,exports) {
 var global = arguments[3];
 (function () {
   'use strict';
@@ -29410,7 +29416,33 @@ var _default = {
   }
 };
 exports.default = _default;
-},{"axios":"../node_modules/axios/index.js"}],"js/inspector.js":[function(require,module,exports) {
+},{"axios":"../node_modules/axios/index.js"}],"js/error.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  template: '#error',
+  props: ['error'],
+  computed: {
+    name() {
+      return this.error.name;
+    },
+
+    message() {
+      return this.error.message;
+    },
+
+    stack() {
+      return this.error.stack;
+    }
+
+  }
+};
+exports.default = _default;
+},{}],"js/inspector.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29427,22 +29459,35 @@ var _default = {
   props: ['handle'],
   sockets: {
     async updated(state) {
+      const previewSrc = this.preview;
       await this.load();
+
+      if (previewSrc === this.preview) {
+        // refresh iframe in case assets have changed
+        this.reloadPreview();
+      }
     }
 
   },
 
   data() {
     return {
-      title: {},
+      title: null,
       variant: {},
+      preview: null,
       actions: [],
       panels: [],
-      currentTab: 0
+      currentTab: 0,
+      error: null,
+      loaded: false
     };
   },
 
   methods: {
+    reloadPreview: debounce(function () {
+      this.$refs['preview'].contentWindow.location.reload();
+    }, 500, true),
+
     async load() {
       if (this.handle) {
         try {
@@ -29450,9 +29495,9 @@ var _default = {
           Object.keys(response.data).forEach(key => {
             this[key] = response.data[key];
           });
-        } catch (err) {
-          //TODO: render errors
-          console.log(err);
+          this.loaded = true;
+          this.error = null;
+        } catch (err) {// errors are caught via the global error emitter, safe to ignore this?
         }
       }
     },
@@ -29475,6 +29520,24 @@ var _default = {
   }
 };
 exports.default = _default;
+
+function debounce(func, wait, immediate) {
+  var timeout;
+  return function () {
+    var context = this,
+        args = arguments;
+
+    var later = function () {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+}
 },{"axios":"../node_modules/axios/index.js"}],"js/page.js":[function(require,module,exports) {
 "use strict";
 
@@ -29492,7 +29555,8 @@ var _default = {
 
   data() {
     return {
-      content: null
+      content: null,
+      error: null
     };
   },
 
@@ -29509,9 +29573,7 @@ var _default = {
         try {
           const response = await _axios.default.get(`/api/pages/${this.path}.json`);
           this.content = response.data.content;
-        } catch (err) {
-          //TODO: render errors
-          console.log(err);
+        } catch (err) {// errors are caught via the global error emitter, safe to ignore this?
         }
       }
     }
@@ -29587,14 +29649,21 @@ var _socket = _interopRequireDefault(require("socket.io-client"));
 
 var _navigation = _interopRequireDefault(require("./js/navigation"));
 
+var _error = _interopRequireDefault(require("./js/error"));
+
 var _router = _interopRequireDefault(require("./js/router"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _vue.default.use(_vueSocket.default, (0, _socket.default)());
 
+_vue.default.component('error', _error.default);
+
 const app = new _vue.default({
   el: '#app',
+  data: {
+    error: null
+  },
   components: {
     Navigation: _navigation.default
   },
@@ -29604,8 +29673,13 @@ const app = new _vue.default({
       console.log('socket connected');
     },
 
-    updated(state) {
-      console.log('UPDATES!');
+    err(err) {
+      this.error = err;
+    },
+
+    updated() {
+      this.error = null;
+      console.log('UP');
     }
 
   },
@@ -29651,7 +29725,7 @@ const app = new _vue.default({
   }
 
 });
-},{"./app.scss":"app.scss","@fortawesome/fontawesome-free/js/all.js":"../node_modules/@fortawesome/fontawesome-free/js/all.js","vue/dist/vue.js":"../node_modules/vue/dist/vue.js","vue-router":"../node_modules/vue-router/dist/vue-router.esm.js","vue-socket.io-extended":"../node_modules/vue-socket.io-extended/dist/vue-socket.io-ext.esm.js","socket.io-client":"../node_modules/socket.io-client/lib/index.js","./js/navigation":"js/navigation.js","./js/router":"js/router.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./app.scss":"app.scss","@fortawesome/fontawesome-free/js/all.js":"../node_modules/@fortawesome/fontawesome-free/js/all.js","vue/dist/vue.js":"../node_modules/vue/dist/vue.js","vue-router":"../node_modules/vue-router/dist/vue-router.esm.js","vue-socket.io-extended":"../node_modules/vue-socket.io-extended/dist/vue-socket.io-ext.esm.js","socket.io-client":"../node_modules/socket.io-client/lib/index.js","./js/navigation":"js/navigation.js","./js/error":"js/error.js","./js/router":"js/router.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -29678,7 +29752,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64713" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51162" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

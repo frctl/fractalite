@@ -1,0 +1,55 @@
+.fr-error {
+  padding: 20px;
+  background: #9a0000;
+  color: #fff;
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+
+  &__title {
+    font-size: 24px;
+  }
+
+  &__message {
+    opacity: 0.9;
+    font-size: 15px;
+  }
+
+  &__stack {
+    opacity: 0.8;
+    font-family: monospace;
+    font-size: 14px;
+    white-space: pre-wrap;
+    overflow: hidden;
+    word-break: break-all;
+  }
+
+  &--full {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  &--full &__content {
+    max-width: 600px;
+  }
+
+  &--overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(#9a0000, 0.95);
+    z-index: 10000;
+  }
+
+  &--overlay.is-active {
+    display: block;
+  }
+}

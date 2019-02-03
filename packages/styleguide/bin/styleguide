@@ -44,7 +44,20 @@ const args = mri(process.argv.slice(2));
       const mode = assign({ mode: 'develop' }, config.develop || {}, args);
       const app = styleguide({ mode, compiler, adapter, ...config });
 
-      app.on('error', onError);
+      const interactiveLogger = new Signale({interactive: true});
+
+      app.on('error', function onError(err) {
+        if (err.message.indexOf('ECONNRESET') >= 0) {
+          return;
+        }
+        if (err.status === 404) {
+          interactiveLogger.warn(`${err.message} ${dim(`[${err.path}]`)}`);
+        } else {
+          interactiveLogger.error(err);
+        }
+      });
+
+      app.on('updated', () => interactiveLogger.success(`Compilation successful [${Date.now()}]`));
 
       const server = await app();
       const port = server.address().port;
@@ -69,7 +82,7 @@ const args = mri(process.argv.slice(2));
 
       const mode = assign({ mode: 'build' }, config.build || {}, args);
       const app = styleguide({ mode, compiler, adapter, ...config });
-      app.on('error', onError);
+      // app.on('error', onError);
 
       await app();
 
@@ -92,15 +105,3 @@ const args = mri(process.argv.slice(2));
     process.exit(1);
   }
 })();
-
-function onError(err) {
-  if (err.message.indexOf('ECONNRESET') >= 0) {
-    return;
-  }
-  if (err.status === 404) {
-    logger.warn(`${err.message} ${dim(`[${err.path}]`)}`);
-  } else {
-    const renderedError = prettyError.render(err);
-    console.log(renderedError);
-  }
-}

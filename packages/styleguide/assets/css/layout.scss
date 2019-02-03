@@ -5,18 +5,14 @@
   overflow: hidden;
 
   &__sidebar {
-    flex: 0 0 240px;
-    // min-width: 220px;
-    // max-width: 400px;
+    width: 240px;
     height: 100%;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
   }
 
   &__main {
-    flex: 1 1 auto;
-    height: 100%;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
+    width: calc(100% - 240px);
+    height: 100vh;
   }
 }

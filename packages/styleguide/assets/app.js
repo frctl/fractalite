@@ -6,20 +6,30 @@ import VueSocketio from 'vue-socket.io-extended';
 import io from 'socket.io-client';
 
 import Navigation from './js/navigation';
+import Error from './js/error';
 import router from './js/router';
 
 Vue.use(VueSocketio, io());
 
+Vue.component('error', Error);
+
 const app = new Vue({
   el: '#app',
+  data: {
+    error: null
+  },
   components: { Navigation },
   router,
   sockets: {
     connect() {
       console.log('socket connected');
     },
-    updated(state) {
-      console.log('UPDATES!');
+    err(err) {
+      this.error = err;
+    },
+    updated() {
+      this.error = null;
+      console.log('UP');
     }
   },
   mounted() {

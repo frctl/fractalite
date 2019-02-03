@@ -3,6 +3,8 @@ const getPort = require('get-port');
 const Koa = require('koa');
 const compress = require('koa-compress');
 const IO = require('koa-socket-2');
+const cleanStack = require('clean-stacktrace');
+const relativePaths = require('clean-stacktrace-relative-paths');
 const Emitter = require('@fractalite/support/emitter');
 const { Api } = require('@fractalite/core');
 const { permalinkify, defaultsDeep } = require('@fractalite/support/utils');
@@ -37,7 +39,6 @@ module.exports = function(opts = {}) {
 
     koa.use(compress());
     koa.use(resources.routes());
-    koa.use(router.errors());
     koa.use(router.routes());
     koa.use(router.allowedMethods());
 
@@ -48,6 +49,14 @@ module.exports = function(opts = {}) {
 
     assign(state, await compiler.parse());
 
+    app.on('error', err =>
+      socket.broadcast('err', {
+        name: err.name,
+        message: err.message,
+        stack: cleanStack(err.stack, relativePaths()),
+        status: err.status
+      })
+    );
     koa.on('error', err => app.emit('error', err));
     app.on('updated', () => socket.broadcast('updated', state));
 
@@ -111,15 +120,6 @@ module.exports = function(opts = {}) {
 
   app.addBuildStep = (...args) => {
     // Web.addBuildStep(...args);
-    return app;
-  };
-
-  app.addErrorHandler = (name, handler) => {
-    if (typeof name === 'function') {
-      handler = name;
-      name = 'error';
-    }
-    router.add({ name, handler });
     return app;
   };
 

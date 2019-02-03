@@ -1,11 +1,12 @@
 .fr-panels {
+  background-color: #f7f8f9;
   overflow: hidden;
 
   &__panel {
-    background-color: #f7f8f9;
     padding: 12px;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     height: 100%;
+    width: 100%;
   }
 }

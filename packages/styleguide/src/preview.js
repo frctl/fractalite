@@ -6,96 +6,45 @@ const { Asset } = require('@fractalite/core');
 
 module.exports = function(opts = {}) {
   return function previewPlugin(app) {
+    app.renderPreview = async function renderPreview(target, props = [], runtimeOpts = {}) {
+      const { api } = app;
+      const { component, variant } = api.resolveComponent(target);
+
+      const items = await api.renderAll(target, props, false);
+      const componentOpts = component.preview || {};
+      const mergedOpts = defaultsDeep(
+        runtimeOpts,
+        componentOpts,
+        pick(opts, ['meta', 'wrap', 'wrapEach'])
+      );
+
+      // Wrap rendered preview items
+      const { wrap, wrapEach } = mergedOpts;
+      const ctx = { component, variant };
+      let html = isFunction(wrapEach) ? items.map((...args) => wrapEach(...args, ctx)) : items;
+      html = html.join('\n');
+      html = isFunction(wrap) ? wrap(html, ctx) : html;
+
+      // Resolve asset references for stylesheets and scripts
+      const lookupFile = path => {
+        const file = resolveFileUrl(path, component.files, api.files, api.assets);
+        if (file) {
+          return Asset.isAsset(file) ? app.url('asset', { asset: file }) : app.url('src', { file });
+        }
+        return path;
+      };
+
+      const stylesheets = stack(opts.stylesheets, componentOpts.stylesheets).map(lookupFile);
+      const scripts = stack(opts.scripts, componentOpts.scripts).map(lookupFile);
+
+      Object.assign(mergedOpts, { scripts, stylesheets });
+
+      return app.adapter.generatePreview(html, mergedOpts, { api });
+    };
+
     app.addRoute('preview', `/${opts.mount || 'preview'}/:variant(.+)`, async (ctx, next) => {
-      ctx.body = await renderPreview(ctx.variant, ctx.variant.previewProps);
+      ctx.body = await app.renderPreview(ctx.variant, ctx.variant.previewProps);
     });
-
-    async function renderPreview(target, props = [], runtimeOpts = {}) {
-      try {
-        const { api } = app;
-        const items = await api.renderAll(target, props, false);
-        const { component, variant } = api.resolveComponent(target);
-
-        const componentOpts = component.preview || {};
-        const mergedOpts = defaultsDeep(
-          runtimeOpts,
-          componentOpts,
-          pick(opts, ['meta', 'wrap', 'wrapEach'])
-        );
-
-        // Wrap rendered preview items
-        const { wrap, wrapEach } = mergedOpts;
-        const ctx = { component, variant };
-        let html = isFunction(wrapEach) ? items.map((...args) => wrapEach(...args, ctx)) : items;
-        html = html.join('\n');
-        html = isFunction(wrap) ? wrap(html, ctx) : html;
-
-        // Resolve asset references for stylesheets and scripts
-        const lookupFile = path => {
-          const file = resolveFileUrl(path, component.files, api.files, api.assets);
-          if (file) {
-            return Asset.isAsset(file)
-              ? app.url('asset', { asset: file })
-              : app.url('src', { file });
-          }
-          return path;
-        };
-
-        const stylesheets = stack(opts.stylesheets, componentOpts.stylesheets).map(lookupFile);
-        const scripts = stack(opts.scripts, componentOpts.scripts).map(lookupFile);
-
-        Object.assign(mergedOpts, { scripts, stylesheets });
-
-        return app.adapter.generatePreview(html, mergedOpts, { api });
-      } catch (err) {
-        app.emit('error', err);
-        throw err;
-        // return app.views.renderAsync('error', { error: err });
-      }
-    }
-
-    // app.addViewGlobal('renderPreview', async (target, props = [], runtimeOpts = {}) => {
-    //   try {
-    //     const { api } = app;
-    //     const items = await api.renderAll(target, props, false);
-    //     const { component, variant } = api.resolveComponent(target);
-    //
-    //     const componentOpts = component.preview || {};
-    //     const mergedOpts = defaultsDeep(
-    //       runtimeOpts,
-    //       componentOpts,
-    //       pick(opts, ['meta', 'wrap', 'wrapEach'])
-    //     );
-    //
-    //     // Wrap rendered preview items
-    //     const { wrap, wrapEach } = mergedOpts;
-    //     const ctx = { component, variant };
-    //     let html = isFunction(wrapEach) ? items.map((...args) => wrapEach(...args, ctx)) : items;
-    //     html = html.join('\n');
-    //     html = isFunction(wrap) ? wrap(html, ctx) : html;
-    //
-    //     // Resolve asset references for stylesheets and scripts
-    //     const lookupFile = path => {
-    //       const file = resolveFileUrl(path, component.files, api.files, api.assets);
-    //       if (file) {
-    //         return Asset.isAsset(file)
-    //           ? app.url('asset', { asset: file })
-    //           : app.url('src', { file });
-    //       }
-    //       return path;
-    //     };
-    //
-    //     const stylesheets = stack(opts.stylesheets, componentOpts.stylesheets).map(lookupFile);
-    //     const scripts = stack(opts.scripts, componentOpts.scripts).map(lookupFile);
-    //
-    //     Object.assign(mergedOpts, { scripts, stylesheets });
-    //
-    //     return app.adapter.generatePreview(html, mergedOpts, { api });
-    //   } catch (err) {
-    //     app.emit('error', err);
-    //     return app.views.renderAsync('error', { error: err });
-    //   }
-    // });
 
     // App.addBuildStep('preview', ({ requestRoute, api }) => {
     //   app.api.variants.forEach(variant => requestRoute('preview', { variant }));

@@ -1,7 +1,7 @@
 <script type="text/x-template" id="inspector">
   {% raw %}
-  <div class="fr-inspector">
-    <div class="fr-inspector__header">
+  <div class="fr-inspector" v-if="loaded">
+    <!-- <div class="fr-inspector__header">
       <h1 class="fr-inspector__title">{{ title }}</h1>
       <ul class="fr-actions fr-inspector__actions">
         <li class="fr-actions__action" v-for="action in actions">
@@ -11,19 +11,17 @@
           </a>
         </li>
       </ul>
-    </div>
+    </div> -->
 
     <div class="fr-inspector__preview">
-      <iframe :src="variant.previewUrl" frameborder="0" class="fr-preview"></iframe>
+      <iframe :srcdoc="preview" frameborder="0" class="fr-preview" ref="preview"></iframe>
     </div>
 
     <div class="fr-inspector__info">
       <ul class="fr-tabs fr-inspector__tabs">
-
-          <li class="fr-tabs__tab" :class="{ 'is-current': currentTab === i }" v-for="(panel, i) in panels">
-            <a href="#" @click="selectTab(i)">{{ panel.label }}</a>
-          </li>
-
+        <li class="fr-tabs__tab" :class="{ 'is-current': currentTab === i }" v-for="(panel, i) in panels">
+          <a href="#" @click="selectTab(i)">{{ panel.label }}</a>
+        </li>
       </ul>
       <div class="fr-panels fr-inspector__panels">
         <div
@@ -34,7 +32,6 @@
         </div>
       </div>
     </div>
-
   </div>
 
   {% endraw %}

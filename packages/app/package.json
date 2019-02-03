@@ -5,6 +5,8 @@
     "@fractalite/support": "^0.0.0",
     "@fractalite/core": "^0.0.0",
     "cp-file": "^6.0.0",
+    "clean-stacktrace": "^1.1.0",
+    "clean-stacktrace-relative-paths": "^1.0.4",
     "del": "^3.0.0",
     "get-port": "^4.0.0",
     "globby": "^8.0.1",

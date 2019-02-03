@@ -1,8 +1,17 @@
 {% extends "layouts/default" %}
 
 {% block body %}
-<div class="fr-error">
-  <h1 class="fr-error__title">Error</h1>
-  <p class="fr-error__message">{{ error }}</p>  
+<div class="fr-error fr-error--full">
+  <div class="fr-error__content">
+    <h1 class="fr-error__title">{{ error.title | default('An error occured') }}</h1>
+    <p class="fr-error__message">{{ error.message }}</p>
+    {% if error.status != 404 %}
+    <pre class="fr-error__stack">{{ error.stack }}</pre>
+    {% endif %}
+  </div>
 </div>
+{% endblock %}
+
+{% block postScripts %}
+  <script src="{{ resourceUrl('styleguide:reload.js') }}"></script>
 {% endblock %}

@@ -15,7 +15,7 @@
   }
 
   &__link:hover {
-    background-color: #46515e;
+    background-color: rgba(#46515e, 0.8);
     color: #fff;
   }
 
@@ -27,5 +27,11 @@
 
   [data-level='1'] > li > &__toggle {
     font-weight: bold;
+  }
+
+  &__link.router-link-exact-active {
+    background-color: #46515e;
+    color: #fff;
+    // font-weight: bold;
   }
 }

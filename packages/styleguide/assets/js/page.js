@@ -4,7 +4,8 @@ export default {
   template: '#page',
   data() {
     return {
-      content: null
+      content: null,
+      error: null
     };
   },
   props: ['path'],
@@ -20,8 +21,7 @@ export default {
           const response = await axios.get(`/api/pages/${this.path}.json`);
           this.content = response.data.content;
         } catch (err) {
-          //TODO: render errors
-          console.log(err);
+          // errors are caught via the global error emitter, safe to ignore this?
         }
       }
     }

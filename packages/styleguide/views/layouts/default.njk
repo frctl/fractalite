@@ -19,6 +19,7 @@
 <div id="app">
   {%- block preBody %}{% endblock %}
   {% block body %}
+  <error v-if="error" :error="error" class="fr-error--overlay"></error>
   <div class="fr-layout">
     <div class="fr-layout__sidebar fr-sidebar">
     {% block sidebar %}

@@ -25,22 +25,14 @@ module.exports = function(opts = {}) {
 
     app.addRoute('api.page', '/api/pages/:path(.+).json', async (ctx, next) => {
       const path = ctx.params.path === 'index' ? '/' : `/${ctx.params.path}`;
-      const page = pages.find({ url: path });
+      let page = pages.find({ url: path });
       if (page) {
-        const content = page.view
+        let content = await page.getContents(ctx.state);
+        page = { ...page, content };
+        page.content = page.view
           ? await app.views.renderAsync(page.view, { ...ctx.state, page })
           : page.content;
-        ctx.body = { ...page, content };
-      } else if (path === '/') {
-        const page = {
-          url: '/',
-          index: true,
-          order: 1,
-          treePath: '/',
-          label: opts.indexLabel || 'Overview'
-        };
-        page.content = await app.views.renderAsync('overview', { ...ctx.state, page });
-        ctx.body = page;
+        ctx.body = { ...page };
       }
       return next();
     });
@@ -70,6 +62,20 @@ module.exports = function(opts = {}) {
     async function setPages() {
       const files = await read(opts.src, { onlyFiles: true });
       pages = collect(await map(files, async file => makePage(file)));
+
+      if (!pages.find({ url: '/' })) {
+        const page = {
+          url: '/',
+          index: true,
+          order: 1,
+          treePath: '/',
+          label: opts.indexLabel || 'Overview',
+          view: false
+        };
+        page.getContents = ctx => app.views.renderAsync('overview', { ...ctx, page });
+        pages = pages.push(page);
+      }
+
       app.addViewGlobal('pages', pages);
       app.api.pages = pages;
       app.api.getPages = () => pages;
@@ -108,10 +114,15 @@ module.exports = function(opts = {}) {
 
         page.treePath = urlPath;
         page.url = app.url('page', { path: '/' + urlPath });
-        page.content = await app.views.renderStringAsync(parsed.content || '', { page });
-        if (page.markdown !== false) {
-          page.content = app.markdown.render(page.content);
-        }
+
+        page.getContents = async ctx => {
+          let content = await app.views.renderStringAsync(parsed.content || '', { ...ctx, page });
+          if (page.markdown !== false) {
+            content = app.markdown.render(content);
+          }
+          return content;
+        };
+
         return page;
       } catch (err) {
         app.emit('error', err);

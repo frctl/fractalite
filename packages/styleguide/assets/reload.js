@@ -37,14 +37,17 @@ function debounce(func, wait, immediate) {
     if (callNow) func.apply(context, args);
   };
 }
-
-const socket = io();
-const reload = debounce(state => window.location.reload(), 200, true);
-socket.on('updated', reload);
-// socket.on('asset_updated', function(path) {
-//   if (path.indexOf('.css') === -1) {
-//     reload();
-//   } else {
-//     refreshCSS(path);
-//   }
-// });
+//
+// try {
+//   const socket = io();
+//   const reload = debounce(state => window.location.reload(), 200, true);
+//   socket.on('updated', reload);
+//   socket.on('asset_updated', function(path) {
+//     if (path.indexOf('.css') === -1) {
+//       reload();
+//     } else {
+//       refreshCSS(path);
+//     }
+//   });
+//   socket.on('error', () => {});
+// } catch (err) {}
