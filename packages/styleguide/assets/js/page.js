@@ -4,8 +4,7 @@ export default {
   template: '#page',
   data() {
     return {
-      content: null,
-      error: null
+      content: null
     };
   },
   props: ['path'],
@@ -27,11 +26,11 @@ export default {
     }
   },
   async mounted() {
-    this.load();
+    await this.load();
   },
   watch: {
     async path() {
-      this.load();
+      await this.load();
     }
   }
 };

@@ -21,19 +21,16 @@ const app = new Vue({
   components: { Navigation },
   router,
   sockets: {
-    connect() {
-      console.log('socket connected');
-    },
     err(err) {
       this.error = err;
     },
     updated() {
       this.error = null;
-      console.log('UP');
     }
   },
   mounted() {
     this.$on('error', err => {
+      if (err.response) return;
       this.error = err;
     });
     window.addEventListener('click', event => {

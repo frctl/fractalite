@@ -29477,7 +29477,6 @@ var _default = {
       actions: [],
       panels: [],
       currentTab: 0,
-      error: null,
       loaded: false
     };
   },
@@ -29509,12 +29508,12 @@ var _default = {
   },
 
   async mounted() {
-    this.load();
+    await this.load();
   },
 
   watch: {
     async handle() {
-      this.load();
+      await this.load();
     }
 
   }
@@ -29555,8 +29554,7 @@ var _default = {
 
   data() {
     return {
-      content: null,
-      error: null
+      content: null
     };
   },
 
@@ -29582,12 +29580,12 @@ var _default = {
   },
 
   async mounted() {
-    this.load();
+    await this.load();
   },
 
   watch: {
     async path() {
-      this.load();
+      await this.load();
     }
 
   }
@@ -29670,23 +29668,19 @@ const app = new _vue.default({
   },
   router: _router.default,
   sockets: {
-    connect() {
-      console.log('socket connected');
-    },
-
     err(err) {
       this.error = err;
     },
 
     updated() {
       this.error = null;
-      console.log('UP');
     }
 
   },
 
   mounted() {
     this.$on('error', err => {
+      if (err.response) return;
       this.error = err;
     });
     window.addEventListener('click', event => {

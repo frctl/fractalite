@@ -37,13 +37,19 @@ module.exports = function(opts = {}) {
       const stylesheets = stack(opts.stylesheets, componentOpts.stylesheets).map(lookupFile);
       const scripts = stack(opts.scripts, componentOpts.scripts).map(lookupFile);
 
+      if (mergedOpts.reload) {
+        scripts.push(app.resourceUrl('styleguide:reload.js'));
+      }
+
       Object.assign(mergedOpts, { scripts, stylesheets });
 
       return app.adapter.generatePreview(html, mergedOpts, { api });
     };
 
     app.addRoute('preview', `/${opts.mount || 'preview'}/:variant(.+)`, async (ctx, next) => {
-      ctx.body = await app.renderPreview(ctx.variant, ctx.variant.previewProps);
+      ctx.body = await app.renderPreview(ctx.variant, ctx.variant.previewProps, {
+        reload: true
+      });
     });
 
     // App.addBuildStep('preview', ({ requestRoute, api }) => {
@@ -84,15 +90,6 @@ module.exports = function(opts = {}) {
           variant.previewProps = toArray(variant.config.previewProps || {});
         });
       });
-    });
-
-    /*
-     * Compiler middleware to add the websocket reload JS to previews
-     */
-    app.compiler.use(async ({ components }, next) => {
-      await next();
-      const reloadUrl = app.resourceUrl('styleguide:reload.js');
-      components.forEach(({ preview }) => preview.scripts.push(reloadUrl));
     });
 
     /*

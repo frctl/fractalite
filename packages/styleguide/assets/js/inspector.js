@@ -21,7 +21,6 @@ export default {
       actions: [],
       panels: [],
       currentTab: 0,
-      error: null,
       loaded: false
     };
   },
@@ -52,11 +51,11 @@ export default {
     }
   },
   async mounted() {
-    this.load();
+    await this.load();
   },
   watch: {
     async handle() {
-      this.load();
+      await this.load();
     }
   }
 };

@@ -9686,20 +9686,19 @@ function debounce(func, wait, immediate) {
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
-} //
-// try {
-//   const socket = io();
-//   const reload = debounce(state => window.location.reload(), 200, true);
-//   socket.on('updated', reload);
-//   socket.on('asset_updated', function(path) {
-//     if (path.indexOf('.css') === -1) {
-//       reload();
-//     } else {
-//       refreshCSS(path);
-//     }
-//   });
-//   socket.on('error', () => {});
-// } catch (err) {}
+}
+
+const socket = (0, _socket.default)();
+const reload = debounce(state => window.location.reload(), 200, true);
+socket.on('updated', reload);
+socket.on('asset_updated', function (path) {
+  if (path.indexOf('.css') === -1) {
+    reload();
+  } else {
+    refreshCSS(path);
+  }
+});
+socket.on('error', () => {});
 },{"socket.io-client":"../node_modules/socket.io-client/lib/index.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
