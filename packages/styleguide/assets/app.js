@@ -33,6 +33,9 @@ const app = new Vue({
     }
   },
   mounted() {
+    this.$on('error', err => {
+      this.error = err;
+    });
     window.addEventListener('click', event => {
       const { target } = event;
       if (target && target.matches("a:not([href*='://'])") && target.href) {

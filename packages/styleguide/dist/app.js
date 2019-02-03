@@ -29402,8 +29402,7 @@ var _default = {
         const response = await _axios.default.get('/api/navigation.json');
         this.items = response.data.items;
       } catch (err) {
-        //TODO: render errors
-        console.log(err);
+        this.$parent.$emit('error', err);
       }
     }
 
@@ -29497,7 +29496,8 @@ var _default = {
           });
           this.loaded = true;
           this.error = null;
-        } catch (err) {// errors are caught via the global error emitter, safe to ignore this?
+        } catch (err) {
+          this.$parent.$emit('error', err);
         }
       }
     },
@@ -29573,7 +29573,8 @@ var _default = {
         try {
           const response = await _axios.default.get(`/api/pages/${this.path}.json`);
           this.content = response.data.content;
-        } catch (err) {// errors are caught via the global error emitter, safe to ignore this?
+        } catch (err) {
+          this.$parent.$emit('error', err);
         }
       }
     }
@@ -29685,6 +29686,9 @@ const app = new _vue.default({
   },
 
   mounted() {
+    this.$on('error', err => {
+      this.error = err;
+    });
     window.addEventListener('click', event => {
       const {
         target

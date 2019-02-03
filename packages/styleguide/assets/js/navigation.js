@@ -34,8 +34,7 @@ export default {
         const response = await axios.get('/api/navigation.json');
         this.items = response.data.items;
       } catch (err) {
-        //TODO: render errors
-        console.log(err);
+        this.$parent.$emit('error', err);
       }
     }
   },

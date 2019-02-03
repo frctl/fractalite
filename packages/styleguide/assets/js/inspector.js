@@ -43,7 +43,7 @@ export default {
           this.loaded = true;
           this.error = null;
         } catch (err) {
-          // errors are caught via the global error emitter, safe to ignore this?
+          this.$parent.$emit('error', err);
         }
       }
     },

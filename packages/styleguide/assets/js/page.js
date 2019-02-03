@@ -21,7 +21,7 @@ export default {
           const response = await axios.get(`/api/pages/${this.path}.json`);
           this.content = response.data.content;
         } catch (err) {
-          // errors are caught via the global error emitter, safe to ignore this?
+          this.$parent.$emit('error', err);
         }
       }
     }
