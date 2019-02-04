@@ -1,3 +1,4 @@
+const { cloneDeep } = require('lodash');
 const { html } = require('common-tags');
 const { matchOne } = require('@fractalite/support/helpers');
 
@@ -8,11 +9,20 @@ const defaults = {
 class Adapter {
   constructor(opts = {}) {
     this.opts = Object.assign({}, defaults, opts);
-    this.formatters = [];
+    this.hooks = {
+      'pre-render': [],
+      'post-render': [],
+      'pre-preview': [],
+      'post-preview': []
+    };
   }
 
-  use(formatter) {
-    this.formatters.push(formatter);
+  /**
+   * Must be implemented by child classes to perform the
+   * actual template rendering.
+   */
+  async renderComponent(component, props, ctx) {
+    throw new Error('Adapter.renderComponent must be implemented by the template engine adapter');
   }
 
   /**
@@ -23,20 +33,7 @@ class Adapter {
     return view ? view.getContents() : '';
   }
 
-  async render(component, props, ctx) {
-    let html = await this.renderComponent(component, props, ctx);
-    for (const formatter of this.formatters) {
-      // eslint-disable-next-line no-await-in-loop
-      html = await formatter(html, { component, ...ctx });
-    }
-    return html;
-  }
-
-  renderComponent(component, props, ctx) {
-    return this.getSourceString(component, ctx);
-  }
-
-  generatePreview(content, opts, ctx) {
+  wrapInPreview(content, opts, ctx) {
     const { stylesheets = [], scripts = [], meta = {} } = opts;
     return html`
       <!DOCTYPE html>
@@ -54,6 +51,33 @@ class Adapter {
       </html>
     `;
   }
+
+  async preview(html, opts, ctx) {
+    html = await applyHooks(this.hooks['pre-preview'], html, ctx);
+    html = await this.wrapInPreview(html, opts, ctx);
+    return applyHooks(this.hooks['post-preview'], html, ctx);
+  }
+
+  async render(component, props, ctx) {
+    props = await applyHooks(this.hooks['pre-render'], props, { ...ctx, component });
+    let html = await this.renderComponent(component, props, ctx);
+    return applyHooks(this.hooks['post-render'], html, { ...ctx, component });
+  }
+
+  addHook(type, hook) {
+    if (!this.hooks[type]) {
+      throw new Error(`'${type}' is not a valid adapter hook`);
+    }
+    this.hooks[type].push(hook);
+  }
+}
+
+async function applyHooks(hooks, target, ctx) {
+  for (const hook of hooks) {
+    // eslint-disable-next-line no-await-in-loop
+    target = await hook(target, ctx);
+  }
+  return target;
 }
 
 module.exports = Adapter;

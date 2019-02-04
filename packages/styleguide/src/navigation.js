@@ -17,7 +17,7 @@ module.exports = function(opts = {}) {
           },
           {
             label: 'Pages',
-            children: toTree(pages.filter(page => page === index))
+            children: toTree(pages.filter(page => page !== index))
           }
         ];
       };

@@ -41,9 +41,7 @@ module.exports = function(opts = {}) {
         scripts.push(app.resourceUrl('styleguide:reload.js'));
       }
 
-      Object.assign(mergedOpts, { scripts, stylesheets });
-
-      return app.adapter.generatePreview(html, mergedOpts, { api });
+      return api.wrapInPreview(html, { ...mergedOpts, scripts, stylesheets });
     };
 
     app.addRoute('preview', `/${opts.mount || 'preview'}/:handle(.+)`, async (ctx, next) => {
@@ -91,9 +89,9 @@ module.exports = function(opts = {}) {
     });
 
     /*
-     * Post-render adapter plugin to re-write url
-     * attribute values in rendered output.
+     * Post-render adapter hook to re-write @component
+     * urls in rendered content.
      */
-    app.adapter.use(str => app.utils.replaceShortlinks(str, 'preview'));
+    app.adapter.addHook('post-preview', str => app.utils.replaceShortlinks(str, 'preview'));
   };
 };

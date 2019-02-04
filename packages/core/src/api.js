@@ -114,6 +114,10 @@ module.exports = function(state, adapter) {
     return join ? results.join(join) : results;
   };
 
+  api.wrapInPreview = (html, opts) => {
+    return adapter.preview(html, opts, { api });
+  };
+
   api.resolveComponent = target => resolveComponentTarget(target, api.components);
 
   return api;

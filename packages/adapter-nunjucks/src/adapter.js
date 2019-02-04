@@ -12,7 +12,15 @@ class NunjucksAdapter extends Adapter {
     this.opts = opts;
   }
 
-  renderString(str, props, ctx) {
+  async renderComponent(component, props, ctx) {
+    const str = await this.getSourceString(component);
+    if (str === null) {
+      throw new Error(`No source string found for component '${component.name}'`);
+    }
+    return this._renderString(str, props, { ...ctx, component });
+  }
+
+  _renderString(str, props, ctx) {
     const env = nunjucksEnv(this.opts);
     const { views } = env.loader;
     env.api = ctx.api; // For use in extensions/filters etc
@@ -53,14 +61,6 @@ class NunjucksAdapter extends Adapter {
         return err ? reject(err) : resolve(result);
       });
     });
-  }
-
-  async renderComponent(component, props, ctx) {
-    const tpl = await this.getSourceString(component);
-    if (tpl === null) {
-      throw new Error(`No view template found for component '${component.name}'`);
-    }
-    return this.renderString(tpl, props, ctx);
   }
 }
 
