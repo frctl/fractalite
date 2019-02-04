@@ -19,8 +19,8 @@ module.exports = function(opts = {}) {
           return Asset.isAsset(file) ? app.url('asset', { asset: file }) : app.url('src', { file });
         }
         if (path[0] === '@' && !extname(path)) {
-          const [variant, route = componentRoute] = path.replace('@', '').split(':');
-          return app.url(route, { variant });
+          const [handle, route = componentRoute] = path.replace('@', '').split(':');
+          return app.url(route, { handle });
         }
       });
     };

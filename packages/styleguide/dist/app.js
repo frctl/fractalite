@@ -29472,10 +29472,9 @@ var _default = {
 
   data() {
     return {
-      title: null,
-      variant: {},
+      component: null,
+      variant: null,
       preview: null,
-      actions: [],
       panels: [],
       currentTab: 0,
       loaded: false
@@ -29491,6 +29490,13 @@ var _default = {
       if (this.handle) {
         try {
           const response = await _axios.default.get(`/api/inspect/${this.handle}.json`);
+
+          if (!response.data.variant) {
+            const variant = response.data.component.variants[0];
+            this.$router.push(`/inspect/${variant.handle}`);
+            return;
+          }
+
           Object.keys(response.data).forEach(key => {
             this[key] = response.data[key];
           });
@@ -29619,16 +29625,19 @@ _vue.default.use(_vueRouter.default);
 var _default = new _vueRouter.default({
   mode: 'history',
   routes: [{
+    name: 'inspect',
     path: '/inspect/:handle(.+)',
     component: _inspector.default,
     props: true
   }, {
+    name: 'index',
     path: '/',
     component: _page.default,
     props: {
       path: 'index'
     }
   }, {
+    name: 'page',
     path: '/:path(.+)',
     component: _page.default,
     props: true

@@ -18,7 +18,6 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
     css: [],
     js: [],
     inspector: {
-      actions: [],
       panels: []
     }
   });
@@ -34,22 +33,23 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
     return next();
   });
 
-  app.addRoute('api.inspect', '/api/inspect/:variant(.+).json', async (ctx, next) => {
+  app.addRoute('api.inspect', '/api/inspect/:handle(.+).json', async (ctx, next) => {
+    let { component, variant } = ctx.api.resolveComponent(ctx.params.handle);
+    // variant = variant || component.variants.first();
+    const panels = await map(app.get('inspector.panels'), panel => {
+      const state = { ...ctx.state, variant, component };
+      return mapValuesAsync(panel, value => resolveValue(value, state));
+    });
     ctx.body = {
-      title: `${ctx.component.label} / ${ctx.variant.label}`,
-      variant: ctx.variant,
-      preview: await app.renderPreview(ctx.variant, ctx.variant.previewProps),
-      actions: await map(app.get('inspector.actions'), action => {
-        return mapValuesAsync(action, value => resolveValue(value, ctx.state));
-      }),
-      panels: await map(app.get('inspector.panels'), panel => {
-        return mapValuesAsync(panel, value => resolveValue(value, ctx.state));
-      })
+      component: component,
+      variant: variant,
+      preview: variant ? await app.renderPreview(variant, variant.previewProps) : null,
+      panels: panels.filter(panel => panel.content)
     };
     return next();
   });
 
-  app.addRoute('inspect', '/inspect/:variant(.+)', (ctx, next) => ctx.render('app'));
+  app.addRoute('inspect', '/inspect/:handle(.+)', (ctx, next) => ctx.render('app'));
 
   // app.addBuildStep('inspect', ({ requestRoute }) => {
   //   app.api.variants.forEach(variant => requestRoute('detail', { variant }));
@@ -94,7 +94,7 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
         file.url = app.url('src', { file });
       });
       component.variants.forEach(variant => {
-        variant.url = app.url('inspect', { variant });
+        variant.url = app.url('inspect', { handle: variant });
       });
     });
     assets.forEach(asset => {

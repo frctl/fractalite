@@ -46,22 +46,20 @@ module.exports = function(opts = {}) {
       return app.adapter.generatePreview(html, mergedOpts, { api });
     };
 
-    app.addRoute('preview', `/${opts.mount || 'preview'}/:variant(.+)`, async (ctx, next) => {
-      ctx.body = await app.renderPreview(ctx.variant, ctx.variant.previewProps, {
-        reload: true
-      });
+    app.addRoute('preview', `/${opts.mount || 'preview'}/:handle(.+)`, async (ctx, next) => {
+      let { component, variant } = ctx.api.resolveComponent(ctx.params.handle);
+      if (variant) {
+        ctx.body = await app.renderPreview(variant, variant.previewProps, {
+          reload: true
+        });
+      } else {
+        ctx.body = '<em>No preview available</em>'; // TODO: handle this differently?
+      }
     });
 
     // App.addBuildStep('preview', ({ requestRoute, api }) => {
     //   app.api.variants.forEach(variant => requestRoute('preview', { variant }));
     // });
-
-    app.get('inspector.actions').push({
-      label: 'Preview',
-      icon: 'fas fa-external-link-square-alt',
-      url: ({ variant }) => app.url('preview', { variant })
-    });
-
     /*
      * Middleware to add preview urls to variants.
      */
@@ -69,7 +67,7 @@ module.exports = function(opts = {}) {
       await next();
       components.forEach(component => {
         component.variants.forEach(variant => {
-          variant.previewUrl = app.url('preview', { variant });
+          variant.previewUrl = app.url('preview', { handle: variant });
         });
       });
     });

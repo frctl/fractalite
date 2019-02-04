@@ -42,6 +42,8 @@ module.exports = function(opts = {}) {
       `,
 
       async content({ variant }) {
+        if (!variant) return;
+
         const previews = await map(variant.previewProps, async props => {
           let html = await app.api.render(variant, props);
           if (opts.prettify !== false) {

@@ -11,4 +11,4 @@ Pages are written in markdown and code samples are highlighted automatically:
 <h2 class="example">Some HTML code here</h2>
 ```
 
-You can use shortlinks to link to your components: [Check out the button &rarr;](@button/next)
+You can use shortlinks to link to your components: [Check out the button &rarr;](@button)

@@ -20,7 +20,8 @@ class Variant extends Entity {
       get: handleGenerator.bind(this),
       set(value) {
         this._handle = value;
-      }
+      },
+      enumerable: true
     });
   }
 
