@@ -7,7 +7,8 @@ module.exports = {
         title: 'Sign up now',
         content: '<p>Click the button below to do this thing.</p>',
         button: {
-          label: 'Click me'
+          label: 'Click me',
+          href: '@button/prev'
         }
       }
     }

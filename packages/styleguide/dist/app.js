@@ -29453,6 +29453,7 @@ var _axios = _interopRequireDefault(require("axios"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const supportsSrcdoc = !!('srcdoc' in document.createElement('iframe'));
 var _default = {
   template: '#inspector',
   props: ['handle'],
@@ -29461,7 +29462,7 @@ var _default = {
       const previewSrc = this.preview;
       await this.load();
 
-      if (previewSrc === this.preview) {
+      if (supportsSrcdoc && previewSrc === this.preview) {
         // refresh iframe in case assets have changed
         this.reloadPreview();
       }

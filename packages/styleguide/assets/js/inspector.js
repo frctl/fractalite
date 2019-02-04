@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const supportsSrcdoc = !!('srcdoc' in document.createElement('iframe'));
+
 export default {
   template: '#inspector',
   props: ['handle'],
@@ -7,7 +9,7 @@ export default {
     async updated(state) {
       const previewSrc = this.preview;
       await this.load();
-      if (previewSrc === this.preview) {
+      if (supportsSrcdoc && previewSrc === this.preview) {
         // refresh iframe in case assets have changed
         this.reloadPreview();
       }

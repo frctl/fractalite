@@ -13,14 +13,6 @@ const defaultNotesTemplate = `
   </li>
   {% endfor %}
 </ul>
-<h4>Files:</h4>
-<ul>
-  {% for file in component.files %}
-  <li>
-    <a href="{{ file.url }}" target="_blank">{{ file.handle }}</a>
-  </li>
-  {% endfor %}
-</ul>
 `;
 
 module.exports = function(opts = {}) {
@@ -28,6 +20,8 @@ module.exports = function(opts = {}) {
     if (opts === false) return;
 
     const className = 'inspector-panel-overview';
+
+    const defaultNotes = opts.notes || defaultNotesTemplate;
 
     app.get('inspector.panels').push({
       label: opts.label || 'Overview',
@@ -66,7 +60,7 @@ module.exports = function(opts = {}) {
 
           notes = await app.utils.renderPage(content, renderOpts);
         } else {
-          notes = await app.utils.renderPage(defaultNotesTemplate, {
+          notes = await app.utils.renderPage(defaultNotes, {
             template: true,
             localFiles: component.files,
             ctx
