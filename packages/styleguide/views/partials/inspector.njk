@@ -1,17 +1,5 @@
 {% raw %}
 <div class="fr-inspector" v-if="loaded">
-  <!-- <div class="fr-inspector__header">
-    <h1 class="fr-inspector__title">{{ title }}</h1>
-    <ul class="fr-actions fr-inspector__actions">
-      <li class="fr-actions__action" v-for="action in actions">
-        <a class="fr-actions__link" :href="action.url">
-          <i class="fr-actions__icon" :class="action.icon"></i>
-          <label class="fr-actions__label">{{ action.label }}</label>
-        </a>
-      </li>
-    </ul>
-  </div> -->
-
   <div class="fr-inspector__preview">
     <iframe :srcdoc="preview" :src="variant.previewUrl" frameborder="0" class="fr-preview" ref="preview"></iframe>
   </div>

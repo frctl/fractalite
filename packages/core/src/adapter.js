@@ -1,4 +1,3 @@
-const tags = require('@fractalite/support/html');
 const { html } = require('common-tags');
 
 const defaults = {
@@ -44,12 +43,12 @@ class Adapter {
       <head>
         <meta charset="${meta.charset || 'utf-8'}">
         <meta name="viewport" content="${meta.viewport || 'width=device-width, initial-scale=1.0'}">
-        ${stylesheets.map(tags.stylesheet)}
+        ${stylesheets.map(url => `<link rel="stylesheet" href="${url}">`)}
         <title>${meta.title || 'Preview'}</title>
       </head>
       <body>
         ${content}
-        ${scripts.map(tags.script)}
+        ${scripts.map(url => `<script src="${url}"></script>`)}
       </body>
       </html>
     `;
