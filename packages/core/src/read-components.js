@@ -18,6 +18,10 @@ module.exports = async function(src, opts = {}) {
     const rootPath = addTrailingSeparator(dir.path);
     const children = unusedFiles.filter(f => f.path.startsWith(rootPath));
 
+    if (children.length === 0) {
+      return;
+    }
+
     unusedFiles = difference(unusedFiles, children); // Remove files from future consideration
 
     return new Component({

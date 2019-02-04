@@ -36,6 +36,7 @@ const app = new Vue({
     window.addEventListener('click', event => {
       const { target } = event;
       if (target && target.matches("a:not([href*='://'])") && target.href) {
+        if (target.matches('[href^="/preview/"]')) return;
         const { altKey, ctrlKey, metaKey, shiftKey, button, defaultPrevented } = event;
         if (metaKey || altKey || ctrlKey || shiftKey) return;
         if (defaultPrevented) return;

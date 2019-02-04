@@ -96,12 +96,12 @@ module.exports = function(opts = {}) {
      * Post-render adapter plugin to re-write url
      * attribute values in rendered output.
      */
-    app.adapter.use((str, { component, api }) => {
-      return rewriteUrls(str, path => {
-        if (path[0] === '@' && !extname(path)) {
-          return app.url('preview', { variant: path.replace('@', '') });
-        }
-      });
-    });
+    // app.adapter.use((str, { component, api }) => {
+    //   return rewriteUrls(str, path => {
+    //     if (path[0] === '@' && !extname(path)) {
+    //       return app.url('preview', { variant: path.replace('@', '') });
+    //     }
+    //   });
+    // });
   };
 };

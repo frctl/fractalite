@@ -9,7 +9,6 @@ const { fromConfigFile } = require('@fractalite/core');
 const { watch } = require('chokidar');
 const ip = require('ip');
 const styleguide = require('../.');
-var PrettyError = require('pretty-error');
 const { assign } = Object;
 
 const logger = new Signale({
@@ -20,8 +19,6 @@ const logger = new Signale({
     }
   }
 });
-
-const prettyError = new PrettyError();
 
 const cwd = process.cwd();
 const args = mri(process.argv.slice(2));
@@ -57,7 +54,7 @@ const args = mri(process.argv.slice(2));
         }
       });
 
-      app.on('updated', () => interactiveLogger.success(`Compilation successful [${Date.now()}]`));
+      app.on('updated', () => interactiveLogger.success(`Compilation successful [${(new Date()).toUTCString()}]`));
 
       const server = await app();
       const port = server.address().port;

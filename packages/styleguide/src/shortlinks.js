@@ -1,3 +1,4 @@
+const { extname } = require('path');
 const { Asset } = require('@fractalite/core');
 const { mapValues } = require('lodash');
 const { resolveFileUrl, collect, rewriteUrls } = require('@fractalite/support/helpers');
@@ -5,8 +6,24 @@ const flatten = require('flat');
 const { map } = require('asyncro');
 
 module.exports = function(opts = {}) {
-  return function fileRefsPlugin(app) {
+  return function shortlinksPlugin(app) {
     if (opts === false) return;
+
+    app.utils.replaceShortlinks = (str, componentRoute = 'preview') => {
+      return rewriteUrls(str, path => {
+        if (opts.relative === false && path.startsWith('./')) {
+          return;
+        }
+        const file = resolveFileUrl(path, [], app.api.files, app.api.assets);
+        if (file) {
+          return Asset.isAsset(file) ? app.url('asset', { asset: file }) : app.url('src', { file });
+        }
+        if (path[0] === '@' && !extname(path)) {
+          const [variant, route = componentRoute] = path.replace('@', '').split(':');
+          return app.url(route, { variant });
+        }
+      });
+    };
 
     if (opts.relative !== false) {
       /*
@@ -22,12 +39,7 @@ module.exports = function(opts = {}) {
           );
           if (view) {
             let contents = await view.getContents();
-            contents = rewriteUrls(contents, path => {
-              if (path.startsWith('./')) {
-                const file = resolveFileUrl(path, component.files);
-                return file ? path.replace(/^.\//, `@${component.name}/`) : null;
-              }
-            });
+            contents = rewriteUrls(contents, path => replaceRelativeUrl(path, component));
             view.setContents(contents);
           }
         });
@@ -41,33 +53,25 @@ module.exports = function(opts = {}) {
         components.forEach(component => {
           component.variants.forEach(variant => {
             let props = flatten(variant.props);
-            props = mapValues(props, value => {
-              if (typeof value === 'string' && value.startsWith('./')) {
-                const file = resolveFileUrl(value, component.files);
-                return file ? value.replace(/^.\//, `@${component.name}/`) : value;
-              }
-              return value;
-            });
+            props = mapValues(props, value => replaceRelativeUrl(value, component));
             variant.props = flatten.unflatten(props);
           });
         });
       });
     }
 
+    function replaceRelativeUrl(value, component) {
+      if (typeof value === 'string' && value.startsWith('./')) {
+        const file = resolveFileUrl(value, component.files);
+        return file ? value.replace(/^.\//, `@${component.name}/`) : value;
+      }
+      return value;
+    }
+
     /*
      * Post-render adapter plugin to re-write url
      * attribute values in rendered output.
      */
-    app.adapter.use((str, { component, api }) => {
-      return rewriteUrls(str, path => {
-        if (opts.relative === false && path.startsWith('./')) {
-          return;
-        }
-        const file = resolveFileUrl(path, component.files, api.files, api.assets);
-        if (file) {
-          return Asset.isAsset(file) ? app.url('asset', { asset: file }) : app.url('src', { file });
-        }
-      });
-    });
+    app.adapter.use(str => app.utils.replaceShortlinks(str, 'preview'));
   };
 };

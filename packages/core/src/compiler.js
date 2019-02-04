@@ -7,7 +7,7 @@ const entities = [
   {
     name: 'components',
     read: require('./read-components'),
-    parseEvents: ['add', 'unlink', 'change']
+    parseEvents: ['add', 'unlink', 'change', 'addDir', 'unlinkDir']
   },
   {
     name: 'assets',
@@ -69,7 +69,7 @@ module.exports = function(config = {}) {
   function watchHandler(parseEvents) {
     let lastResult = null;
     return debounce(async (evt, path) => {
-      if (['addDir', 'unlinkDir'].includes(evt)) return; // ignore these events
+      // if (['addDir', 'unlinkDir'].includes(evt)) return; // ignore these events
       try {
         // Only re-parse for 'primary' events, otherwise just notify of changes
         lastResult = parseEvents.includes(evt) ? await app.parse() : lastResult;

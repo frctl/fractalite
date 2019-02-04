@@ -29554,7 +29554,9 @@ var _default = {
 
   data() {
     return {
-      content: null
+      page: null,
+      content: null,
+      loaded: false
     };
   },
 
@@ -29570,7 +29572,9 @@ var _default = {
       if (this.path) {
         try {
           const response = await _axios.default.get(`/api/pages/${this.path}.json`);
+          this.page = response.data.page;
           this.content = response.data.content;
+          this.loaded = true;
         } catch (err) {
           this.$parent.$emit('error', err);
         }
@@ -29689,6 +29693,7 @@ const app = new _vue.default({
       } = event;
 
       if (target && target.matches("a:not([href*='://'])") && target.href) {
+        if (target.matches('[href^="/preview/"]')) return;
         const {
           altKey,
           ctrlKey,
@@ -29750,7 +29755,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51162" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51061" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

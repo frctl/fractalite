@@ -57,7 +57,7 @@ class NunjucksAdapter extends Adapter {
 
   async renderComponent(component, props, ctx) {
     const tpl = await this.getSourceString(component);
-    if (!tpl) {
+    if (tpl === null) {
       throw new Error(`No view template found for component '${component.name}'`);
     }
     return this.renderString(tpl, props, ctx);

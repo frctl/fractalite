@@ -15,6 +15,8 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
     title: config.title || 'Styleguide',
     stylesheets: ['styleguide:app.css'],
     scripts: ['styleguide:app.js'],
+    css: [],
+    js: [],
     inspector: {
       actions: [],
       panels: []
@@ -53,18 +55,6 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
   //   app.api.variants.forEach(variant => requestRoute('detail', { variant }));
   // });
 
-  app.addRoute('asset', '/assets/:asset(.+)', ctx => ctx.sendFile(ctx.asset));
-
-  // app.addBuildStep('asset', ({ copyFile, api }) => {
-  //   app.api.assets.forEach(asset => copyFile(asset.path, app.url('asset', { asset })));
-  // });
-
-  app.addRoute('src', '/src/:file(.+)', ctx => ctx.sendFile(ctx.file));
-
-  // app.addBuildStep('src', ({ copyFile, api }) => {
-  //   app.api.files.forEach(file => copyFile(file.path, app.url('src', { file })));
-  // });
-
   app.use(jsonErrors());
 
   app.use(async (ctx, next) => {
@@ -81,7 +71,7 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
       err.path = ctx.path;
       ctx.status = err.status || 500;
       ctx.app.emit('error', err, ctx);
-      return ctx.status === '404' ? ctx.render('404') : ctx.render('error');
+      return ctx.render('error');
     }
   });
 
@@ -132,6 +122,14 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
    */
   if (typeof config.init === 'function') {
     config.init(app);
+  }
+
+  // TODO: improve handling of user defined css/js
+  let css = app.get('css');
+  let js = app.get('js');
+  for (const panel of app.get('inspector.panels')) {
+    if (panel.css) css.push(panel.css);
+    if (panel.js) js.push(panel.js);
   }
 
   app.addViewGlobal('app', app.props());

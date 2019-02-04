@@ -1,8 +1,0 @@
-<div class="fr-page__container">
-  {% block page %}
-  <h1 class="fr-page__title">{{ page.title | default(page.label) }}</h1>
-  <div class="fr-prose fr-page__content">
-    {{ page.content | safe }}
-  </div>
-  {% endblock %}
-</div>

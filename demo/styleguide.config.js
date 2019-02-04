@@ -24,9 +24,7 @@ module.exports = {
       src: resolve(__dirname, './src/pages'),
       indexLabel: 'Overview'
     },
-    inspector: {
-      notes: {}
-    },
+    inspector: {},
     fileRefs: {
       // relative: true
     },
@@ -38,6 +36,18 @@ module.exports = {
   },
 
   init(app) {
-    // app customisation here
+    // Example compiler middleware to read notes from notes.md files
+    app.compiler.use(async ({ components }) => {
+      await Promise.all(
+        components.map(async component => {
+          const notesfile = component.files.find(
+            file => file.basename.toLowerCase() === 'notes.md'
+          );
+          if (notesfile) {
+            component.notes = await notesfile.getContents();
+          }
+        })
+      );
+    });
   }
 };

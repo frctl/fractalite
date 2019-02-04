@@ -18,6 +18,7 @@ module.exports = function(opts = {}) {
   const props = {};
   const middleware = [];
   const state = {};
+  const utils = {};
 
   const mode = getMode(opts.mode);
   const router = new Router();
@@ -74,7 +75,7 @@ module.exports = function(opts = {}) {
     return server;
   }
 
-  Object.assign(app, { router, resources, views, emitter, adapter, compiler, api });
+  Object.assign(app, { router, resources, views, emitter, adapter, compiler, api, utils });
 
   app.mode = mode.mode;
 

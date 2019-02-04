@@ -10,7 +10,10 @@
   <link rel="stylesheet" href="{{ resourceUrl(url) }}">
   {%- endfor %}
   {% endblock -%}
-  {%- block postStyles %}{% endblock -%}
+  {% if app.css.length %}
+  <style>{{ app.css | join(`\n`) }}</style>
+  {% endif %}
+  {% block postStyles %}{% endblock -%}
 
   <title>{% block title %}{% if page.title %}{{ page.title }} | {% endif %}{{ app.meta.title }}{% endblock %}</title>
 </head>
@@ -25,7 +28,11 @@
     {% block sidebar %}
 
       <header class="fr-branding">
-      {% block header %}{% include "partials/branding" %}{% endblock %}
+      {% block brand %}
+        <div class="fr-brand">
+          <router-link to="/" class="fr-brand__title">{{ app.title }}</router-link>
+        </div>
+      {% endblock %}
       </header>
 
       {% block navigation %}{% endblock %}
@@ -47,6 +54,7 @@
 <script src="{{ resourceUrl(url) }}"></script>
 {%- endfor %}
 {% endblock -%}
+{% if app.js.length %}<script>{{ app.js | join(`\n`) }}</script>{% endif %}
 {%- block postScripts %}{% endblock -%}
 
 </body>

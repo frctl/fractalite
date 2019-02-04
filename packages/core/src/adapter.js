@@ -20,7 +20,7 @@ class Adapter {
    */
   getSourceString(component, ctx) {
     const view = component.files.matchOne('basename', this.opts.view, component);
-    return view ? view.getContents() : null;
+    return view ? view.getContents() : '';
   }
 
   async render(component, props, ctx) {

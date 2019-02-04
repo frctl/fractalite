@@ -9,8 +9,9 @@
 {% endblock %}
 
 {% block preScripts %}
-{% include "partials/navigation" %}
-{% include "partials/inspector" %}
-{% include "partials/page" %}
-{% include "partials/error" %}
+{% for template in ['navigation', 'inspector', 'page', 'error'] %}
+<script type="text/x-template" id="{{ template }}">
+{% include "partials/" + template %}
+</script>
+{% endfor %}
 {% endblock %}

@@ -7,9 +7,10 @@ module.exports = function(opts = {}) {
     const items =
       opts.items ||
       function({ components, pages }) {
+        const index = pages.find({ url: '/' });
         return [
           {
-            label: 'Overview',
+            label: index.label,
             url: '/'
           },
           {

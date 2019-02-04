@@ -6,7 +6,7 @@ const App = require('./src/app');
 
 module.exports = function(opts = {}) {
   const app = new App(opts);
-  const { router, views } = app;
+  const { router, views, utils } = app;
 
   /*
    * Nunjucks rendering middleware
@@ -31,10 +31,6 @@ module.exports = function(opts = {}) {
 
     return next();
   });
-
-  // app.use((ctx, next) => {
-  //   ctx.response.
-  // });
 
   /*
    * File sending middleware
@@ -138,6 +134,8 @@ module.exports = function(opts = {}) {
     return next();
   });
 
+  utils.renderString = (str, props, opts) => views.renderStringAsync(str, props, opts);
+
   views.addGlobal('url', (name, params) => app.url(name, params));
   views.addGlobal('resourceUrl', (name, path) => app.resourceUrl(name, path));
   views.addFilter('stack', stack);
@@ -149,6 +147,18 @@ module.exports = function(opts = {}) {
   views.addFilter('render', async function(content) {
     return views.renderStringAsync(await content, this.ctx);
   });
+
+  app.addRoute('asset', '/assets/:asset(.+)', ctx => ctx.sendFile(ctx.asset));
+
+  // app.addBuildStep('asset', ({ copyFile, api }) => {
+  //   app.api.assets.forEach(asset => copyFile(asset.path, app.url('asset', { asset })));
+  // });
+
+  app.addRoute('src', '/src/:file(.+)', ctx => ctx.sendFile(ctx.file));
+
+  // app.addBuildStep('src', ({ copyFile, api }) => {
+  //   app.api.files.forEach(file => copyFile(file.path, app.url('src', { file })));
+  // });
 
   return app;
 };

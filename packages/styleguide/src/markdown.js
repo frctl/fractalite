@@ -1,14 +1,24 @@
+const { defaultsDeep } = require('@fractalite/support/utils');
 const Markdown = require('markdown-it');
+const hljs = require('highlight.js');
+const escape = require('escape-html');
 
 module.exports = function(opts = {}) {
-  const md = new Markdown(opts);
   return function markdownPlugin(app) {
-    Object.defineProperty(app, 'markdown', {
+    opts = defaultsDeep(opts, {
+      html: true,
+      linkify: true,
+      highlight: app.utils.highlightCode
+    });
+
+    const md = new Markdown(opts);
+
+    Object.defineProperty(app, 'utils.markdown', {
       value: md,
       writable: false
     });
 
-    app.renderMarkdown = str => md.render(str);
+    app.utils.renderMarkdown = str => md.render(str);
 
     app.addViewFilter('markdown', str => md.render(str || ''));
   };

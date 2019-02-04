@@ -1,11 +1,19 @@
 module.exports = [
   {
+    key: 'opts.highlight',
+    handler: require('./highlight')
+  },
+  {
     key: 'opts.markdown',
     handler: require('./markdown')
   },
   {
     key: 'opts.preview',
     handler: require('./preview')
+  },
+  {
+    key: 'opts.shortlinks',
+    handler: require('./shortlinks')
   },
   {
     key: 'opts.pages',
@@ -16,27 +24,15 @@ module.exports = [
     handler: require('./metadata')
   },
   {
-    key: 'opts.fileRefs',
-    handler: require('./file-refs')
-  },
-  {
     key: 'opts.nav',
     handler: require('./navigation')
   },
   {
-    key: 'opts.inspector.notes',
-    handler: require('./inspector-notes')
+    key: 'opts.inspector.overview',
+    handler: require('./inspector-overview')
   },
   {
-    key: 'opts.inspector.html',
-    handler: require('./inspector-html')
-  },
-  {
-    key: 'opts.inspector.props',
-    handler: require('./inspector-props')
-  },
-  {
-    key: 'opts.inspector.files',
-    handler: require('./inspector-files')
+    key: 'opts.inspector.code',
+    handler: require('./inspector-code')
   }
 ];

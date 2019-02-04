@@ -493,6 +493,36 @@ pre {
   margin: 0;
 }
 
+.fr-prose > h2 {
+  font-size: 22px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+.fr-prose > h3 {
+  font-size: 20px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+.fr-prose > h4 {
+  font-size: 18px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+.fr-prose ul,
+.fr-prose ol {
+  list-style: disc;
+  margin-left: 20px;
+}
+.fr-prose li {
+  margin-bottom: 0.2em;
+}
+.fr-prose :first-child {
+  margin-top: 0;
+}
+.fr-prose :last-child {
+  margin-bottom: 0;
+}
+
 .fr-layout {
   display: flex;
   width: 100vw;
@@ -662,7 +692,6 @@ pre {
   overflow: hidden;
 }
 .fr-panels__panel {
-  padding: 12px;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   height: 100%;
@@ -738,5 +767,9 @@ pre {
 }
 
 .fr-code {
+  font-size: 15px;
+}
+
+.fr-icon {
   font-size: 15px;
 }

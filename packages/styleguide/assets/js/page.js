@@ -4,7 +4,9 @@ export default {
   template: '#page',
   data() {
     return {
-      content: null
+      page: null,
+      content: null,
+      loaded: false
     };
   },
   props: ['path'],
@@ -18,7 +20,9 @@ export default {
       if (this.path) {
         try {
           const response = await axios.get(`/api/pages/${this.path}.json`);
+          this.page = response.data.page;
           this.content = response.data.content;
+          this.loaded = true;
         } catch (err) {
           this.$parent.$emit('error', err);
         }

@@ -5,8 +5,10 @@ module.exports = {
       label: 'Call to action',
       props: {
         title: 'Sign up now',
-        content: '<p>Click the button below to do this things</p>',
-        button: 'button/next'
+        content: '<p>Click the button below to do this thing.</p>',
+        button: {
+          label: 'Click me'
+        }
       }
     }
   ]
