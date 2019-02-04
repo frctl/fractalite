@@ -3,15 +3,15 @@ const { defaultsDeep } = require('@fractalite/support/utils');
 const { map } = require('asyncro');
 
 module.exports = function(opts = {}) {
-  opts = defaultsDeep(opts, {
-    prettify: {
-      indent_size: 2,
-      preserve_newlines: false
-    }
-  });
-
   return function inspectorCodePlugin(app) {
     if (opts === false) return;
+
+    opts = defaultsDeep(opts, {
+      prettify: {
+        indent_size: 2,
+        preserve_newlines: false
+      }
+    });
 
     const className = 'inspector-panel-code';
 

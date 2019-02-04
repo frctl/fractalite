@@ -67,11 +67,5 @@ module.exports = function(opts = {}) {
       }
       return value;
     }
-
-    /*
-     * Post-render adapter plugin to re-write url
-     * attribute values in rendered output.
-     */
-    app.adapter.use(str => app.utils.replaceShortlinks(str, 'preview'));
   };
 };

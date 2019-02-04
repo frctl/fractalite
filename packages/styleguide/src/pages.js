@@ -89,7 +89,6 @@ module.exports = function(opts = {}) {
     }
 
     async function makePage(file) {
-      // try {
       const { data, content } = app.utils.parseFrontMatter(
         await file.getContents(),
         opts.frontmatter
@@ -126,9 +125,6 @@ module.exports = function(opts = {}) {
 
       page.raw = content;
       return page;
-      // } catch (err) {
-      //   app.emit('error', err);
-      // }
     }
   };
 };

@@ -1,38 +1,17 @@
 const { resolve } = require('path');
 
 module.exports = {
-  title: 'Styleguide',
+  title: 'Styleguide Demo',
 
   adapter: require('../packages/adapter-nunjucks')(),
 
-  components: {
-    src: resolve(__dirname, './src/components')
-  },
-
+  components: resolve(__dirname, './src/components'),
   assets: resolve(__dirname, './dist/assets'),
+  pages: resolve(__dirname, './src/pages'),
 
-  // develop: {
-  //   port: 3030
-  // },
-  //
-  // build: {},
-
-  opts: {
-    nav: {},
-    // notes: false,
-    pages: {
-      src: resolve(__dirname, './src/pages'),
-      indexLabel: 'Overview'
-    },
-    inspector: {},
-    fileRefs: {
-      // relative: true
-    },
-    // relativeUrls: true,
-    preview: {
-      scripts: [],
-      stylesheets: ['main.css']
-    }
+  preview: {
+    scripts: [],
+    stylesheets: ['main.css']
   },
 
   init(app) {

@@ -8,31 +8,31 @@ module.exports = [
     handler: require('./markdown')
   },
   {
-    key: 'opts.preview',
-    handler: require('./preview')
-  },
-  {
     key: 'opts.shortlinks',
     handler: require('./shortlinks')
-  },
-  {
-    key: 'opts.pages',
-    handler: require('./pages')
   },
   {
     key: 'opts.meta',
     handler: require('./metadata')
   },
   {
-    key: 'opts.nav',
+    key: 'preview',
+    handler: require('./preview')
+  },
+  {
+    key: 'pages',
+    handler: require('./pages')
+  },
+  {
+    key: 'nav',
     handler: require('./navigation')
   },
   {
-    key: 'opts.inspector.overview',
+    key: 'inspector.overview',
     handler: require('./inspector-overview')
   },
   {
-    key: 'opts.inspector.code',
+    key: 'inspector.code',
     handler: require('./inspector-code')
   }
 ];
