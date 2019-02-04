@@ -769,6 +769,9 @@ pre {
 .fr-code {
   font-size: 15px;
 }
+.fr-code--wrap {
+  white-space: pre-wrap;
+}
 
 .fr-icon {
   font-size: 15px;

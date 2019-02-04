@@ -6,7 +6,7 @@
 
   {%- block preStyles %}{% endblock %}
   {%- block styles %}
-  {% for url in app.stylesheets | stack -%}
+  {% for url in app.stylesheets | resolveStack -%}
   <link rel="stylesheet" href="{{ resourceUrl(url) }}">
   {%- endfor %}
   {% endblock -%}
@@ -50,7 +50,7 @@
 
 {%- block preScripts %}{% endblock %}
 {%- block scripts %}
-{% for url in app.scripts | stack -%}
+{% for url in app.scripts | resolveStack -%}
 <script src="{{ resourceUrl(url) }}"></script>
 {%- endfor %}
 {% endblock -%}

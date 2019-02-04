@@ -1,6 +1,8 @@
-const { isString, isPlainObject, get, flatten, compact } = require('lodash');
+const { dirname } = require('path');
+const { isString, isPlainObject, get, flatten, compact, flatMap, uniqBy } = require('lodash');
 const attributes = require('html-url-attributes');
-const Collection = require('./collection');
+const pupa = require('pupa');
+const multimatch = require('multimatch');
 const { toArray, defaultsDeep, normalizePaths } = require('./utils');
 
 const urlAttrs = new RegExp(
@@ -10,25 +12,6 @@ const urlAttrs = new RegExp(
 );
 
 const helpers = {
-  collect(items, deep = false) {
-    return deep ? helpers.deepCollect(items) : new Collection(items);
-  },
-
-  deepCollect(items) {
-    if (Collection.isCollection(items)) {
-      return items;
-    }
-    const collection = new Collection(items);
-    for (const item of collection) {
-      for (const propName of Object.keys(item)) {
-        if (Array.isArray(item[propName])) {
-          item[propName] = helpers.deepCollect(item[propName]);
-        }
-      }
-    }
-    return collection;
-  },
-
   normalizeSrc(src, defaults = {}) {
     if (isString(src) || Array.isArray(src)) {
       src = {
@@ -40,7 +23,7 @@ const helpers = {
     return src;
   },
 
-  stack(...args) {
+  resolveStack(...args) {
     const values = compact(flatten(args));
     let result = [];
     for (const value of values) {
@@ -78,27 +61,61 @@ const helpers = {
       return allFiles.find(f => f.handle === url.replace(/^@/, ''));
     }
     return assets.find(a => a.handle === url);
+  },
+
+  toTree(items, pathProp) {
+    let nodes = flatMap(items, item => {
+      const path = item.treePath || item[pathProp] || '';
+      const nodes = makeNodes(path.trim('/'));
+      nodes[nodes.length - 1].node = item;
+      return nodes;
+    });
+
+    nodes = uniqBy(nodes, 'path');
+
+    return nodes.filter(node => node.depth === 1).map(node => {
+      node.children = getChildren(node, nodes);
+      return node;
+    });
+
+    function getChildren(parent, nodes) {
+      const children = nodes.filter(node => {
+        return node.depth === parent.depth + 1 && dirname(node.path) === parent.path;
+      });
+      for (const child of children) {
+        child.children = getChildren(child, nodes);
+      }
+      return children;
+    }
+
+    function makeNodes(path = '') {
+      const nodes = [];
+      let tmpPath;
+      const segments = [];
+      for (const segment of path.split('/')) {
+        tmpPath = tmpPath ? `${tmpPath}/${segment}` : segment;
+        segments.push(segment);
+        nodes.push({
+          name: segment,
+          path: tmpPath,
+          depth: segments.length
+        });
+      }
+      return nodes;
+    }
+  },
+
+  match(items, prop, matcher, replacements = {}) {
+    matcher = [].concat(matcher).map(match => pupa(match, replacements));
+    return items.filter(item => {
+      return multimatch(item[prop], matcher).length;
+    });
+  },
+
+  matchOne(...args) {
+    const matches = helpers.match(...args);
+    return matches.length > 0 ? matches[0] : null;
   }
-
-  // MatchFile(files, matcher, props = {}) {
-  //   matcher = [].concat(matcher).map(match => pupa(match, props));
-  //   return files.find(f => {
-  //     return multimatch(f.path, matcher, { matchBase: true }).length;
-  //   });
-  // },
-
-  // parseHandle(handle) {
-  //   const [component, ...parts] = handle.replace(/^@/, '').split('/');
-  //   const rest = parts.join('/');
-  //   let variant = null;
-  //   let path = null;
-  //   if (extname(rest)) {
-  //     path = rest;
-  //   } else {
-  //     variant = rest;
-  //   }
-  //   return { component, path, variant };
-  // },
 };
 
 module.exports = helpers;

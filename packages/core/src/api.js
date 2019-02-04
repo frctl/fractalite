@@ -1,8 +1,6 @@
-const { isString } = require('lodash');
+const { isString, flatMap, find } = require('lodash');
 const { map } = require('asyncro');
-const { deepCollect } = require('@fractalite/support/helpers');
 const { defaultsDeep } = require('@fractalite/support/utils');
-const Collection = require('@fractalite/support/collection');
 const Component = require('./entities/component');
 const Asset = require('./entities/asset');
 const Variant = require('./entities/variant');
@@ -16,7 +14,7 @@ module.exports = function(state, adapter) {
   for (const key of ['components', 'assets']) {
     Object.defineProperty(api, key, {
       get() {
-        return deepCollect(state[key] || []);
+        return state[key] || [];
       },
       enumerable: true
     });
@@ -24,14 +22,14 @@ module.exports = function(state, adapter) {
 
   Object.defineProperty(api, 'variants', {
     get() {
-      return api.components.flatMapToCollection(c => c.variants.toArray());
+      return flatMap(api.components, c => c.variants);
     },
     enumerable: true
   });
 
   Object.defineProperty(api, 'files', {
     get() {
-      return api.components.flatMapToCollection(c => c.files.toArray());
+      return flatMap(api.components, c => c.files);
     },
     enumerable: true
   });
@@ -52,7 +50,7 @@ module.exports = function(state, adapter) {
 
   api.getVariant = (target, throwOnNotFound = false) => {
     if (Variant.isVariant(target)) return target;
-    const variant = api.variants.find({ handle: target });
+    const variant = find(api.variants, { handle: target });
     if (!variant && throwOnNotFound) {
       throw new Error(`Variant '${target}' was not found`);
     }
@@ -63,7 +61,7 @@ module.exports = function(state, adapter) {
 
   api.getFile = (target, throwOnNotFound = false) => {
     if (File.isFile(target)) return target;
-    const file = api.files.find({ handle: target });
+    const file = find(api.files, { handle: target });
     if (!file && throwOnNotFound) {
       throw new Error(`Source file '${target}' was not found`);
     }
@@ -74,7 +72,7 @@ module.exports = function(state, adapter) {
 
   api.getAsset = (handle, throwOnNotFound = false) => {
     if (Asset.isAsset(handle)) return handle;
-    const asset = api.assets.find({ handle });
+    const asset = find(api.assets, { handle });
     if (!asset && throwOnNotFound) {
       throw new Error(`Asset '${handle}' was not found`);
     }
@@ -108,7 +106,7 @@ module.exports = function(state, adapter) {
     if (join === true) {
       join = '\n';
     }
-    if (Array.isArray(props) || Collection.isCollection(props)) {
+    if (Array.isArray(props)) {
       results = await map(props, p => api.render(target, p));
     } else {
       results = await Promise.all([api.render(target, props)]);
@@ -125,7 +123,7 @@ function resolveComponentTarget(target, components) {
   let component;
   let variant;
   if (isString(target)) {
-    const entities = components.flatMap(component => [component, ...component.variants]);
+    const entities = flatMap(components, component => [component, ...component.variants]);
     const found = entities.find(entity => entity.handle === target);
     if (!found) {
       throw new Error(`Could not resolve target '${target}'`);

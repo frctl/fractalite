@@ -1,10 +1,6 @@
 const { relative, parse, resolve, extname } = require('path');
-const {
-  collect,
-  normalizeSrc,
-  resolveFileUrl,
-  rewriteUrls
-} = require('@fractalite/support/helpers');
+const { find, uniqBy } = require('lodash');
+const { normalizeSrc, resolveFileUrl, rewriteUrls } = require('@fractalite/support/helpers');
 const { titlize } = require('@fractalite/support/utils');
 const { Asset, read } = require('@fractalite/core');
 const { watch } = require('chokidar');
@@ -15,7 +11,7 @@ module.exports = function(opts = {}) {
   if (typeof opts === 'string' || Array.isArray(opts)) opts = { src: opts };
 
   return async function pagesPlugin(app) {
-    let pages = collect();
+    let pages = [];
 
     opts.src = normalizeSrc(opts.src);
     opts.src.paths.push(resolve(__dirname, '../pages'));
@@ -27,7 +23,7 @@ module.exports = function(opts = {}) {
 
     app.addRoute('api.page', '/api/pages/:path(.+).json', async (ctx, next) => {
       const path = ctx.params.path === 'index' ? '/' : `/${ctx.params.path}`;
-      let page = pages.find({ url: path });
+      let page = find(pages, { url: path });
       if (page) {
         const content = await app.utils.renderPage(page.raw, {
           markdown: page.markdown,
@@ -40,7 +36,7 @@ module.exports = function(opts = {}) {
     });
 
     app.addRoute('page', ':path(.*)', async (ctx, next) => {
-      const page = pages.find({ url: ctx.params.path });
+      const page = find(pages, { url: ctx.params.path });
       if (page) {
         await ctx.render('app');
       }
@@ -80,8 +76,7 @@ module.exports = function(opts = {}) {
     async function setPages() {
       const files = await read(opts.src.paths, { ...opts.src.opts, onlyFiles: true });
 
-      pages = collect(await map(files, async file => makePage(file)));
-      pages = pages.uniq('url');
+      pages = uniqBy(await map(files, async file => makePage(file)), 'url');
 
       app.addViewGlobal('pages', pages);
       app.api.pages = pages;

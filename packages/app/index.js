@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { isFunction } = require('lodash');
 const { File } = require('@fractalite/core');
-const { stack } = require('@fractalite/support/helpers');
+const { resolveStack } = require('@fractalite/support/helpers');
 const App = require('./src/app');
 
 module.exports = function(opts = {}) {
@@ -13,13 +13,13 @@ module.exports = function(opts = {}) {
    */
   app.use((ctx, next) => {
     ctx.response.render = async function(path, locals = {}, opts) {
-      const state = Object.assign({}, ctx.state, locals);
+      const state = { ...ctx.state, ...locals };
       ctx.type = ctx.type || 'text/html';
       ctx.body = await views.renderAsync(path, state, opts);
     };
 
     ctx.response.renderString = async function(str, locals = {}, opts) {
-      const state = Object.assign({}, ctx.state, locals);
+      const state = { ...ctx.state, ...locals };
       ctx.type = ctx.type || 'text/html';
       ctx.body = await views.renderStringAsync(str, state, opts);
     };
@@ -138,15 +138,8 @@ module.exports = function(opts = {}) {
 
   views.addGlobal('url', (name, params) => app.url(name, params));
   views.addGlobal('resourceUrl', (name, path) => app.resourceUrl(name, path));
-  views.addFilter('stack', stack);
 
-  views.addFilter('resolve', function(variable) {
-    return isFunction(variable) ? variable(this.ctx) : variable;
-  });
-
-  views.addFilter('render', async function(content) {
-    return views.renderStringAsync(await content, this.ctx);
-  });
+  views.addFilter('resolveStack', resolveStack);
 
   app.addRoute('asset', '/assets/:asset(.+)', ctx => ctx.sendFile(ctx.asset));
 

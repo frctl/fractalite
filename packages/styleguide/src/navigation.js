@@ -1,25 +1,23 @@
-const { isFunction, isPlainObject } = require('lodash');
+const { isFunction, isPlainObject, reject, find } = require('lodash');
 const { titlize } = require('@fractalite/support/utils');
+const { toTree } = require('@fractalite/support/helpers');
 const { Variant, Component, File } = require('@fractalite/core');
 
 module.exports = function(opts = {}) {
   return function navigationPlugin(app) {
     const items =
       opts.items ||
-      function({ components, pages }) {
-        const index = pages.find({ url: '/' });
+      function({ components, pages, toTree }) {
+        const index = find(pages, { url: '/' });
         return [
-          {
-            label: index.label,
-            url: '/'
-          },
+          index,
           {
             label: 'Components',
-            children: components.toTree()
+            children: toTree(components)
           },
           {
             label: 'Pages',
-            children: pages.reject({ url: '/' }).toTree()
+            children: toTree(pages.filter(page => page === index))
           }
         ];
       };
@@ -33,7 +31,7 @@ module.exports = function(opts = {}) {
     app.addViewGlobal('nav', generateNavItems);
 
     function generateNavItems() {
-      let tree = isFunction(items) ? items(app.api) : items;
+      let tree = isFunction(items) ? items({ ...app.api, toTree }) : items;
       tree = expandValues(tree, app.api);
       return tree;
     }

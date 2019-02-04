@@ -1,6 +1,6 @@
 const { extname } = require('path');
 const { isFunction, pick } = require('lodash');
-const { stack, resolveFileUrl, rewriteUrls } = require('@fractalite/support/helpers');
+const { resolveStack, resolveFileUrl, rewriteUrls } = require('@fractalite/support/helpers');
 const { defaultsDeep, toArray } = require('@fractalite/support/utils');
 const { Asset } = require('@fractalite/core');
 
@@ -34,8 +34,8 @@ module.exports = function(opts = {}) {
         return path;
       };
 
-      const stylesheets = stack(opts.stylesheets, componentOpts.stylesheets).map(lookupFile);
-      const scripts = stack(opts.scripts, componentOpts.scripts).map(lookupFile);
+      const stylesheets = resolveStack(opts.stylesheets, componentOpts.stylesheets).map(lookupFile);
+      const scripts = resolveStack(opts.scripts, componentOpts.scripts).map(lookupFile);
 
       if (mergedOpts.reload) {
         scripts.push(app.resourceUrl('styleguide:reload.js'));

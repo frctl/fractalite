@@ -1,7 +1,7 @@
 const { extname } = require('path');
 const { Asset } = require('@fractalite/core');
 const { mapValues } = require('lodash');
-const { resolveFileUrl, collect, rewriteUrls } = require('@fractalite/support/helpers');
+const { resolveFileUrl, rewriteUrls, matchOne } = require('@fractalite/support/helpers');
 const flatten = require('flat');
 const { map } = require('asyncro');
 
@@ -32,11 +32,7 @@ module.exports = function(opts = {}) {
       app.compiler.use(async ({ components, assets }, next) => {
         await next();
         await map(components, async component => {
-          const view = collect(component.files).matchOne(
-            'basename',
-            app.adapter.opts.view,
-            component
-          );
+          const view = matchOne(component.files, 'basename', app.adapter.opts.view, component);
           if (view) {
             let contents = await view.getContents();
             contents = rewriteUrls(contents, path => replaceRelativeUrl(path, component));

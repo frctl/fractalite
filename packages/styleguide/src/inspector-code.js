@@ -37,7 +37,8 @@ module.exports = function(opts = {}) {
           padding: 12px;
           border: 1px solid #e6e6e6;
           vertical-align: middle;
-          max-width: 50%;
+          width: 50%;
+          overflow: auto;
         }
       `,
 

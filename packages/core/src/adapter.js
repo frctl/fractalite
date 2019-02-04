@@ -1,4 +1,5 @@
 const { html } = require('common-tags');
+const { matchOne } = require('@fractalite/support/helpers');
 
 const defaults = {
   view: ['view.*', '{name}.view.*']
@@ -18,7 +19,7 @@ class Adapter {
    * Get the template source code for a component as a string.
    */
   getSourceString(component, ctx) {
-    const view = component.files.matchOne('basename', this.opts.view, component);
+    const view = matchOne(component.files, 'basename', this.opts.view, component);
     return view ? view.getContents() : '';
   }
 
