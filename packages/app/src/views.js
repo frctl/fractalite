@@ -3,6 +3,7 @@ const { Environment } = require('nunjucks');
 const { SafeString } = require('nunjucks').runtime;
 const { each, merge, isPlainObject } = require('lodash');
 const ViewLoader = require('./views-loader');
+const IncludeRawExtension = require('./include-raw');
 
 const defaults = {
   paths: [],
@@ -95,6 +96,8 @@ module.exports = function(config = {}) {
   });
 
   njk.SafeString = SafeString;
+
+  njk.addExtension('includeraw', new IncludeRawExtension());
 
   return njk;
 };

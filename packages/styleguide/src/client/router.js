@@ -1,7 +1,7 @@
 import Vue from 'vue/dist/vue.js';
 import VueRouter from 'vue-router';
-import Inspector from './inspector';
-import Page from './page';
+import Inspector from './components/inspector';
+import Page from './components/page';
 
 Vue.use(VueRouter);
 

@@ -14,7 +14,7 @@ module.exports = function(opts = {}) {
     let pages = [];
 
     opts.src = normalizeSrc(opts.src);
-    opts.src.paths.push(resolve(__dirname, '../pages'));
+    opts.src.paths.push(resolve(__dirname, '../../pages'));
 
     app.use((ctx, next) => {
       ctx.pages = pages;

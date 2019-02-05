@@ -29352,7 +29352,43 @@ module.exports.default = axios;
 
 },{"./utils":"../node_modules/axios/lib/utils.js","./helpers/bind":"../node_modules/axios/lib/helpers/bind.js","./core/Axios":"../node_modules/axios/lib/core/Axios.js","./defaults":"../node_modules/axios/lib/defaults.js","./cancel/Cancel":"../node_modules/axios/lib/cancel/Cancel.js","./cancel/CancelToken":"../node_modules/axios/lib/cancel/CancelToken.js","./cancel/isCancel":"../node_modules/axios/lib/cancel/isCancel.js","./helpers/spread":"../node_modules/axios/lib/helpers/spread.js"}],"../node_modules/axios/index.js":[function(require,module,exports) {
 module.exports = require('./lib/axios');
-},{"./lib/axios":"../node_modules/axios/lib/axios.js"}],"js/navigation.js":[function(require,module,exports) {
+},{"./lib/axios":"../node_modules/axios/lib/axios.js"}],"../src/client/components/app-link.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  name: 'app-link',
+  template: `<component v-bind="linkProps(to)"><slot></slot></component>`,
+  props: {
+    to: {
+      type: String,
+      required: true
+    }
+  },
+  methods: {
+    linkProps(url) {
+      if (url.match(/^(http(s)?|ftp):\/\//)) {
+        return {
+          is: 'a',
+          href: url,
+          target: '_blank',
+          rel: 'noopener'
+        };
+      }
+
+      return {
+        is: 'router-link',
+        to: url
+      };
+    }
+
+  }
+};
+exports.default = _default;
+},{}],"../src/client/components/navigation.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29361,6 +29397,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _axios = _interopRequireDefault(require("axios"));
+
+var _appLink = _interopRequireDefault(require("./app-link"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29372,6 +29410,9 @@ var _default = {
     depth: {
       default: 1
     }
+  },
+  components: {
+    AppLink: _appLink.default
   },
   sockets: {
     async updated(state) {
@@ -29415,7 +29456,7 @@ var _default = {
   }
 };
 exports.default = _default;
-},{"axios":"../node_modules/axios/index.js"}],"js/error.js":[function(require,module,exports) {
+},{"axios":"../node_modules/axios/index.js","./app-link":"../src/client/components/app-link.js"}],"../src/client/components/error.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29441,7 +29482,7 @@ var _default = {
   }
 };
 exports.default = _default;
-},{}],"js/inspector.js":[function(require,module,exports) {
+},{}],"../src/client/components/inspector.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29544,7 +29585,7 @@ function debounce(func, wait, immediate) {
     if (callNow) func.apply(context, args);
   };
 }
-},{"axios":"../node_modules/axios/index.js"}],"js/page.js":[function(require,module,exports) {
+},{"axios":"../node_modules/axios/index.js"}],"../src/client/components/page.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29602,7 +29643,7 @@ var _default = {
   }
 };
 exports.default = _default;
-},{"axios":"../node_modules/axios/index.js"}],"js/router.js":[function(require,module,exports) {
+},{"axios":"../node_modules/axios/index.js"}],"../src/client/router.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29614,9 +29655,9 @@ var _vue = _interopRequireDefault(require("vue/dist/vue.js"));
 
 var _vueRouter = _interopRequireDefault(require("vue-router"));
 
-var _inspector = _interopRequireDefault(require("./inspector"));
+var _inspector = _interopRequireDefault(require("./components/inspector"));
 
-var _page = _interopRequireDefault(require("./page"));
+var _page = _interopRequireDefault(require("./components/page"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29645,10 +29686,8 @@ var _default = new _vueRouter.default({
 });
 
 exports.default = _default;
-},{"vue/dist/vue.js":"../node_modules/vue/dist/vue.js","vue-router":"../node_modules/vue-router/dist/vue-router.esm.js","./inspector":"js/inspector.js","./page":"js/page.js"}],"app.js":[function(require,module,exports) {
+},{"vue/dist/vue.js":"../node_modules/vue/dist/vue.js","vue-router":"../node_modules/vue-router/dist/vue-router.esm.js","./components/inspector":"../src/client/components/inspector.js","./components/page":"../src/client/components/page.js"}],"../src/client/app.js":[function(require,module,exports) {
 "use strict";
-
-require("./app.scss");
 
 require("@fortawesome/fontawesome-free/js/all.js");
 
@@ -29660,11 +29699,11 @@ var _vueSocket = _interopRequireDefault(require("vue-socket.io-extended"));
 
 var _socket = _interopRequireDefault(require("socket.io-client"));
 
-var _navigation = _interopRequireDefault(require("./js/navigation"));
+var _navigation = _interopRequireDefault(require("./components/navigation"));
 
-var _error = _interopRequireDefault(require("./js/error"));
+var _error = _interopRequireDefault(require("./components/error"));
 
-var _router = _interopRequireDefault(require("./js/router"));
+var _router = _interopRequireDefault(require("./router"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29738,7 +29777,13 @@ const app = new _vue.default({
   }
 
 });
-},{"./app.scss":"app.scss","@fortawesome/fontawesome-free/js/all.js":"../node_modules/@fortawesome/fontawesome-free/js/all.js","vue/dist/vue.js":"../node_modules/vue/dist/vue.js","vue-router":"../node_modules/vue-router/dist/vue-router.esm.js","vue-socket.io-extended":"../node_modules/vue-socket.io-extended/dist/vue-socket.io-ext.esm.js","socket.io-client":"../node_modules/socket.io-client/lib/index.js","./js/navigation":"js/navigation.js","./js/error":"js/error.js","./js/router":"js/router.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"@fortawesome/fontawesome-free/js/all.js":"../node_modules/@fortawesome/fontawesome-free/js/all.js","vue/dist/vue.js":"../node_modules/vue/dist/vue.js","vue-router":"../node_modules/vue-router/dist/vue-router.esm.js","vue-socket.io-extended":"../node_modules/vue-socket.io-extended/dist/vue-socket.io-ext.esm.js","socket.io-client":"../node_modules/socket.io-client/lib/index.js","./components/navigation":"../src/client/components/navigation.js","./components/error":"../src/client/components/error.js","./router":"../src/client/router.js"}],"app.js":[function(require,module,exports) {
+"use strict";
+
+require("./app.scss");
+
+require("../src/client/app.js");
+},{"./app.scss":"app.scss","../src/client/app.js":"../src/client/app.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

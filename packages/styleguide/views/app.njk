@@ -1,4 +1,4 @@
-{% extends "layouts/default" %}
+{% extends "layout" %}
 
 {% block navigation %}
 <navigation></navigation>
@@ -11,7 +11,7 @@
 {% block preScripts %}
 {% for template in ['navigation', 'inspector', 'page', 'error'] %}
 <script type="text/x-template" id="{{ template }}">
-{% include "partials/" + template %}
+{% includeraw "components/" + template %}
 </script>
 {% endfor %}
 {% endblock %}
