@@ -10,8 +10,23 @@ module.exports = {
   pages: resolve(__dirname, './src/pages'),
 
   preview: {
-    scripts: [],
     stylesheets: ['main.css']
+  },
+
+  nav: {
+    items({ components, pages, toTree }) {
+      return [
+        toTree(pages),
+        {
+          label: 'Components',
+          children: toTree(components)
+        },
+        {
+          label: 'Github repo &rarr;',
+          url: 'http://github.com/allmarkedup/fractalite'
+        }
+      ];
+    }
   },
 
   init(app) {

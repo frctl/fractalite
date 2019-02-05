@@ -1,5 +1,4 @@
-const { dirname } = require('path');
-const { isString, isPlainObject, get, flatten, compact, flatMap, uniqBy } = require('lodash');
+const { isString, isPlainObject, get, flatten, compact } = require('lodash');
 const attributes = require('html-url-attributes');
 const pupa = require('pupa');
 const multimatch = require('multimatch');
@@ -61,48 +60,6 @@ const helpers = {
       return allFiles.find(f => f.handle === url.replace(/^@/, ''));
     }
     return assets.find(a => a.handle === url);
-  },
-
-  toTree(items, pathProp) {
-    let nodes = flatMap(items, item => {
-      const path = item.treePath || item[pathProp] || '';
-      const nodes = makeNodes(path.trim('/'));
-      nodes[nodes.length - 1].node = item;
-      return nodes;
-    });
-
-    nodes = uniqBy(nodes, 'path');
-
-    return nodes.filter(node => node.depth === 1).map(node => {
-      node.children = getChildren(node, nodes);
-      return node;
-    });
-
-    function getChildren(parent, nodes) {
-      const children = nodes.filter(node => {
-        return node.depth === parent.depth + 1 && dirname(node.path) === parent.path;
-      });
-      for (const child of children) {
-        child.children = getChildren(child, nodes);
-      }
-      return children;
-    }
-
-    function makeNodes(path = '') {
-      const nodes = [];
-      let tmpPath;
-      const segments = [];
-      for (const segment of path.split('/')) {
-        tmpPath = tmpPath ? `${tmpPath}/${segment}` : segment;
-        segments.push(segment);
-        nodes.push({
-          name: segment,
-          path: tmpPath,
-          depth: segments.length
-        });
-      }
-      return nodes;
-    }
   },
 
   match(items, prop, matcher, replacements = {}) {

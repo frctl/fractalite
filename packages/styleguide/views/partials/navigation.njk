@@ -1,8 +1,8 @@
 {% raw %}
 <ul class="fr-nav__items" :data-level="depth">
   <li v-for="item in items">
-    <router-link :to="item.url" v-if="item.url" class="fr-nav__label fr-nav__link">{{ item.label }}</router-link>
-    <span class="fr-nav__label fr-nav__toggle" v-else>{{ item.label }}</span>
+  <a :href="item.url" v-if="item.url" class="fr-nav__label fr-nav__link" v-html="item.label"></a>
+    <span class="fr-nav__label fr-nav__toggle" v-html="item.label" v-else></span>
     <navigation :pages="item.children" :depth="depth + 1" v-if="item.children"></navigation>
   </li>
 </ul>

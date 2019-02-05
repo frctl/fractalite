@@ -11,9 +11,6 @@ module.exports = function(opts = {}) {
 
     app.utils.replaceShortlinks = (str, componentRoute = 'preview') => {
       return rewriteUrls(str, path => {
-        if (opts.relative === false && path.startsWith('./')) {
-          return;
-        }
         const file = resolveFileUrl(path, [], app.api.files, app.api.assets);
         if (file) {
           return Asset.isAsset(file) ? app.url('asset', { asset: file }) : app.url('src', { file });
