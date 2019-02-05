@@ -11,6 +11,7 @@ module.exports = function(opts = {}) {
   if (typeof opts === 'string' || Array.isArray(opts)) opts = { src: opts };
 
   return async function pagesPlugin(app) {
+    const { styleguide } = app;
     let pages = [];
 
     opts.src = normalizeSrc(opts.src);
@@ -25,7 +26,7 @@ module.exports = function(opts = {}) {
       const path = ctx.params.path === 'index' ? '/' : `/${ctx.params.path}`;
       let page = find(pages, { url: path });
       if (page) {
-        const content = await app.utils.renderPage(page.raw, {
+        const content = await styleguide.renderPage(page.raw, {
           markdown: page.markdown,
           template: page.template,
           ctx: { ...ctx.state, page }
@@ -43,20 +44,20 @@ module.exports = function(opts = {}) {
       return next();
     });
 
-    app.utils.parseFrontMatter = function(content, opts = {}) {
+    styleguide.parseFrontMatter = function(content, opts = {}) {
       return matter({ ...opts, content });
     };
 
-    app.utils.renderPage = async function(str = '', opts = {}) {
+    styleguide.renderPage = async function(str = '', opts = {}) {
       if (opts.template === true) {
-        str = await app.utils.renderString(str, opts.ctx || {});
+        str = await app.views.renderStringAsync(str, opts.ctx || {});
       }
       if (opts.markdown === true) {
-        str = app.utils.renderMarkdown(str);
+        str = styleguide.renderMarkdown(str);
       }
       if (opts.refs === false) return str;
 
-      return app.utils.replaceShortlinks(str, 'inspect');
+      return styleguide.replaceShortlinks(str, 'inspect');
     };
 
     // app.addBuildStep('page', ({ requestRoute }) => {
@@ -84,7 +85,7 @@ module.exports = function(opts = {}) {
     }
 
     async function makePage(file) {
-      const { data, content } = app.utils.parseFrontMatter(
+      const { data, content } = styleguide.parseFrontMatter(
         await file.getContents(),
         opts.frontmatter
       );

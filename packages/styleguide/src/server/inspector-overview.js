@@ -19,8 +19,8 @@ module.exports = function(opts = {}) {
   return function inspectorOverviewPlugin(app) {
     if (opts === false) return;
 
+    const { styleguide } = app;
     const className = 'inspector-panel-overview';
-
     const defaultNotes = opts.notes || defaultNotesTemplate;
 
     app.get('inspector.panels').push({
@@ -49,7 +49,7 @@ module.exports = function(opts = {}) {
         let notes;
 
         if (typeof component.notes === 'string') {
-          const { content, data } = app.utils.parseFrontMatter(component.notes);
+          const { content, data } = styleguide.parseFrontMatter(component.notes);
 
           const renderOpts = defaultsDeep(data, {
             markdown: true,
@@ -58,9 +58,9 @@ module.exports = function(opts = {}) {
             ctx
           });
 
-          notes = await app.utils.renderPage(content, renderOpts);
+          notes = await styleguide.renderPage(content, renderOpts);
         } else {
-          notes = await app.utils.renderPage(defaultNotes, {
+          notes = await styleguide.renderPage(defaultNotes, {
             template: true,
             localFiles: component.files,
             ctx

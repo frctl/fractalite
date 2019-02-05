@@ -11,6 +11,8 @@ const relativePaths = require('clean-stacktrace-relative-paths');
 module.exports = function({ compiler, adapter, mode, ...config }) {
   const app = new App({ compiler, adapter, mode });
 
+  app.styleguide = {};
+
   app.props({
     title: config.title || 'Styleguide',
     stylesheets: ['styleguide:app.css'],

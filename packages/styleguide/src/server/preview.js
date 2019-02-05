@@ -6,8 +6,9 @@ const { Asset } = require('@fractalite/core');
 
 module.exports = function(opts = {}) {
   return function previewPlugin(app) {
+    const { styleguide, api } = app;
+
     app.renderPreview = async function renderPreview(target, props = [], runtimeOpts = {}) {
-      const { api } = app;
       const { component, variant } = api.resolveComponent(target);
 
       const items = await api.renderAll(target, props, false);
@@ -92,6 +93,6 @@ module.exports = function(opts = {}) {
      * Post-render adapter hook to re-write @component
      * urls in rendered content.
      */
-    app.adapter.addHook('post-preview', str => app.utils.replaceShortlinks(str, 'preview'));
+    app.adapter.addHook('post-preview', str => styleguide.replaceShortlinks(str, 'preview'));
   };
 };

@@ -134,8 +134,6 @@ module.exports = function(opts = {}) {
     return next();
   });
 
-  utils.renderString = (str, props, opts) => views.renderStringAsync(str, props, opts);
-
   views.addGlobal('url', (name, params) => app.url(name, params));
   views.addGlobal('resourceUrl', (name, path) => app.resourceUrl(name, path));
 

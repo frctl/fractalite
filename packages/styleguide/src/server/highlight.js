@@ -6,7 +6,7 @@ module.exports = function(opts = {}) {
   opts = defaultsDeep(opts, {});
 
   return function highlightPlugin(app) {
-    app.utils.highlightCode = (str, lang = 'html') => {
+    app.styleguide.highlightCode = (str, lang = 'html') => {
       if (lang && hljs.getLanguage(lang)) {
         try {
           const h = hljs.highlight(lang, str, true);
@@ -16,6 +16,6 @@ module.exports = function(opts = {}) {
       return `<pre class="fr-code hljs"><code class="hljs">${escape(str)}</code></pre>`;
     };
 
-    app.addViewFilter('highlight', (str, lang) => app.utils.highlightCode(str, lang));
+    app.addViewFilter('highlight', (str, lang) => app.styleguide.highlightCode(str, lang));
   };
 };

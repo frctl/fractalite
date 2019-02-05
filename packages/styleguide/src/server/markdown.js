@@ -8,7 +8,7 @@ module.exports = function(opts = {}) {
     opts = defaultsDeep(opts, {
       html: true,
       linkify: true,
-      highlight: app.utils.highlightCode
+      highlight: app.styleguide.highlightCode
     });
 
     const md = new Markdown(opts);
@@ -18,7 +18,7 @@ module.exports = function(opts = {}) {
       writable: false
     });
 
-    app.utils.renderMarkdown = str => md.render(str);
+    app.styleguide.renderMarkdown = str => md.render(str);
 
     app.addViewFilter('markdown', str => md.render(str || ''));
   };

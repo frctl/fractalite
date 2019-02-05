@@ -9,7 +9,7 @@ module.exports = function(opts = {}) {
   return function shortlinksPlugin(app) {
     if (opts === false) return;
 
-    app.utils.replaceShortlinks = (str, componentRoute = 'preview') => {
+    app.styleguide.replaceShortlinks = (str, componentRoute = 'preview') => {
       return rewriteUrls(str, path => {
         const file = resolveFileUrl(path, [], app.api.files, app.api.assets);
         if (file) {

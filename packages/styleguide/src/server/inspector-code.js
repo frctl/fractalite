@@ -50,10 +50,10 @@ module.exports = function(opts = {}) {
           if (opts.prettify !== false) {
             html = beautify['html'](html, opts.prettify);
           }
-          html = app.utils.highlightCode(html, 'html');
+          html = app.styleguide.highlightCode(html, 'html');
 
           let json = JSON.stringify(app.api.mergeProps(variant, props), null, 2);
-          json = app.utils.highlightCode(json, 'json');
+          json = app.styleguide.highlightCode(json, 'json');
 
           return { html, json };
         });
