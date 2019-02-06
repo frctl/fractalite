@@ -34,7 +34,7 @@ class Adapter {
   }
 
   wrapInPreview(content, opts, ctx) {
-    const { stylesheets = [], scripts = [], meta = {} } = opts;
+    const { stylesheets = [], scripts = [], css = [], js = [], meta = {} } = opts;
     return html`
       <!DOCTYPE html>
       <html lang="${meta.lang || 'en'}" dir="${meta.dir || 'ltr'}">
@@ -42,11 +42,13 @@ class Adapter {
         <meta charset="${meta.charset || 'utf-8'}">
         <meta name="viewport" content="${meta.viewport || 'width=device-width, initial-scale=1.0'}">
         ${stylesheets.map(url => `<link rel="stylesheet" href="${url}">`)}
+        ${css.map(code => `<style>${code}</style>`)}
         <title>${meta.title || 'Preview'}</title>
       </head>
       <body>
         ${content}
         ${scripts.map(url => `<script src="${url}"></script>`)}
+        ${js.map(code => `<script>${code}</script>`)}
       </body>
       </html>
     `;

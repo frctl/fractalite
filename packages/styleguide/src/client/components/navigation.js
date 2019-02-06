@@ -1,5 +1,4 @@
 import axios from 'axios';
-import AppLink from './app-link';
 
 export default {
   name: 'navigation',
@@ -10,7 +9,6 @@ export default {
       default: 1
     }
   },
-  components: { AppLink },
   sockets: {
     async updated(state) {
       if (this.depth === 1) {

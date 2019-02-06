@@ -1,23 +1,41 @@
-import '@fortawesome/fontawesome-free/js/all.js';
 import Vue from 'vue/dist/vue.js';
 import VueRouter from 'vue-router';
 import VueSocketio from 'vue-socket.io-extended';
 import io from 'socket.io-client';
+import VueSplit from 'vue-split-panel';
+import VueCodemirror from 'vue-codemirror';
+
+import 'codemirror/mode/javascript/javascript.js';
+import 'codemirror/mode/htmlmixed/htmlmixed.js';
+import 'codemirror/addon/display/autorefresh.js';
+
+import 'codemirror/lib/codemirror.css';
 
 import Navigation from './components/navigation';
 import Error from './components/error';
+import AppLink from './components/app-link';
 import router from './router';
 
 Vue.use(VueSocketio, io());
+Vue.use(VueSplit);
 
+Vue.use(VueCodemirror, {
+  options: {
+    lineNumbers: true,
+    readOnly: true,
+    lineWrapping: true,
+    autoRefresh: true
+  }
+});
+Vue.component('navigation', Navigation);
+Vue.component('app-link', AppLink);
 Vue.component('error', Error);
 
-const app = new Vue({
+window.app = new Vue({
   el: '#app',
   data: {
     error: null
   },
-  components: { Navigation },
   router,
   sockets: {
     err(err) {

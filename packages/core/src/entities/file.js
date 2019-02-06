@@ -21,6 +21,14 @@ class File extends Entity {
     return this.relative;
   }
 
+  get size() {
+    const suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    const size = this.stats.size;
+    const i = Math.floor(Math.log(size) / Math.log(1024));
+    const displaySize = (size / Math.pow(1024, i)).toFixed(2) * 1;
+    return `${displaySize} ${suffixes[i]}`;
+  }
+
   get isFile() {
     return true;
   }

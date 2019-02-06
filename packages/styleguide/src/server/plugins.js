@@ -20,6 +20,10 @@ module.exports = [
     handler: require('./preview')
   },
   {
+    key: 'inspector',
+    handler: require('./inspector')
+  },
+  {
     key: 'pages',
     handler: require('./pages')
   },
@@ -32,7 +36,11 @@ module.exports = [
     handler: require('./inspector-overview')
   },
   {
-    key: 'inspector.code',
-    handler: require('./inspector-code')
+    key: 'inspector.html',
+    handler: require('./inspector-html')
+  },
+  {
+    key: 'inspector.notes',
+    handler: require('./inspector-notes')
   }
 ];

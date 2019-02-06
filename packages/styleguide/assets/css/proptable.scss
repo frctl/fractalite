@@ -1,0 +1,21 @@
+.fr-proptable {
+  background-color: #fff;
+  display: table;
+  font-size: 15px;
+  border-collapse: collapse;
+
+  &__row {
+    display: table-row;
+  }
+
+  &__cell {
+    display: table-cell;
+    border: 1px solid #e6e6e6;
+    padding: 2px 5px;
+  }
+
+  &__cell--fit {
+    width: 1%;
+    white-space: nowrap;
+  }
+}

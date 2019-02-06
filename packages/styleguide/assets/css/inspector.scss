@@ -6,22 +6,6 @@
   background: #e8ebee;
   overflow: hidden;
 
-  // &__header {
-  //   flex: none;
-  //   display: flex;
-  //   align-items: center;
-  //   padding: 14px 0;
-  //   margin: 0 12px 0 12px;
-  // }
-  //
-  // &__title {
-  //   font-size: 20px;
-  // }
-  //
-  // &__actions {
-  //   margin-left: auto;
-  // }
-
   &__preview {
     flex: 0;
     border-bottom: 1px solid rgba(70, 81, 94, 0.25);
@@ -36,7 +20,6 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    // margin: 0 12px 0 12px;
   }
 
   &__tabs {
@@ -45,5 +28,18 @@
 
   &__panels {
     flex: 1;
+  }
+
+  .CodeMirror {
+    height: 100%;
+    font-size: 15px;
+  }
+
+  .CodeMirror-scroll {
+    margin-bottom: 0 !important;
+  }
+
+  .vue-codemirror {
+    height: 100%;
   }
 }

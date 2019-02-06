@@ -1,32 +1,30 @@
 const { resolve } = require('path');
-const { forEach, get, mapValues } = require('lodash');
+const { forEach, get, mapValues, orderBy } = require('lodash');
 const jsonErrors = require('koa-json-error');
 const App = require('@fractalite/app');
-const { resolveValue, mapValuesAsync } = require('@fractalite/support/utils');
 const corePlugins = require('./src/server/plugins');
-const { map } = require('asyncro');
 const cleanStack = require('clean-stacktrace');
 const relativePaths = require('clean-stacktrace-relative-paths');
+
+const staticAssetsMount = '/styleguide';
 
 module.exports = function({ compiler, adapter, mode, ...config }) {
   const app = new App({ compiler, adapter, mode });
 
-  app.styleguide = {};
+  const styleguide = {};
 
   app.props({
     title: config.title || 'Styleguide',
-    stylesheets: ['styleguide:app.css'],
-    scripts: ['styleguide:app.js'],
+    stylesheets: ['styleguide:app.css', 'styleguide:plugins.css'],
+    scripts: ['styleguide:app.js', 'styleguide:plugins.js'],
     css: [],
     js: [],
-    inspector: {
-      panels: []
-    }
+    config
   });
 
   app.addViewPath(resolve(__dirname, './views'));
 
-  app.addStaticDir('styleguide', resolve(__dirname, './dist'), '/styleguide');
+  app.addStaticDir('styleguide', resolve(__dirname, './dist'), staticAssetsMount);
 
   app.addRoute('overview', '/', async (ctx, next) => ctx.render('app'));
 
@@ -35,27 +33,15 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
     return next();
   });
 
-  app.addRoute('api.inspect', '/api/inspect/:handle(.+).json', async (ctx, next) => {
-    let { component, variant } = ctx.api.resolveComponent(ctx.params.handle);
-    // variant = variant || component.variants.first();
-    const panels = await map(app.get('inspector.panels'), panel => {
-      const state = { ...ctx.state, variant, component };
-      return mapValuesAsync(panel, value => resolveValue(value, state));
-    });
-    ctx.body = {
-      component: component,
-      variant: variant,
-      preview: variant ? await app.renderPreview(variant, variant.previewProps) : null,
-      panels: panels.filter(panel => panel.content)
-    };
-    return next();
+  app.addRoute('styleguide-css', `${staticAssetsMount}/plugins.css`, ctx => {
+    ctx.type = 'text/css';
+    ctx.body = app.get('css').join('\n');
   });
 
-  app.addRoute('inspect', '/inspect/:handle(.+)', (ctx, next) => ctx.render('app'));
-
-  // app.addBuildStep('inspect', ({ requestRoute }) => {
-  //   app.api.variants.forEach(variant => requestRoute('detail', { variant }));
-  // });
+  app.addRoute('styleguide-js', `${staticAssetsMount}/plugins.js`, ctx => {
+    ctx.type = 'application/javascript';
+    ctx.body = app.get('js').join('\n');
+  });
 
   app.use(jsonErrors());
 
@@ -105,12 +91,23 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
   });
 
   /*
+   * Styleguide-specific API methods
+   */
+
+  styleguide.addJS = js => app.get('js').push(js);
+  styleguide.addCSS = css => app.get('css').push(css);
+  styleguide.addScript = src => app.get('scripts').push(src);
+  styleguide.addStylesheet = href => app.get('stylesheets').push(href);
+
+  app.styleguide = styleguide;
+
+  /*
    * Load all core plugins, initialised with opts
    */
-  corePlugins.forEach(async ({ key, handler }) => {
+  corePlugins.forEach(({ key, handler }) => {
     const opts = get(config, key, {});
     const plugin = handler(opts);
-    await app.addPlugin(plugin);
+    app.addPlugin(plugin);
   });
 
   /*
@@ -124,14 +121,6 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
    */
   if (typeof config.init === 'function') {
     config.init(app);
-  }
-
-  // TODO: improve handling of user defined css/js
-  let css = app.get('css');
-  let js = app.get('js');
-  for (const panel of app.get('inspector.panels')) {
-    if (panel.css) css.push(panel.css);
-    if (panel.js) js.push(panel.js);
   }
 
   app.addViewGlobal('app', app.props());

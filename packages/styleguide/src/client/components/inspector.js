@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Preview from './preview';
 
 const supportsSrcdoc = !!('srcdoc' in document.createElement('iframe'));
 
@@ -10,11 +11,11 @@ export default {
       const previewSrc = this.preview;
       await this.load();
       if (supportsSrcdoc && previewSrc === this.preview) {
-        // refresh iframe in case assets have changed
-        this.reloadPreview();
+        this.$refs['preview'].reload(); // refresh iframe in case assets have changed
       }
     }
   },
+  components: { Preview },
   data() {
     return {
       component: null,
@@ -26,13 +27,6 @@ export default {
     };
   },
   methods: {
-    reloadPreview: debounce(
-      function() {
-        this.$refs['preview'].contentWindow.location.reload();
-      },
-      500,
-      true
-    ),
     async load() {
       if (this.handle) {
         try {
@@ -56,6 +50,14 @@ export default {
       this.currentTab = i;
     }
   },
+  computed: {
+    panel() {
+      return {
+        template: '<div>hello</div>'
+        // methods: this.$options.methods
+      };
+    }
+  },
   async mounted() {
     await this.load();
   },
@@ -65,19 +67,3 @@ export default {
     }
   }
 };
-
-function debounce(func, wait, immediate) {
-  var timeout;
-  return function() {
-    var context = this,
-      args = arguments;
-    var later = function() {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
-    var callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(context, args);
-  };
-}

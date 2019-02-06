@@ -1,17 +1,26 @@
 {% extends "layout" %}
 
-{% block navigation %}
-<navigation></navigation>
-{% endblock %}
-
-{% block main %}
-<router-view></router-view>
+{% block body %}
+<error v-if="error" :error="error" class="fr-error--overlay"></error>
+<div class="fr-layout">
+  <div class="fr-layout__sidebar fr-sidebar">
+    <header class="fr-branding">
+      <div class="fr-brand">
+        <router-link to="/" class="fr-brand__title">{{ app.title }}</router-link>
+      </div>
+    </header>
+    <navigation></navigation>
+  </div>
+  <main class="fr-layout__main fr-main">
+    <router-view></router-view>
+  </main>
+</div>
 {% endblock %}
 
 {% block preScripts %}
-{% for template in ['navigation', 'inspector', 'page', 'error'] %}
+{% for template in ['navigation', 'preview', 'inspector', 'page', 'error'] %}
 <script type="text/x-template" id="{{ template }}">
-{% includeraw "components/" + template %}
+{% includeraw "components/" + template + '.vue' %}
 </script>
 {% endfor %}
 {% endblock %}

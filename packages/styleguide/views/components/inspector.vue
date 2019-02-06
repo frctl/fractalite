@@ -1,9 +1,6 @@
 <div class="fr-inspector" v-if="loaded">
-  <div class="fr-inspector__preview" v-if="preview">
-    <iframe :srcdoc="preview" :src="variant.previewUrl" frameborder="0" class="fr-preview" ref="preview"></iframe>
-  </div>
-
-  <div class="fr-inspector__info">
+  <preview v-if="preview" :srcdoc="preview" :src="variant.previewUrl" class="fr-inspector__preview" ref="preview"></preview>
+    <div class="fr-inspector__info">
     <ul class="fr-tabs fr-inspector__tabs" v-if="panels.length > 1">
       <li class="fr-tabs__tab" :class="{ 'is-current': currentTab === i }" v-for="(panel, i) in panels">
         <a href="#" @click="selectTab(i)">{{ panel.label }}</a>
@@ -13,8 +10,14 @@
       <div
         class="fr-panels__panel"
         v-show="currentTab === i"
-        v-for="(panel, i) in panels"
-        v-html="panel.content">
+        v-for="(panel, i) in panels">
+        <component
+          :is="{ template: panel.template, props: ['variant', 'component', 'panel', 'preview'] }"
+          :variant="variant"
+          :preview="preview"
+          :component="component"
+          :panel="panel"
+        />
       </div>
     </div>
   </div>

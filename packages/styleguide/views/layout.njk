@@ -14,38 +14,15 @@
   <style>{{ app.css | join(`\n`) }}</style>
   {% endif %}
   {% block postStyles %}{% endblock -%}
-
+  
   <title>{% block title %}{% if page.title %}{{ page.title }} | {% endif %}{{ app.meta.title }}{% endblock %}</title>
 </head>
 <body>
 
 <div id="app">
-  {%- block preBody %}{% endblock %}
-  {% block body %}
-  <error v-if="error" :error="error" class="fr-error--overlay"></error>
-  <div class="fr-layout">
-    <div class="fr-layout__sidebar fr-sidebar">
-    {% block sidebar %}
-
-      <header class="fr-branding">
-      {% block brand %}
-        <div class="fr-brand">
-          <router-link to="/" class="fr-brand__title">{{ app.title }}</router-link>
-        </div>
-      {% endblock %}
-      </header>
-
-      {% block navigation %}{% endblock %}
-
-    {% endblock %}
-    </div>
-    <main class="fr-layout__main fr-main">
-    {% block main %}{% endblock %}
-    </main>
-  </div>
-  {% endblock %}
-  {%- block postbody %}{% endblock %}
-
+{%- block preBody %}{% endblock %}
+{% block body %}{% endblock %}
+{%- block postbody %}{% endblock %}
 </div>
 
 {%- block preScripts %}{% endblock %}

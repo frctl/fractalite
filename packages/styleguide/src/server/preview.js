@@ -6,9 +6,24 @@ const { Asset } = require('@fractalite/core');
 
 module.exports = function(opts = {}) {
   return function previewPlugin(app) {
-    const { styleguide, api } = app;
+    const { styleguide, api, compiler, adapter } = app;
 
-    app.renderPreview = async function renderPreview(target, props = [], runtimeOpts = {}) {
+    app.set('preview', {
+      css: [],
+      js: []
+    });
+
+    styleguide.addPreviewCSS = css => {
+      app.get('preview.css').push(css);
+      return app;
+    };
+
+    styleguide.addPreviewJS = js => {
+      app.get('preview.js').push(js);
+      return app;
+    };
+
+    styleguide.renderPreview = async function(target, props = [], runtimeOpts = {}) {
       const { component, variant } = api.resolveComponent(target);
 
       const items = await api.renderAll(target, props, false);
@@ -42,13 +57,16 @@ module.exports = function(opts = {}) {
         scripts.push(app.resourceUrl('styleguide:reload.js'));
       }
 
+      mergedOpts.js = [...app.get('preview.js'), ...mergedOpts.js];
+      mergedOpts.css = [...app.get('preview.css'), ...mergedOpts.css];
+
       return api.wrapInPreview(html, { ...mergedOpts, scripts, stylesheets });
     };
 
     app.addRoute('preview', `/${opts.mount || 'preview'}/:handle(.+)`, async (ctx, next) => {
       let { component, variant } = ctx.api.resolveComponent(ctx.params.handle);
       if (variant) {
-        ctx.body = await app.renderPreview(variant, variant.previewProps, {
+        ctx.body = await styleguide.renderPreview(variant, variant.previewProps, {
           reload: true
         });
       } else {
@@ -62,7 +80,7 @@ module.exports = function(opts = {}) {
     /*
      * Middleware to add preview urls to variants.
      */
-    app.compiler.use(async ({ components, assets }, next) => {
+    compiler.use(async ({ components, assets }, next) => {
       await next();
       components.forEach(component => {
         component.variants.forEach(variant => {
@@ -74,15 +92,20 @@ module.exports = function(opts = {}) {
     /*
      * Middleware to add preview data from config files.
      */
-    app.compiler.use(({ components }) => {
+    compiler.use(({ components }) => {
       components.forEach(component => {
         component.preview = defaultsDeep(component.config.preview || {}, {
           meta: {
             title: `${component.label} | Preview`
           },
           scripts: [],
-          stylesheets: []
+          stylesheets: [],
+          js: [],
+          css: []
         });
+        component.preview.js = toArray(component.preview.js);
+        component.preview.css = toArray(component.preview.css);
+
         component.variants.forEach(variant => {
           variant.previewProps = toArray(variant.config.previewProps || {});
         });
@@ -93,6 +116,6 @@ module.exports = function(opts = {}) {
      * Post-render adapter hook to re-write @component
      * urls in rendered content.
      */
-    app.adapter.addHook('post-preview', str => styleguide.replaceShortlinks(str, 'preview'));
+    adapter.addHook('post-preview', str => styleguide.replaceShortlinks(str, 'preview'));
   };
 };

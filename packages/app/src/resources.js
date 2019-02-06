@@ -43,10 +43,11 @@ module.exports = function(opts = {}) {
     sources.push({ name, path: normalizePath(path), mount });
   }
 
-  function url(sourceName, relativePath) {
-    if (!relativePath) {
-      [sourceName, relativePath] = sourceName.split(':');
+  function url(path) {
+    if (path.indexOf('://') !== -1 || path.startsWith('/')) {
+      return path; // ignore external or absolute paths
     }
+    const [sourceName, relativePath] = path.split(':');
     const source = sources.find(src => src.name === sourceName);
     if (!source) {
       throw new Error(`'${sourceName}' is not a recognised static asset source`);
