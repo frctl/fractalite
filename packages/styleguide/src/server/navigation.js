@@ -11,17 +11,19 @@ module.exports = function(opts = {}) {
     const items = opts.items || defaultGenerator;
 
     app.addRoute('api.navigation', '/api/navigation.json', ctx => {
+      const { pages, components, assets } = ctx;
       ctx.body = {
-        items: generateNavItems()
+        items: buildNav(items, { pages, components, assets })
       };
     });
 
-    app.addViewGlobal('nav', generateNavItems);
+    app.compiler.use(({ components }) => {
+      components.forEach(component => {
+        component.position = component.config.position || 1000;
+      });
+    });
 
-    function generateNavItems() {
-      let tree = isFunction(items) ? items({ ...app.api, toTree }) : items;
-      return expandValues(tree, app.api);
-    }
+    app.addViewGlobal('nav', buildNav);
   };
 };
 
@@ -36,7 +38,12 @@ function defaultGenerator({ components, pages, toTree }) {
   ];
 }
 
-function expandValues(items, api) {
+function buildNav(items, entities) {
+  items = isFunction(items) ? items({ ...entities, toTree }) : items;
+  return expandValues(items);
+}
+
+function expandValues(items) {
   return flatMap(items, item => {
     if (Array.isArray(item)) {
       return expandValues(item);
@@ -49,7 +56,6 @@ function expandValues(items, api) {
     if (Component.isComponent(item)) {
       return {
         label: item.label,
-        url: item.url,
         children: expandValues(item.variants)
       };
     }
@@ -71,7 +77,7 @@ function expandValues(items, api) {
     item = {
       label: item.label || item.handle,
       url: item.url,
-      children: item.children ? expandValues(item.children, api) : null
+      children: item.children ? expandValues(item.children) : null
     };
 
     if (isPlainObject(item.url)) {
@@ -89,7 +95,7 @@ function toTree(items, pathProp) {
     const nodes = makeNodes(path.trim('/'));
     const leaf = nodes[nodes.length - 1];
     leaf.entity = item;
-    leaf.order = item.order || leaf.order;
+    leaf.position = item.position || leaf.position;
     return nodes;
   });
   nodes = orderBy(uniqBy(nodes, 'path'), ['order'], ['asc']);
@@ -115,12 +121,12 @@ function makeNodes(path = '') {
   let tmpPath;
   const segments = [];
   for (const segment of path.split('/')) {
-    const [, order = 10000, name] = segment.match(/^(?:(\d+)-)?(.*)$/);
+    const [, position = 10000, name] = segment.match(/^(?:(\d+)-)?(.*)$/);
     tmpPath = tmpPath ? `${tmpPath}/${segment}` : segment;
     segments.push(name);
     nodes.push({
       name,
-      order: parseInt(order, 10),
+      position: parseInt(position, 10),
       label: titlize(name),
       path: tmpPath,
       depth: segments.length

@@ -17,6 +17,14 @@ class Adapter {
     };
   }
 
+  get middleware() {
+    return [];
+  }
+
+  get listeners() {
+    return [];
+  }
+
   /**
    * Must be implemented by child classes to perform the
    * actual template rendering.

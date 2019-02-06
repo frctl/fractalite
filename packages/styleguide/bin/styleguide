@@ -5,7 +5,7 @@ const mri = require('mri');
 const { cyan, dim, red } = require('kleur');
 const { Signale } = require('signale');
 const { stripIndent } = require('common-tags');
-const { fromConfigFile } = require('@fractalite/core');
+const { loadConfig } = require('@fractalite/core');
 const { watch } = require('chokidar');
 const ip = require('ip');
 const styleguide = require('../.');
@@ -25,7 +25,7 @@ const args = mri(process.argv.slice(2));
 
 (async () => {
   try {
-    let loaded = await fromConfigFile({ cwd, path: args.config, name: 'styleguide' });
+    let loaded = await loadConfig({ cwd, path: args.config, name: 'styleguide' });
     const rootPath = dirname(loaded.path);
     if (cwd !== rootPath) {
       process.chdir(rootPath);
@@ -34,12 +34,12 @@ const args = mri(process.argv.slice(2));
     logger.info(`Using config file ${cyan(`./${relative(cwd, loaded.path)}`)}`);
 
     const command = args._[0] || 'start';
-    const { config, compiler, adapter } = loaded;
+    const { config } = loaded;
 
     if (command === 'start') {
 
       const mode = assign({ mode: 'develop' }, config.develop || {}, args);
-      const app = styleguide({ mode, compiler, adapter, ...config });
+      const app = styleguide({ mode, ...config });
 
       const interactiveLogger = new Signale({interactive: true});
 
@@ -78,7 +78,7 @@ const args = mri(process.argv.slice(2));
     } else if (command === 'build') {
 
       const mode = assign({ mode: 'build' }, config.build || {}, args);
-      const app = styleguide({ mode, compiler, adapter, ...config });
+      const app = styleguide({ mode, ...config });
       // app.on('error', onError);
 
       await app();

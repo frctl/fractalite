@@ -65,62 +65,58 @@ module.exports = function(opts = {}) {
     // });
 
     if (app.mode === 'develop') {
-      await setPages();
+      pages = await setPages();
       watch(opts.src.paths, { ignoreInitial: true }).on('all', async () => {
-        await setPages();
+        pages = await getPages();
         app.emit('updated');
       });
     } else if (app.mode === 'build') {
-      await setPages();
+      pages = await getPages();
     }
 
-    async function setPages() {
+    async function getPages() {
       const files = await read(opts.src.paths, { ...opts.src.opts, onlyFiles: true });
-
-      pages = uniqBy(await map(files, async file => makePage(file)), 'url');
-
-      app.addViewGlobal('pages', pages);
-      app.api.pages = pages;
-      app.api.getPages = () => pages;
-    }
-
-    async function makePage(file) {
-      const { data, content } = styleguide.parseFrontMatter(
-        await file.getContents(),
-        opts.frontmatter
-      );
-      const page = { ...data };
-
-      const segments = file.relative
-        .replace(file.extname, '')
-        .split('/')
-        .map(segment => segment.match(/^(?:(\d+)-)?(.*)$/)[2]);
-
-      let urlPath = segments.join('/');
-      if (urlPath === 'index' || /^.*\/index$/.test(urlPath)) {
-        if (urlPath === 'index') {
-          urlPath = '';
-        }
-        page.index = true;
-        page.label = page.label || opts.indexLabel || 'Overview';
-        page.order = page.order || 1;
-      } else {
-        page.label = page.label || titlize(file.name);
-      }
-
-      page.title = page.title || page.label;
-      page.treePath = urlPath;
-      page.url = app.url('page', { path: '/' + urlPath });
-
-      page.layout = typeof page.layout === 'boolean' ? page.layout : true;
-      page.markdown =
-        typeof page.markdown === 'boolean'
-          ? page.markdown
-          : ['.md', '.markdown'].includes(file.ext);
-      page.template = typeof page.template === 'boolean' ? page.template : file.ext === '.njk';
-
-      page.raw = content;
-      return page;
+      pages = await map(files, async file => {
+        const { data, content } = styleguide.parseFrontMatter(
+          await file.getContents(),
+          opts.frontmatter
+        );
+        return makePage(content, data);
+      });
+      return uniqBy(pages, 'url');
     }
   };
 };
+
+function makePage(content, data) {
+  const page = { ...data };
+
+  const segments = file.relative
+    .replace(file.extname, '')
+    .split('/')
+    .map(segment => segment.match(/^(?:(\d+)-)?(.*)$/)[2]);
+
+  let urlPath = segments.join('/');
+  if (urlPath === 'index' || /^.*\/index$/.test(urlPath)) {
+    if (urlPath === 'index') {
+      urlPath = '';
+    }
+    page.index = true;
+    page.label = page.label || opts.indexLabel || 'Overview';
+    page.order = page.order || 1;
+  } else {
+    page.label = page.label || titlize(file.name);
+  }
+
+  page.title = page.title || page.label;
+  page.treePath = urlPath;
+  page.url = app.url('page', { path: '/' + urlPath });
+
+  page.layout = typeof page.layout === 'boolean' ? page.layout : true;
+  page.markdown =
+    typeof page.markdown === 'boolean' ? page.markdown : ['.md', '.markdown'].includes(file.ext);
+  page.template = typeof page.template === 'boolean' ? page.template : file.ext === '.njk';
+
+  page.raw = content;
+  return page;
+}

@@ -18,15 +18,15 @@ const entities = [
 
 module.exports = function(config = {}) {
   const middlewares = [];
-  const app = {};
+  const compiler = {};
   const watchCallbacks = [];
 
-  app.use = function(plugin) {
+  compiler.use = function(plugin) {
     middlewares.push(plugin);
-    return app;
+    return compiler;
   };
 
-  app.parse = async function() {
+  compiler.parse = async function() {
     const applyPlugins = compose(middlewares);
     const results = entities.map(async ({ name, read }) => {
       const srcConfig = isString(config[name]) ? name : `${name}.src`;
@@ -36,7 +36,7 @@ module.exports = function(config = {}) {
     return applyPlugins(fromPairs(await Promise.all(results)));
   };
 
-  app.watch = function(callback) {
+  compiler.watch = function(callback) {
     const watchers = [];
     for (const { name, parseEvents } of entities) {
       const parseSrc = src(isString(config[name]) ? name : `${name}.src`);
@@ -51,13 +51,13 @@ module.exports = function(config = {}) {
       watchers.push(watcher);
     }
 
-    app.watch = function(callback) {
+    compiler.watch = function(callback) {
       if (isFunction(callback)) {
         watchCallbacks.push(callback);
       }
     };
 
-    app.watch(callback);
+    compiler.watch(callback);
     return watchers;
   };
 
@@ -72,7 +72,7 @@ module.exports = function(config = {}) {
       // if (['addDir', 'unlinkDir'].includes(evt)) return; // ignore these events
       try {
         // Only re-parse for 'primary' events, otherwise just notify of changes
-        lastResult = parseEvents.includes(evt) ? await app.parse() : lastResult;
+        lastResult = parseEvents.includes(evt) ? await compiler.parse() : lastResult;
         watchCallbacks.forEach(cb => cb(null, lastResult));
       } catch (err) {
         watchCallbacks.forEach(cb => cb(err));
@@ -80,5 +80,5 @@ module.exports = function(config = {}) {
     }, 300);
   }
 
-  return app;
+  return compiler;
 };

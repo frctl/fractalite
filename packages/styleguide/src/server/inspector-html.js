@@ -4,7 +4,7 @@ const { map } = require('asyncro');
 const { html, stripIndent } = require('common-tags');
 
 module.exports = function(opts = {}) {
-  return function inspectorCodePlugin(app) {
+  return function inspectorHTMLPlugin(app) {
     if (opts === false) return;
 
     opts = defaultsDeep(opts, {

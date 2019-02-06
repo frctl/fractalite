@@ -7,9 +7,7 @@ const defaults = {
 
 class NunjucksAdapter extends Adapter {
   constructor(opts = {}) {
-    opts = Object.assign({}, defaults, opts);
-    super(opts);
-    this.opts = opts;
+    super({ ...defaults, ...opts });
   }
 
   async renderComponent(component, props, ctx) {

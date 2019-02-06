@@ -6,7 +6,7 @@ const { Asset } = require('@fractalite/core');
 
 module.exports = function(opts = {}) {
   return function previewPlugin(app) {
-    const { styleguide, api, compiler, adapter } = app;
+    const { styleguide, compiler, adapter } = app;
 
     app.set('preview', {
       css: [],
@@ -24,6 +24,7 @@ module.exports = function(opts = {}) {
     };
 
     styleguide.renderPreview = async function(target, props = [], runtimeOpts = {}) {
+      const { api } = app;
       const { component, variant } = api.resolveComponent(target);
 
       const items = await api.renderAll(target, props, false);

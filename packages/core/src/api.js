@@ -11,6 +11,13 @@ module.exports = function(state, adapter) {
   const api = {};
   adapter = adapter || new Adapter(); // TODO: validate adapter
 
+  Object.defineProperty(api, 'state', {
+    value: state,
+    enumerable: true,
+    writable: false,
+    configurable: false
+  });
+
   for (const key of ['components', 'assets']) {
     Object.defineProperty(api, key, {
       get() {

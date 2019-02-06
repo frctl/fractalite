@@ -61,6 +61,8 @@ module.exports = function(opts = {}) {
    * so that they will be available to templates.
    */
   app.use((ctx, next) => {
+    ctx.components = ctx.api.components;
+    ctx.assets = ctx.api.assets;
     ctx.state.api = ctx.api;
     ctx.state.mode = ctx.mode;
     ctx.state.error = ctx.error;
@@ -136,7 +138,6 @@ module.exports = function(opts = {}) {
 
   views.addGlobal('url', (name, params) => app.url(name, params));
   views.addGlobal('resourceUrl', (name, path) => app.resourceUrl(name, path));
-
   views.addFilter('resolveStack', resolveStack);
 
   app.addRoute('asset', '/assets/:asset(.+)', ctx => ctx.sendFile(ctx.asset));

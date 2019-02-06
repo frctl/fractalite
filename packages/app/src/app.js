@@ -3,10 +3,10 @@ const getPort = require('get-port');
 const Koa = require('koa');
 const compress = require('koa-compress');
 const IO = require('koa-socket-2');
+const fractal = require('@fractalite/core');
 const cleanStack = require('clean-stacktrace');
 const relativePaths = require('clean-stacktrace-relative-paths');
 const Emitter = require('@fractalite/support/emitter');
-const { Api } = require('@fractalite/core');
 const { permalinkify, defaultsDeep } = require('@fractalite/support/utils');
 const Router = require('./router');
 const Resources = require('./resources');
@@ -14,22 +14,28 @@ const Views = require('./views');
 const getMode = require('./mode');
 
 module.exports = function(opts = {}) {
-  const { compiler, adapter } = opts;
   const props = {};
   const middleware = [];
-  const state = {};
 
+  const { parse, watch, compiler, adapter } = fractal(opts);
   const mode = getMode(opts.mode);
   const router = new Router();
   const resources = new Resources();
   const views = new Views({ cache: mode.cache });
   const emitter = new Emitter();
-  const api = new Api(state, adapter);
 
   async function app() {
     const koa = new Koa();
     const socket = new IO();
     socket.attach(koa);
+
+    const api = await parse();
+
+    Object.defineProperty(app, 'api', {
+      value: api,
+      configurable: false,
+      enumerable: true
+    });
 
     koa.silent = true;
     koa.context.mode = mode;
@@ -47,8 +53,6 @@ module.exports = function(opts = {}) {
       const httpServer = koa.listen(port, err => (err ? reject(err) : resolve(httpServer)));
     });
 
-    assign(state, await compiler.parse());
-
     app.on('error', err =>
       socket.broadcast('err', {
         name: err.name,
@@ -58,23 +62,31 @@ module.exports = function(opts = {}) {
       })
     );
     koa.on('error', err => app.emit('error', err));
-    app.on('updated', () => socket.broadcast('updated', state));
+    app.on('updated', () => socket.broadcast('updated', api.state));
 
     if (app.mode === 'build') {
       // TODO
       server.close();
     }
 
-    compiler.watch((err, result) => {
+    watch((err, result) => {
       if (err) return app.emit('error', err);
-      assign(state, result);
-      app.emit('updated', state);
+      app.emit('updated', api.state);
     });
 
     return server;
   }
 
-  Object.assign(app, { router, resources, views, emitter, adapter, compiler, api });
+  Object.assign(app, { router, resources, views, emitter, adapter, compiler });
+
+  Object.defineProperty(app, 'api', {
+    get() {
+      throw new Error(
+        `The '.api' property cannot be accessed until after the app has been initialised`
+      );
+    },
+    configurable: true
+  });
 
   app.mode = mode.mode;
 
@@ -157,11 +169,6 @@ module.exports = function(opts = {}) {
 
   app.addViewGlobal = (name, val, merge = false) => {
     views[merge ? 'mergeGlobal' : 'addGlobal'](name, val);
-    return app;
-  };
-
-  app.getViewTemplate = path => {
-    views.getTemplateAsync(path);
     return app;
   };
 

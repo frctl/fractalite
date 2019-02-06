@@ -8,10 +8,8 @@ const relativePaths = require('clean-stacktrace-relative-paths');
 
 const staticAssetsMount = '/styleguide';
 
-module.exports = function({ compiler, adapter, mode, ...config }) {
-  const app = new App({ compiler, adapter, mode });
-
-  const styleguide = {};
+module.exports = function({ components, assets, adapter, mode, ...config }) {
+  const app = new App({ components, assets, adapter, mode });
 
   app.props({
     title: config.title || 'Styleguide',
@@ -93,6 +91,7 @@ module.exports = function({ compiler, adapter, mode, ...config }) {
   /*
    * Styleguide-specific API methods
    */
+  const styleguide = {};
 
   styleguide.addJS = js => app.get('js').push(js);
   styleguide.addCSS = css => app.get('css').push(css);
