@@ -11,7 +11,6 @@
     "chokidar": "^2.0.4",
     "clean-stacktrace": "^1.1.0",
     "clean-stacktrace-relative-paths": "^1.0.4",
-    "codemirror": "^5.43.0",
     "common-tags": "^1.8.0",
     "flat": "^4.1.0",
     "fs-extra": "^7.0.0",
@@ -31,6 +30,7 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
+    "codemirror": "^5.43.0",
     "normalize.css": "^8.0.0",
     "parcel-bundler": "^1.10.1",
     "sass": "^1.14.1",

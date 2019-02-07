@@ -4,6 +4,7 @@ import VueSocketio from 'vue-socket.io-extended';
 import io from 'socket.io-client';
 import VueSplit from 'vue-split-panel';
 import VueCodemirror from 'vue-codemirror';
+import VueJsonPretty from 'vue-json-pretty';
 
 import 'codemirror/mode/javascript/javascript.js';
 import 'codemirror/mode/htmlmixed/htmlmixed.js';
@@ -18,6 +19,7 @@ import router from './router';
 
 Vue.use(VueSocketio, io());
 Vue.use(VueSplit);
+Vue.component('vue-json-pretty', VueJsonPretty);
 
 Vue.use(VueCodemirror, {
   options: {

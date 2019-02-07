@@ -14,7 +14,7 @@
     "styleguide:build": "cd packages/styleguide && npm run build",
     "styleguide:dev": "cd packages/styleguide && npm run dev",
     "demo": "npm run bootstrap && cd demo && npm run start",
-    "demo-vue": "npm run bootstrap && cd demo-vue && npm run start"
+    "demo-vue": "npm run bootstrap && cd .demo-vue && npm run start"
   },
   "xo": {
     "extends": "@frctl/eslint-config-frctl",

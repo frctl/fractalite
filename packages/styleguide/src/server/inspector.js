@@ -16,11 +16,12 @@ module.exports = function(opts = {}) {
       }
       const panels = app.get('inspector.panels');
       const position = panels.length + 1;
-      panels.push({
-        position,
-        ...panel
-      });
-      return app;
+      panels.push({ position, ...panel });
+    };
+
+    styleguide.removeInspectorPanel = name => {
+      const remainingPanels = app.get('inspector.panels').filter(p => p.name !== name);
+      app.set('inspector.panels', remainingPanels);
     };
 
     styleguide.getInspectorPanels = () => orderBy(app.get('inspector.panels'), 'position', 'asc');
