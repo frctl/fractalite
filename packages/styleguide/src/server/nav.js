@@ -1,34 +1,29 @@
 const { dirname } = require('path');
-const { isFunction, isPlainObject, reject, find, flatMap, uniqBy, orderBy } = require('lodash');
+const { isFunction, isPlainObject, flatMap, uniqBy, orderBy } = require('lodash');
 const { titlize } = require('@fractalite/support/utils');
 const { Variant, Component, File } = require('@fractalite/core');
 
-module.exports = function(opts = {}) {
-  return function navigationPlugin(app) {
-    if (Array.isArray(opts) || isFunction(opts)) {
-      opts = { items: opts };
-    }
-    const items = opts.items || defaultGenerator;
+module.exports = function(app, adapter, opts = {}) {
+  if (Array.isArray(opts) || isFunction(opts)) {
+    opts = { items: opts };
+  }
+  const items = opts.items || defaultGenerator;
 
-    app.addRoute('api.navigation', '/api/navigation.json', ctx => {
-      const { pages, components, assets } = ctx;
-      ctx.body = {
-        items: buildNav(items, { pages, components, assets })
-      };
+  app.addRoute('api.navigation', '/api/navigation.json', ctx => {
+    const { pages, components, assets } = ctx.state;
+    ctx.body = {
+      items: buildNav(items, { pages, components, assets }, app)
+    };
+  });
+
+  app.compiler.use(({ components }) => {
+    components.forEach(component => {
+      component.position = component.config.position || 1000;
     });
-
-    app.compiler.use(({ components }) => {
-      components.forEach(component => {
-        component.position = component.config.position || 1000;
-      });
-    });
-
-    app.addViewGlobal('nav', buildNav);
-  };
+  });
 };
 
 function defaultGenerator({ components, pages, toTree }) {
-  const index = find(pages, { url: '/' });
   return [
     toTree(pages),
     {
@@ -38,15 +33,15 @@ function defaultGenerator({ components, pages, toTree }) {
   ];
 }
 
-function buildNav(items, entities) {
+function buildNav(items, entities, app) {
   items = isFunction(items) ? items({ ...entities, toTree }) : items;
-  return expandValues(items);
+  return expandValues(items, app);
 }
 
-function expandValues(items) {
+function expandValues(items, app) {
   return flatMap(items, item => {
     if (Array.isArray(item)) {
-      return expandValues(item);
+      return expandValues(item, app);
     }
 
     if (item.entity) {
@@ -56,7 +51,7 @@ function expandValues(items) {
     if (Component.isComponent(item)) {
       return {
         label: item.label,
-        children: expandValues(item.variants)
+        children: expandValues(item.variants, app)
       };
     }
 
@@ -77,7 +72,7 @@ function expandValues(items) {
     item = {
       label: item.label || item.handle,
       url: item.url,
-      children: item.children ? expandValues(item.children) : null
+      children: item.children ? expandValues(item.children, app) : null
     };
 
     if (isPlainObject(item.url)) {
@@ -98,7 +93,7 @@ function toTree(items, pathProp) {
     leaf.position = item.position || leaf.position;
     return nodes;
   });
-  nodes = orderBy(uniqBy(nodes, 'path'), ['order'], ['asc']);
+  nodes = orderBy(uniqBy(nodes, 'path'), ['position'], ['asc']);
 
   return nodes.filter(node => node.depth === 1).map(node => {
     node.children = getChildNodes(node, nodes);

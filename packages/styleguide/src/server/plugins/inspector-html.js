@@ -1,10 +1,13 @@
+/* eslint camelcase: "off" */
+
 const beautify = require('js-beautify');
 const { defaultsDeep } = require('@fractalite/support/utils');
+const { createRenderer } = require('@fractalite/core');
 const { map } = require('asyncro');
-const { html, stripIndent } = require('common-tags');
+const { html } = require('common-tags');
 
 module.exports = function(opts = {}) {
-  return function inspectorHTMLPlugin(app) {
+  return function inspectorHTMLPlugin(app, adapter) {
     if (opts === false) return;
 
     opts = defaultsDeep(opts, {
@@ -14,7 +17,7 @@ module.exports = function(opts = {}) {
       }
     });
 
-    app.styleguide.addInspectorPanel({
+    app.addInspectorPanel({
       name: 'html',
       label: opts.label || 'HTML',
       template: html`
@@ -23,12 +26,15 @@ module.exports = function(opts = {}) {
           :options="{ mode: 'htmlmixed' }"
         />
       `,
-      async props({ variant }) {
+      async props(state) {
+        const { variant } = state;
         if (!variant) return;
 
+        const renderer = createRenderer(state, adapter);
+
         const html = await map(variant.previewProps, async props => {
-          let html = await app.api.render(variant, props);
-          return opts.prettify !== false ? beautify['html'](html, opts.prettify) : html;
+          const html = await renderer.render(variant, props);
+          return opts.prettify ? beautify.html(html, opts.prettify) : html;
         });
 
         return { html };

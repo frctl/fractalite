@@ -17,6 +17,7 @@
     "koa-static": "^5.0.0",
     "koa-compose": "^4.1.0",
     "koa-router": "7.4.0",
+    "koa-json-error": "^3.1.2",
     "path-to-regexp": "^1.1.1",
     "superagent": "^4.1.0",
     "lodash": "^4.17.10",

@@ -135,6 +135,42 @@ const utils = {
       newObj[v.key] = v.value;
     });
     return newObj;
+  },
+
+  normalizeSrc(src, defaults = {}) {
+    if (_.isString(src) || Array.isArray(src)) {
+      src = {
+        paths: utils.toArray(src)
+      };
+    }
+    src = utils.defaultsDeep(src, defaults, { opts: {} });
+    src.paths = utils.normalizePaths(src.paths);
+    return src;
+  },
+
+  processStack(...args) {
+    const mapper = _.isFunction(args[args.length - 1]) ? args.pop() : null;
+    const values = _.compact(_.flatten(args));
+    let result = [];
+    let final = [];
+    for (const value of values) {
+      if (!value) {
+        continue;
+      }
+      if (Array.isArray(value) || _.isString(value)) {
+        result = result.concat(value);
+      } else if (_.isPlainObject(value)) {
+        const replace = [].concat(_.get(value, 'replace', result));
+        const prepend = [].concat(_.get(value, 'prepend', []));
+        const append = [].concat(_.get(value, 'append', []));
+        if (value.final) {
+          final = final.concat(value.final);
+        }
+        result = prepend.concat(replace).concat(append);
+      }
+    }
+    result = [...result, ...final];
+    return mapper ? result.map(mapper) : result;
   }
 };
 

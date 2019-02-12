@@ -1,7 +1,8 @@
 const { get, isFunction, isString, debounce, fromPairs } = require('lodash');
-const { normalizeSrc } = require('@fractalite/support/helpers');
+const { normalizeSrc } = require('@fractalite/support/utils');
 const { watch } = require('chokidar');
 const compose = require('./compose');
+const createState = require('./state');
 
 const entities = [
   {
@@ -20,20 +21,26 @@ module.exports = function(config = {}) {
   const middlewares = [];
   const compiler = {};
   const watchCallbacks = [];
+  const state = createState();
 
   compiler.use = function(plugin) {
     middlewares.push(plugin);
     return compiler;
   };
 
-  compiler.parse = async function() {
+  compiler.getState = () => {
+    return state;
+  };
+
+  compiler.run = async function() {
     const applyPlugins = compose(middlewares);
     const results = entities.map(async ({ name, read }) => {
       const srcConfig = isString(config[name]) ? name : `${name}.src`;
       const { paths, opts } = src(srcConfig);
       return [name, await read(paths, opts)];
     });
-    return applyPlugins(fromPairs(await Promise.all(results)));
+    const result = await applyPlugins(fromPairs(await Promise.all(results)));
+    return state.update(result);
   };
 
   compiler.watch = function(callback) {
@@ -69,10 +76,10 @@ module.exports = function(config = {}) {
   function watchHandler(parseEvents) {
     let lastResult = null;
     return debounce(async (evt, path) => {
-      // if (['addDir', 'unlinkDir'].includes(evt)) return; // ignore these events
+      // If (['addDir', 'unlinkDir'].includes(evt)) return; // ignore these events
       try {
         // Only re-parse for 'primary' events, otherwise just notify of changes
-        lastResult = parseEvents.includes(evt) ? await compiler.parse() : lastResult;
+        lastResult = parseEvents.includes(evt) ? await compiler.run() : lastResult;
         watchCallbacks.forEach(cb => cb(null, lastResult));
       } catch (err) {
         watchCallbacks.forEach(cb => cb(err));

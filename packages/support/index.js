@@ -1,6 +1,7 @@
 module.exports = {
-  // collection: require('./collection'),
+  // Collection: require('./collection'),
   emitter: require('./emitter'),
   utils: require('./utils'),
-  helpers: require('./helpers')
+  html: require('./html'),
+  loadConfig: require('./load-config')
 };

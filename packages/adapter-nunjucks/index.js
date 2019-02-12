@@ -1,5 +1,8 @@
-const NunjucksAdapter = require('./src/adapter');
+const createAdapter = require('./src/adapter');
 
 module.exports = function(opts = {}) {
-  return new NunjucksAdapter(opts);
+  const adapter = createAdapter(opts);
+  return function nunjucksAdapter(app, appConfig) {
+    return adapter;
+  };
 };

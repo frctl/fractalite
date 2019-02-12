@@ -1,7 +1,9 @@
+/* global document */
+
 import axios from 'axios';
 import Preview from './preview';
 
-const supportsSrcdoc = !!('srcdoc' in document.createElement('iframe'));
+const supportsSrcdoc = Boolean('srcdoc' in document.createElement('iframe'));
 
 export default {
   template: '#inspector',
@@ -11,7 +13,7 @@ export default {
       const previewSrc = this.preview;
       await this.load();
       if (supportsSrcdoc && previewSrc === this.preview) {
-        this.$refs['preview'].reload(); // refresh iframe in case assets have changed
+        this.$refs.preview.reload(); // Refresh iframe in case assets have changed
       }
     }
   },
@@ -54,7 +56,7 @@ export default {
     panel() {
       return {
         template: '<div>hello</div>'
-        // methods: this.$options.methods
+        // Methods: this.$options.methods
       };
     }
   },

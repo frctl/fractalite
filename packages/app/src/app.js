@@ -1,45 +1,39 @@
-const { assign, cloneDeep, get, set, mapValues } = require('lodash');
+const { assign, get, set, mapValues } = require('lodash');
 const getPort = require('get-port');
 const Koa = require('koa');
 const compress = require('koa-compress');
 const IO = require('koa-socket-2');
-const fractal = require('@fractalite/core');
 const cleanStack = require('clean-stacktrace');
 const relativePaths = require('clean-stacktrace-relative-paths');
 const Emitter = require('@fractalite/support/emitter');
-const { permalinkify, defaultsDeep } = require('@fractalite/support/utils');
+const { permalinkify, defaultsDeep, processStack } = require('@fractalite/support/utils');
 const Router = require('./router');
 const Resources = require('./resources');
 const Views = require('./views');
 const getMode = require('./mode');
 
-module.exports = function(opts = {}) {
+module.exports = function(compiler, opts = {}) {
   const props = {};
   const middleware = [];
+  const ui = { js: [], scripts: [], css: [], stylesheets: [] };
 
-  const { parse, watch, compiler, adapter } = fractal(opts);
-  const mode = getMode(opts.mode);
+  const mode = getMode(opts);
   const router = new Router();
   const resources = new Resources();
   const views = new Views({ cache: mode.cache });
   const emitter = new Emitter();
+  const utils = {};
 
   async function app() {
     const koa = new Koa();
     const socket = new IO();
     socket.attach(koa);
 
-    const api = await parse();
-
-    Object.defineProperty(app, 'api', {
-      value: api,
-      configurable: false,
-      enumerable: true
-    });
+    const state = await compiler.run();
 
     koa.silent = true;
     koa.context.mode = mode;
-    koa.context.api = app.api;
+    koa.context.utils = utils;
 
     middleware.forEach(mw => koa.use(mw));
 
@@ -47,11 +41,6 @@ module.exports = function(opts = {}) {
     koa.use(resources.routes());
     koa.use(router.routes());
     koa.use(router.allowedMethods());
-
-    const port = await getPort({ port: mode.port });
-    const server = await new Promise((resolve, reject) => {
-      const httpServer = koa.listen(port, err => (err ? reject(err) : resolve(httpServer)));
-    });
 
     app.on('error', err =>
       socket.broadcast('err', {
@@ -62,31 +51,34 @@ module.exports = function(opts = {}) {
       })
     );
     koa.on('error', err => app.emit('error', err));
-    app.on('updated', () => socket.broadcast('updated', api.state));
+    app.on('updated', () => socket.broadcast('updated', state));
+
+    app.emit('initialised');
+
+    const port = await getPort({ port: mode.port });
+    const server = await new Promise((resolve, reject) => {
+      const httpServer = koa.listen(port, err => (err ? reject(err) : resolve(httpServer)));
+    });
+
+    app.emit('started', server);
 
     if (app.mode === 'build') {
       // TODO
       server.close();
+      return;
     }
 
-    watch((err, result) => {
+    compiler.watch((err, state) => {
       if (err) return app.emit('error', err);
-      app.emit('updated', api.state);
+      app.emit('updated', state);
     });
+
+    app.emit('watching');
 
     return server;
   }
 
-  Object.assign(app, { router, resources, views, emitter, adapter, compiler });
-
-  Object.defineProperty(app, 'api', {
-    get() {
-      throw new Error(
-        `The '.api' property cannot be accessed until after the app has been initialised`
-      );
-    },
-    configurable: true
-  });
+  Object.assign(app, { router, resources, views, emitter, compiler, utils });
 
   app.mode = mode.mode;
 
@@ -111,12 +103,7 @@ module.exports = function(opts = {}) {
       assign(props, defaultsDeep(obj, props));
       return app;
     }
-    return cloneDeep(props);
-  };
-
-  app.addPlugin = plugin => {
-    plugin(app);
-    return app;
+    return props;
   };
 
   app.addStaticDir = (name, path, mount) => {
@@ -160,6 +147,15 @@ module.exports = function(opts = {}) {
     return app;
   };
 
+  app.extend = obj => {
+    for (const key of Object.keys(obj)) {
+      if (typeof app[key] !== 'undefined') {
+        throw new TypeError(`Cannot redefine ${key} property on app instance`);
+      }
+    }
+    Object.assign(app, obj);
+  };
+
   ['Filter', 'Extension', 'Path'].forEach(type => {
     app[`addView${type}`] = (...args) => {
       views[`add${type}`](...args);
@@ -171,6 +167,18 @@ module.exports = function(opts = {}) {
     views[merge ? 'mergeGlobal' : 'addGlobal'](name, val);
     return app;
   };
+
+  // UI-related helpers -----------------------------------
+
+  app.addJS = js => ui.push(js);
+  app.addCSS = css => ui.css.push(css);
+  app.addScript = src => ui.scripts.push(src);
+  app.addStylesheet = href => ui.stylesheets.push(href);
+
+  app.getCSS = () => ui.css.join('\n');
+  app.getJS = () => ui.js.join('\n');
+  app.getScripts = () => processStack(ui.scripts, app.resourceUrl);
+  app.getStylesheets = () => processStack(ui.stylesheets, app.resourceUrl);
 
   return app;
 };

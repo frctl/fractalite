@@ -1,4 +1,4 @@
-import Vue from 'vue/dist/vue.js';
+import Vue from 'vue/dist/vue';
 import VueRouter from 'vue-router';
 import Inspector from './components/inspector';
 import Page from './components/page';

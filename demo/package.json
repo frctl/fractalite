@@ -2,6 +2,7 @@
   "name": "@fractalite/demo",
   "private": true,
   "scripts": {
+    "start-fractal": "fractal-styleguide start --config styleguide.config.js --port 3030",
     "start": "fractal-styleguide start --config styleguide.config.js --port 3030 & npm run parcel:watch",
     "build": " npm run parcel:build && fractal-styleguide build --config styleguide.config.js",
     "parcel:watch": "parcel watch ./src/assets/entry.js -d dist/assets --out-file=main.js --log-level 0 --no-hmr",

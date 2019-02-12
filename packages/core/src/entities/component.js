@@ -1,3 +1,5 @@
+const pupa = require('pupa');
+const multimatch = require('multimatch');
 const Entity = require('./entity');
 
 class Component extends Entity {
@@ -18,6 +20,11 @@ class Component extends Entity {
 
   get isComponent() {
     return true;
+  }
+
+  matchFile(matcher) {
+    matcher = [].concat(matcher).map(match => pupa(match, this));
+    return this.files.find(file => multimatch(file.relative, matcher, { matchBase: true }).length);
   }
 
   static isComponent(item) {

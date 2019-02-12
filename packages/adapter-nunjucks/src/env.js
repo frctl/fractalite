@@ -9,15 +9,11 @@ module.exports = function nunjucks(config = {}) {
   env.addExtension('component', new ComponentExtension());
 
   Object.keys(config.globals || {}).forEach(key => env.addGlobal(key, config.globals[key]));
-  Object.keys(config.extensions || {}).forEach(key =>
-    env.addExtension(key, config.extensions[key])
-  );
+  Object.keys(config.extensions || {}).forEach(key => env.addExtension(key, config.extensions[key]));
   if (Array.isArray(config.filters)) {
     config.filters.forEach(filter => env.addFilter(filter.name, filter.filter, filter.async));
   } else {
-    Object.keys(config.filters || {}).forEach(key =>
-      env.addFilter(key, config.filters[key], config.filters[key].async)
-    );
+    Object.keys(config.filters || {}).forEach(key => env.addFilter(key, config.filters[key], config.filters[key].async));
   }
 
   env.loader = loader;

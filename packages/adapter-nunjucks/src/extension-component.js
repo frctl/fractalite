@@ -1,4 +1,5 @@
 const { SafeString } = require('nunjucks').runtime;
+const { mergeProps, getTarget, getComponentFromVariant, isVariant } = require('@fractalite/core/helpers');
 
 module.exports = class ComponentExtension {
   constructor() {
@@ -13,18 +14,19 @@ module.exports = class ComponentExtension {
     return new nodes.CallExtensionAsync(this, 'run', args, null);
   }
 
-  run(nunjucksContext, name, ...args) {
+  run(nunjucksContext, handle, ...args) {
     const { env } = nunjucksContext;
     const callback = args.pop();
     let props = args.shift() || {};
     const shouldMerge = args.shift();
-    const { api } = env;
+    const { state } = env;
 
-    const component = api.getComponent(name);
+    const target = getTarget(state, handle, true);
+    const component = isVariant(target) ? getComponentFromVariant(state, target) : target;
 
-    props = shouldMerge === false ? props : api.mergeProps(name, props);
+    props = shouldMerge === false ? props : mergeProps(state, handle, props);
 
-    env.render(component.name, props, (err, result) => {
+    env.render(component.handle, props, (err, result) => {
       if (err) {
         return callback(err);
       }
