@@ -1,8 +1,0 @@
-{
-  "name": "@fractalite/adapter-nunjucks",
-  "version": "0.0.0",
-  "dependencies": {
-    "@fractalite/core": "^0.0.0",
-    "nunjucks": "^3.1.3"
-  }
-}
