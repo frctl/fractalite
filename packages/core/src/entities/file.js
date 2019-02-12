@@ -23,9 +23,9 @@ class File extends Entity {
 
   get size() {
     const suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
-    const size = this.stats.size;
+    const { size } = this.stats;
     const i = Math.floor(Math.log(size) / Math.log(1024));
-    const displaySize = (size / Math.pow(1024, i)).toFixed(2) * 1;
+    const displaySize = Number((size / 1024 ** i).toFixed(2));
     return `${displaySize} ${suffixes[i]}`;
   }
 

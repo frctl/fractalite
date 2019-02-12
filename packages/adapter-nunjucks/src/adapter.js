@@ -1,5 +1,5 @@
-const nunjucksEnv = require('./env');
 const { defaultsDeep } = require('@fractalite/support/utils');
+const nunjucksEnv = require('./env');
 
 const defaults = {
   views: ['view.njk', '{name}.view.njk']

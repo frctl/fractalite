@@ -6,7 +6,6 @@ const { cyan, dim, red } = require('kleur');
 const { Signale } = require('signale');
 const { stripIndent } = require('common-tags');
 const { loadConfig } = require('@fractalite/support');
-const { watch } = require('chokidar');
 const ip = require('ip');
 const styleguide = require('../.');
 const { assign } = Object;

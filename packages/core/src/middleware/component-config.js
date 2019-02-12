@@ -9,15 +9,7 @@ module.exports = function(opts = {}) {
   opts = defaultsDeep(opts, {
     defaults: {},
     finder: {
-      searchPlaces: [
-        'package.json',
-        '{name}.config.js',
-        '{name}.config.json',
-        '{name}.config.yml',
-        'config.js',
-        'config.json',
-        'config.yml'
-      ],
+      searchPlaces: ['package.json', '{name}.config.js', '{name}.config.json', '{name}.config.yml', 'config.js', 'config.json', 'config.yml'],
       packageProp: 'fractal'
     },
     resolve: {

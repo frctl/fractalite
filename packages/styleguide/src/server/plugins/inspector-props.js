@@ -14,7 +14,7 @@ module.exports = function(opts = {}) {
         <vue-json-pretty :data="panel.props" class="fr-json"></vue-json-pretty>
       `,
 
-      async props(state) {
+      props(state) {
         const { variant } = state;
         if (!variant) return;
 

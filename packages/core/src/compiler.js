@@ -76,7 +76,7 @@ module.exports = function(config = {}) {
   function watchHandler(parseEvents) {
     let lastResult = null;
     return debounce(async (evt, path) => {
-      // if (['addDir', 'unlinkDir'].includes(evt)) return; // ignore these events
+      // If (['addDir', 'unlinkDir'].includes(evt)) return; // ignore these events
       try {
         // Only re-parse for 'primary' events, otherwise just notify of changes
         lastResult = parseEvents.includes(evt) ? await compiler.run() : lastResult;

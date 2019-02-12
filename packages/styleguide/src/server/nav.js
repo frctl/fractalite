@@ -1,5 +1,5 @@
 const { dirname } = require('path');
-const { isFunction, isPlainObject, reject, find, flatMap, uniqBy, orderBy } = require('lodash');
+const { isFunction, isPlainObject, flatMap, uniqBy, orderBy } = require('lodash');
 const { titlize } = require('@fractalite/support/utils');
 const { Variant, Component, File } = require('@fractalite/core');
 
@@ -12,7 +12,7 @@ module.exports = function(app, adapter, opts = {}) {
   app.addRoute('api.navigation', '/api/navigation.json', ctx => {
     const { pages, components, assets } = ctx.state;
     ctx.body = {
-      items: buildNav(items, { pages, components, assets })
+      items: buildNav(items, { pages, components, assets }, app)
     };
   });
 
@@ -24,7 +24,6 @@ module.exports = function(app, adapter, opts = {}) {
 };
 
 function defaultGenerator({ components, pages, toTree }) {
-  const index = find(pages, { url: '/' });
   return [
     toTree(pages),
     {
@@ -34,15 +33,15 @@ function defaultGenerator({ components, pages, toTree }) {
   ];
 }
 
-function buildNav(items, entities) {
+function buildNav(items, entities, app) {
   items = isFunction(items) ? items({ ...entities, toTree }) : items;
-  return expandValues(items);
+  return expandValues(items, app);
 }
 
-function expandValues(items) {
+function expandValues(items, app) {
   return flatMap(items, item => {
     if (Array.isArray(item)) {
-      return expandValues(item);
+      return expandValues(item, app);
     }
 
     if (item.entity) {
@@ -52,7 +51,7 @@ function expandValues(items) {
     if (Component.isComponent(item)) {
       return {
         label: item.label,
-        children: expandValues(item.variants)
+        children: expandValues(item.variants, app)
       };
     }
 
@@ -73,7 +72,7 @@ function expandValues(items) {
     item = {
       label: item.label || item.handle,
       url: item.url,
-      children: item.children ? expandValues(item.children) : null
+      children: item.children ? expandValues(item.children, app) : null
     };
 
     if (isPlainObject(item.url)) {

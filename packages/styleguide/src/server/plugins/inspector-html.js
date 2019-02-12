@@ -1,8 +1,10 @@
+/* eslint camelcase: "off" */
+
 const beautify = require('js-beautify');
 const { defaultsDeep } = require('@fractalite/support/utils');
 const { createRenderer } = require('@fractalite/core');
 const { map } = require('asyncro');
-const { html, stripIndent } = require('common-tags');
+const { html } = require('common-tags');
 
 module.exports = function(opts = {}) {
   return function inspectorHTMLPlugin(app, adapter) {
@@ -31,8 +33,8 @@ module.exports = function(opts = {}) {
         const renderer = createRenderer(state, adapter);
 
         const html = await map(variant.previewProps, async props => {
-          let html = await renderer.render(variant, props);
-          return opts.prettify !== false ? beautify['html'](html, opts.prettify) : html;
+          const html = await renderer.render(variant, props);
+          return opts.prettify ? beautify.html(html, opts.prettify) : html;
         });
 
         return { html };

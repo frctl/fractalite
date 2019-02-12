@@ -1,7 +1,6 @@
-const { extname } = require('path');
 const { mapValues } = require('lodash');
 const { rewriteUrls } = require('@fractalite/support/html');
-const { getFile, resolveReference } = require('@fractalite/core/helpers');
+const { resolveReference } = require('@fractalite/core/helpers');
 const { isAsset, isComponent, isFile, isVariant } = require('@fractalite/core/helpers');
 const flatten = require('flat');
 const { map } = require('asyncro');

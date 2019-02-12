@@ -3,12 +3,12 @@ const jsonErrors = require('koa-json-error');
 const cleanStack = require('clean-stacktrace');
 const relativePaths = require('clean-stacktrace-relative-paths');
 const { File, Asset } = require('@fractalite/core');
-const { getComponent, getAsset, getFile, getVariant } = require('@fractalite/core/helpers');
+const { getComponent, getAsset, getVariant } = require('@fractalite/core/helpers');
 const App = require('./src/app');
 
 module.exports = function(compiler, opts = {}) {
   const app = new App(compiler, opts);
-  const { router, views, utils } = app;
+  const { router, views } = app;
 
   app.use(jsonErrors());
 
@@ -161,7 +161,7 @@ module.exports = function(compiler, opts = {}) {
 
   app.addRoute('asset', '/assets/:asset(.+)', ctx => ctx.sendFile(ctx.asset));
 
-  // app.addBuildStep('asset', ({ copyFile, api }) => {
+  // App.addBuildStep('asset', ({ copyFile, api }) => {
   //   app.api.assets.forEach(asset => copyFile(asset.path, app.url('asset', { asset })));
   // });
 
@@ -174,7 +174,7 @@ module.exports = function(compiler, opts = {}) {
     }
   });
 
-  // app.addBuildStep('src', ({ copyFile, api }) => {
+  // App.addBuildStep('src', ({ copyFile, api }) => {
   //   app.api.files.forEach(file => copyFile(file.path, app.url('src', { file })));
   // });
 
@@ -203,7 +203,7 @@ module.exports = function(compiler, opts = {}) {
     ctx.body = app.getJS();
   });
 
-  app.use(async (ctx, next) => {
+  app.use((ctx, next) => {
     ctx.state.scripts = app.getScripts();
     ctx.state.stylesheets = app.getStylesheets();
     if (app.getCSS() !== '') ctx.state.stylesheets.push(app.url('app-css'));

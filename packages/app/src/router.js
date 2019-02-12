@@ -1,4 +1,3 @@
-const { find } = require('lodash');
 const Router = require('koa-router');
 const pathToRegExp = require('path-to-regexp');
 

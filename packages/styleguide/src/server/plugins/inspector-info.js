@@ -1,5 +1,3 @@
-const { map } = require('asyncro');
-const { defaultsDeep } = require('@fractalite/support/utils');
 const { html, stripIndent } = require('common-tags');
 
 module.exports = function(opts = {}) {
@@ -78,8 +76,8 @@ module.exports = function(opts = {}) {
       }
     `);
 
-    app.compiler.use(async ({ components }) => {
-      await map(components, async component => {
+    app.compiler.use(({ components }) => {
+      components.forEach(component => {
         component.notes = component.notes || component.config.notes;
       });
     });

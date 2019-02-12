@@ -19,7 +19,7 @@ module.exports = async function(src, opts = {}) {
     const children = unusedFiles.filter(f => f.path.startsWith(rootPath));
 
     if (children.length === 0) {
-      return;
+      return null;
     }
 
     unusedFiles = difference(unusedFiles, children); // Remove files from future consideration

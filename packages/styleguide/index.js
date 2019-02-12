@@ -1,5 +1,5 @@
 const { resolve } = require('path');
-const { forEach, get, mapValues, orderBy, isFunction } = require('lodash');
+const { forEach, get, isFunction } = require('lodash');
 const { defaultsDeep } = require('@fractalite/support/utils');
 const createApp = require('@fractalite/app');
 const createCompiler = require('@fractalite/core');
@@ -30,9 +30,9 @@ module.exports = function({ components, assets, adapter, mode, ...config }) {
   app.addStylesheet('app:app.css');
   app.addScript('app:app.js');
 
-  app.addRoute('overview', '/', async (ctx, next) => ctx.render('app'));
+  app.addRoute('overview', '/', (ctx, next) => ctx.render('app'));
 
-  app.addRoute('api.component', '/api/components/:component.json', async (ctx, next) => {
+  app.addRoute('api.component', '/api/components/:component.json', (ctx, next) => {
     ctx.body = ctx.component;
     return next();
   });

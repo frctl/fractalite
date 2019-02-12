@@ -1,5 +1,5 @@
 const { extname } = require('path');
-const { isString, flatMap, find } = require('lodash');
+const { isString, find } = require('lodash');
 const { defaultsDeep } = require('@fractalite/support/utils');
 const Component = require('./entities/component');
 const Asset = require('./entities/asset');
@@ -81,11 +81,10 @@ function mergeProps(state, ...args) {
 
 function resolveReference(state, ref) {
   if (extname(ref)) {
-    const file = ref.startsWith('@')
-      ? getFile(state, ref.replace('@', ''))
-      : getAsset(state, ref.replace('@', ''));
+    const file = ref.startsWith('@') ? getFile(state, ref.replace('@', '')) : getAsset(state, ref.replace('@', ''));
     return file;
-  } else if (ref.startsWith('@')) {
+  }
+  if (ref.startsWith('@')) {
     return getTarget(state, ref.replace('@', ''));
   }
 }
@@ -109,6 +108,7 @@ function isFile(file) {
 module.exports = {
   getComponent,
   getComponentFromVariant,
+  getComponentFromFile,
   getTarget,
   getAsset,
   getFile,

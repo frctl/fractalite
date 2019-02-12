@@ -1,4 +1,3 @@
-const { map } = require('asyncro');
 const { defaultsDeep } = require('@fractalite/support/utils');
 const { rewriteUrls } = require('@fractalite/support/html');
 const { stripIndent } = require('common-tags');
@@ -12,11 +11,11 @@ module.exports = function(opts = {}) {
       label: opts.label || 'Notes',
       render: false,
       async template(state) {
-        const { component, variant } = state;
+        const { component } = state;
         let notes;
 
         if (typeof component.notes === 'string') {
-          let { content, data } = app.utils.parseFrontMatter(component.notes);
+          const { content, data } = app.utils.parseFrontMatter(component.notes);
 
           const renderOpts = defaultsDeep(data, {
             markdown: true,
@@ -25,7 +24,7 @@ module.exports = function(opts = {}) {
 
           notes = await app.utils.renderPage(state, content, {}, renderOpts);
 
-          // rewrite relative URLs in output
+          // Rewrite relative URLs in output
           notes = rewriteUrls(notes, path => {
             if (path.startsWith('./')) {
               const file = component.files.find(file => `./${file.relative}` === path);
@@ -46,8 +45,8 @@ module.exports = function(opts = {}) {
       }
     `);
 
-    app.compiler.use(async ({ components }) => {
-      await map(components, async component => {
+    app.compiler.use(({ components }) => {
+      components.forEach(component => {
         component.notes = component.notes || component.config.notes;
       });
     });

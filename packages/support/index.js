@@ -1,5 +1,5 @@
 module.exports = {
-  // collection: require('./collection'),
+  // Collection: require('./collection'),
   emitter: require('./emitter'),
   utils: require('./utils'),
   html: require('./html'),

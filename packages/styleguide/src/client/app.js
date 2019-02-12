@@ -1,14 +1,16 @@
-import Vue from 'vue/dist/vue.js';
-import VueRouter from 'vue-router';
+/* global window */
+/* eslint import/no-unassigned-import: "off" */
+
+import Vue from 'vue/dist/vue';
 import VueSocketio from 'vue-socket.io-extended';
 import io from 'socket.io-client';
 import VueSplit from 'vue-split-panel';
 import VueCodemirror from 'vue-codemirror';
 import VueJsonPretty from 'vue-json-pretty';
 
-import 'codemirror/mode/javascript/javascript.js';
-import 'codemirror/mode/htmlmixed/htmlmixed.js';
-import 'codemirror/addon/display/autorefresh.js';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/htmlmixed/htmlmixed';
+import 'codemirror/addon/display/autorefresh';
 
 import 'codemirror/lib/codemirror.css';
 
@@ -67,7 +69,7 @@ window.app = new Vue({
         const url = new URL(target.href);
         const to = url.pathname;
         const parts = target.href.split('/');
-        if (window.location.pathname == to) {
+        if (window.location.pathname === to) {
           event.preventDefault();
         }
         if (parts[parts.length - 1].split('.').length === 1 && event.preventDefault) {

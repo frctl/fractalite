@@ -1,33 +1,26 @@
-const { extname } = require('path');
 const { isFunction, pick } = require('lodash');
-const { rewriteUrls } = require('@fractalite/support/html');
 const { defaultsDeep, toArray, processStack } = require('@fractalite/support/utils');
-const {
-  isAsset,
-  isVariant,
-  getTarget,
-  getVariant,
-  getComponentFromVariant
-} = require('@fractalite/core/helpers');
+const { isVariant, getTarget, getVariant, getComponentFromVariant } = require('@fractalite/core/helpers');
 const { createRenderer } = require('@fractalite/core');
 
 module.exports = function(app, adapter, opts = {}) {
   const preview = { css: [], js: [] };
 
   app.extend({
-    addPreviewCSS() {
+    addPreviewCSS(css) {
       preview.css.push(css);
       return app;
     },
 
-    addPreviewJS() {
-      preview.js.push(css);
+    addPreviewJS(js) {
+      preview.js.push(js);
       return app;
     }
   });
 
   app.utils.renderPreview = async (state, target, props = [], runtimeOpts = {}) => {
-    let component, variant;
+    let component;
+    let variant;
     const renderer = createRenderer(state, adapter);
     target = getTarget(state, target);
 
@@ -41,11 +34,7 @@ module.exports = function(app, adapter, opts = {}) {
     const items = await renderer.renderAll(target, props);
 
     const componentOpts = component.preview || {};
-    const mergedOpts = defaultsDeep(
-      runtimeOpts,
-      componentOpts,
-      pick(opts, ['meta', 'wrap', 'wrapEach'])
-    );
+    const mergedOpts = defaultsDeep(runtimeOpts, componentOpts, pick(opts, ['meta', 'wrap', 'wrapEach']));
 
     // Wrap rendered preview items
     const { wrap, wrapEach } = mergedOpts;

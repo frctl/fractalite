@@ -1,6 +1,6 @@
+const { map } = require('asyncro');
 const { mergeProps, getTarget, getComponentFromVariant } = require('./helpers');
 const { isVariant, isComponent } = require('./helpers');
-const { map } = require('asyncro');
 
 module.exports = function(state, adapter) {
   adapter = adapter || (() => '');
@@ -19,12 +19,11 @@ module.exports = function(state, adapter) {
     throw new Error(`Invalid render target`);
   }
 
-  async function renderAll(target, props = []) {
+  function renderAll(target, props = []) {
     if (Array.isArray(props)) {
-      return await map(props, p => render(target, p));
-    } else {
-      return await Promise.all([render(target, props)]);
+      return map(props, p => render(target, p));
     }
+    return Promise.all([render(target, props)]);
   }
 
   return { render, renderAll };

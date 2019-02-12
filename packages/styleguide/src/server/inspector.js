@@ -1,20 +1,15 @@
-const { orderBy, isString } = require('lodash');
+const { orderBy } = require('lodash');
 const { resolveValue, mapValuesAsync } = require('@fractalite/support/utils');
-const {
-  resolveReference,
-  isVariant,
-  getComponentFromVariant,
-  getTarget
-} = require('@fractalite/core/helpers');
+const { isVariant, getComponentFromVariant, getTarget } = require('@fractalite/core/helpers');
 const { map } = require('asyncro');
 
 module.exports = function(app, adapter, opts = {}) {
-  const panels = [];
+  let panels = [];
 
   app.extend({
     addInspectorPanel(panel) {
       if (typeof panel.name !== 'string') {
-        throw new Error(`Inspector panels must specify a .name property`);
+        throw new TypeError(`Inspector panels must specify a .name property`);
       }
       const position = panels.length + 1;
       const noRender = panel.render === false;
@@ -30,7 +25,7 @@ module.exports = function(app, adapter, opts = {}) {
       return app;
     },
 
-    removeInspectorPanel() {
+    removeInspectorPanel(name) {
       panels = panels.filter(p => p.name !== name);
       return app;
     },
@@ -41,8 +36,9 @@ module.exports = function(app, adapter, opts = {}) {
   });
 
   app.addRoute('api.inspect', '/api/inspect/:handle(.+).json', async (ctx, next) => {
-    let component, variant;
-    let target = getTarget(ctx.state, ctx.params.handle);
+    let component;
+    let variant;
+    const target = getTarget(ctx.state, ctx.params.handle);
     if (isVariant(target)) {
       variant = target;
       component = getComponentFromVariant(ctx.state, variant);
@@ -50,16 +46,12 @@ module.exports = function(app, adapter, opts = {}) {
       component = target;
     }
     const panels = await map(app.getInspectorPanels(), panel => {
-      return mapValuesAsync(panel, value =>
-        resolveValue(value, { ...ctx.state, variant, component })
-      );
+      return mapValuesAsync(panel, value => resolveValue(value, { ...ctx.state, variant, component }));
     });
     ctx.body = {
-      component: component,
-      variant: variant,
-      preview: variant
-        ? await app.utils.renderPreview(ctx.state, variant, variant.previewProps)
-        : null,
+      component,
+      variant,
+      preview: variant ? await app.utils.renderPreview(ctx.state, variant, variant.previewProps) : null,
       panels: panels.filter(panel => panel.template)
     };
     return next();
@@ -80,7 +72,7 @@ module.exports = function(app, adapter, opts = {}) {
     });
   });
 
-  // app.addBuildStep('inspect', ({ requestRoute }) => {
+  // App.addBuildStep('inspect', ({ requestRoute }) => {
   //   app.api.variants.forEach(variant => requestRoute('detail', { variant }));
   // });
 

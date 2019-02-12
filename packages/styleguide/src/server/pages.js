@@ -1,7 +1,6 @@
-const { relative, parse, resolve, extname } = require('path');
+const { resolve } = require('path');
 const { find, uniqBy, cloneDeep, isBoolean } = require('lodash');
 const { normalizeSrc } = require('@fractalite/support/utils');
-const { rewriteUrls } = require('@fractalite/support/html');
 const { titlize } = require('@fractalite/support/utils');
 const { read, watch } = require('@fractalite/core');
 const { map } = require('asyncro');
@@ -38,7 +37,7 @@ module.exports = function(app, adapter, opts = {}) {
 
   app.addRoute('api.page', '/api/pages/:path(.+).json', async (ctx, next) => {
     const path = ctx.params.path === 'index' ? '/' : `/${ctx.params.path}`;
-    let page = find(pages, { url: path });
+    const page = find(pages, { url: path });
     if (page) {
       const content = await app.utils.renderPage(
         ctx.state,
@@ -90,10 +89,7 @@ module.exports = function(app, adapter, opts = {}) {
   async function getPages() {
     const files = await read(opts.src.paths, { ...opts.src.opts, onlyFiles: true });
     pages = await map(files, async file => {
-      const { data, content } = app.utils.parseFrontMatter(
-        await file.getContents(),
-        opts.frontmatter
-      );
+      const { data, content } = app.utils.parseFrontMatter(await file.getContents(), opts.frontmatter);
       return makePage(file, content, data);
     });
     return uniqBy(pages, 'url');
@@ -125,9 +121,7 @@ module.exports = function(app, adapter, opts = {}) {
 
     page.layout = typeof page.layout === 'boolean' ? page.layout : true;
 
-    page.markdown = isBoolean(page.markdown)
-      ? page.markdown
-      : ['.md', '.markdown'].includes(file.ext);
+    page.markdown = isBoolean(page.markdown) ? page.markdown : ['.md', '.markdown'].includes(file.ext);
     page.template = isBoolean(page.template) ? page.template : file.ext === '.njk';
 
     page.raw = content;

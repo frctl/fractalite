@@ -1,4 +1,4 @@
-const { assign, cloneDeep, get, set, mapValues } = require('lodash');
+const { assign, get, set, mapValues } = require('lodash');
 const getPort = require('get-port');
 const Koa = require('koa');
 const compress = require('koa-compress');
@@ -150,7 +150,7 @@ module.exports = function(compiler, opts = {}) {
   app.extend = obj => {
     for (const key of Object.keys(obj)) {
       if (typeof app[key] !== 'undefined') {
-        throw new Error(`Cannot redefine ${key} property on app instance`);
+        throw new TypeError(`Cannot redefine ${key} property on app instance`);
       }
     }
     Object.assign(app, obj);
