@@ -1,15 +1,50 @@
 const fs = require('fs');
-const { isFunction } = require('lodash');
-const { File } = require('@fractalite/core');
-const { resolveStack } = require('@fractalite/support/helpers');
+const jsonErrors = require('koa-json-error');
+const cleanStack = require('clean-stacktrace');
+const relativePaths = require('clean-stacktrace-relative-paths');
+const { File, Asset } = require('@fractalite/core');
+const { getComponent, getAsset, getFile, getVariant } = require('@fractalite/core/helpers');
 const App = require('./src/app');
 
-module.exports = function(opts = {}) {
-  const app = new App(opts);
+module.exports = function(compiler, opts = {}) {
+  const app = new App(compiler, opts);
   const { router, views, utils } = app;
 
+  app.use(jsonErrors());
+
+  app.use(async (ctx, next) => {
+    if (ctx.path.startsWith('/api')) return next();
+    try {
+      await next();
+      const status = ctx.status || 404;
+      if (status === 404) {
+        ctx.throw(404, 'Page not found');
+      }
+    } catch (err) {
+      ctx.error = err;
+      ctx.state.error = err;
+      err.path = ctx.path;
+      ctx.status = err.status || 500;
+      ctx.app.emit('error', err, ctx);
+      try {
+        return ctx.render('error');
+      } catch (renderError) {
+        ctx.body = err;
+      }
+    }
+  });
+
+  app.use(async (ctx, next) => {
+    try {
+      await next();
+    } catch (err) {
+      err.stack = cleanStack(err.stack, relativePaths());
+      throw err;
+    }
+  });
+
   /*
-   * Nunjucks rendering middleware
+   * View rendering middleware
    */
   app.use((ctx, next) => {
     ctx.response.render = async function(path, locals = {}, opts) {
@@ -61,9 +96,6 @@ module.exports = function(opts = {}) {
    * so that they will be available to templates.
    */
   app.use((ctx, next) => {
-    ctx.components = ctx.api.components;
-    ctx.assets = ctx.api.assets;
-    ctx.state.api = ctx.api;
     ctx.state.mode = ctx.mode;
     ctx.state.error = ctx.error;
     ctx.state.request = {
@@ -72,9 +104,10 @@ module.exports = function(opts = {}) {
       url: ctx.url,
       route: ctx.route
     };
-    // All api methods are added as top-level helpers
-    Object.keys(ctx.api).forEach(key => {
-      ctx.state[key] = ctx.api[key];
+    const compilerState = app.compiler.getState();
+    Object.keys(compilerState).forEach(key => {
+      ctx[key] = compilerState[key];
+      ctx.state[key] = ctx[key];
     });
     return next();
   });
@@ -85,7 +118,7 @@ module.exports = function(opts = {}) {
   router.param('component', (handle, ctx, next) => {
     if (!handle) return next();
     try {
-      ctx.component = ctx.api.getComponent(handle, true);
+      ctx.component = getComponent(ctx.state, handle, true);
     } catch (err) {
       ctx.throw(404, err);
     }
@@ -98,11 +131,11 @@ module.exports = function(opts = {}) {
    */
   router.param('variant', (handle, ctx, next) => {
     if (!handle) return next();
-    ctx.variant = ctx.api.getVariant(handle);
+    ctx.variant = getVariant(ctx.state, handle);
     if (!ctx.variant) {
       ctx.throw(404, `Variant '${handle}' not found`);
     }
-    ctx.component = ctx.api.getComponent(ctx.variant);
+    ctx.component = getComponent(ctx.state, ctx.variant);
     ctx.state.component = ctx.component;
     ctx.state.variant = ctx.variant;
     return next();
@@ -114,7 +147,7 @@ module.exports = function(opts = {}) {
   router.param('asset', (handle, ctx, next) => {
     if (!handle) return next();
     try {
-      ctx.asset = ctx.api.getAsset(handle, true);
+      ctx.asset = getAsset(ctx.state, handle, true);
     } catch (err) {
       ctx.throw(404, err);
     }
@@ -122,23 +155,9 @@ module.exports = function(opts = {}) {
     return next();
   });
 
-  /*
-   * Add a route parameter loader for the :src param.
-   */
-  router.param('file', (handle, ctx, next) => {
-    if (!handle) return next();
-    try {
-      ctx.file = ctx.api.getFile(handle, true);
-    } catch (err) {
-      ctx.throw(404, err);
-    }
-    ctx.state.file = ctx.file;
-    return next();
-  });
-
+  views.addGlobal('app', app.props());
   views.addGlobal('url', (name, params) => app.url(name, params));
   views.addGlobal('resourceUrl', (name, path) => app.resourceUrl(name, path));
-  views.addFilter('resolveStack', resolveStack);
 
   app.addRoute('asset', '/assets/:asset(.+)', ctx => ctx.sendFile(ctx.asset));
 
@@ -146,11 +165,51 @@ module.exports = function(opts = {}) {
   //   app.api.assets.forEach(asset => copyFile(asset.path, app.url('asset', { asset })));
   // });
 
-  app.addRoute('src', '/src/:file(.+)', ctx => ctx.sendFile(ctx.file));
+  app.addRoute('src', '/src/:file(.+)', ctx => {
+    const file = ctx.files.filter(f => !Asset.isAsset(f)).find(f => f.handle === ctx.params.file);
+    if (file) {
+      ctx.sendFile(file);
+    } else {
+      ctx.throw(404, 'Source file not found');
+    }
+  });
 
   // app.addBuildStep('src', ({ copyFile, api }) => {
   //   app.api.files.forEach(file => copyFile(file.path, app.url('src', { file })));
   // });
+
+  /*
+   * Compiler middleware to add url properties to files and assets
+   */
+  app.compiler.use(async ({ components, assets }, next) => {
+    await next();
+    components.forEach(component => {
+      component.files.forEach(file => {
+        file.url = app.url('src', { file });
+      });
+    });
+    assets.forEach(asset => {
+      asset.url = app.url('asset', { asset });
+    });
+  });
+
+  app.addRoute('app-css', `/app/assets/bundle.css`, ctx => {
+    ctx.type = 'text/css';
+    ctx.body = app.getCSS();
+  });
+
+  app.addRoute('app-js', `/app/assets/bundle.js`, ctx => {
+    ctx.type = 'application/javascript';
+    ctx.body = app.getJS();
+  });
+
+  app.use(async (ctx, next) => {
+    ctx.state.scripts = app.getScripts();
+    ctx.state.stylesheets = app.getStylesheets();
+    if (app.getCSS() !== '') ctx.state.stylesheets.push(app.url('app-css'));
+    if (app.getJS() !== '') ctx.state.scripts.push(app.url('app-js'));
+    return next();
+  });
 
   return app;
 };

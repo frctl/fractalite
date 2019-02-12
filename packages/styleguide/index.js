@@ -1,28 +1,34 @@
 const { resolve } = require('path');
-const { forEach, get, mapValues, orderBy } = require('lodash');
-const jsonErrors = require('koa-json-error');
-const App = require('@fractalite/app');
-const corePlugins = require('./src/server/plugins');
-const cleanStack = require('clean-stacktrace');
-const relativePaths = require('clean-stacktrace-relative-paths');
-
-const staticAssetsMount = '/styleguide';
+const { forEach, get, mapValues, orderBy, isFunction } = require('lodash');
+const { defaultsDeep } = require('@fractalite/support/utils');
+const createApp = require('@fractalite/app');
+const createCompiler = require('@fractalite/core');
+const { htmlAdapter } = require('@fractalite/core');
+const highlight = require('./src/server/utils/highlight');
+const markdown = require('./src/server/utils/markdown');
+const plugins = require('./src/server/plugins');
 
 module.exports = function({ components, assets, adapter, mode, ...config }) {
-  const app = new App({ components, assets, adapter, mode });
+  const compiler = createCompiler({ components, assets });
+  const app = createApp(compiler, mode);
 
   app.props({
+    config,
     title: config.title || 'Styleguide',
-    stylesheets: ['styleguide:app.css', 'styleguide:plugins.css'],
-    scripts: ['styleguide:app.js', 'styleguide:plugins.js'],
-    css: [],
-    js: [],
-    config
+    meta: defaultsDeep(config.meta || {}, {
+      title: config.title || 'Styleguide',
+      lang: 'en',
+      dir: 'ltr',
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1.0'
+    })
   });
 
   app.addViewPath(resolve(__dirname, './views'));
 
-  app.addStaticDir('styleguide', resolve(__dirname, './dist'), staticAssetsMount);
+  app.addStaticDir('app', resolve(__dirname, './dist'), '/app/assets');
+  app.addStylesheet('app:app.css');
+  app.addScript('app:app.js');
 
   app.addRoute('overview', '/', async (ctx, next) => ctx.render('app'));
 
@@ -31,98 +37,41 @@ module.exports = function({ components, assets, adapter, mode, ...config }) {
     return next();
   });
 
-  app.addRoute('styleguide-css', `${staticAssetsMount}/plugins.css`, ctx => {
-    ctx.type = 'text/css';
-    ctx.body = app.get('css').join('\n');
+  app.utils.highlightCode = highlight(get(config, 'opts.highlight'));
+
+  app.utils.renderMarkdown = markdown({
+    highlight: app.utils.highlightCode,
+    ...get(config, 'opts.markdown')
   });
 
-  app.addRoute('styleguide-js', `${staticAssetsMount}/plugins.js`, ctx => {
-    ctx.type = 'application/javascript';
-    ctx.body = app.get('js').join('\n');
+  adapter = adapter || htmlAdapter;
+  adapter = isFunction(adapter) ? adapter(app, config) : adapter;
+
+  ['shortlinks', 'preview', 'pages', 'nav', 'inspector'].forEach(name => {
+    require(`./src/server/${name}`)(app, adapter, get(config, name));
   });
-
-  app.use(jsonErrors());
-
-  app.use(async (ctx, next) => {
-    if (ctx.path.startsWith('/api')) return next();
-    try {
-      await next();
-      const status = ctx.status || 404;
-      if (status === 404) {
-        ctx.throw(404, 'Page not found');
-      }
-    } catch (err) {
-      ctx.error = err;
-      ctx.state.error = err;
-      err.path = ctx.path;
-      ctx.status = err.status || 500;
-      ctx.app.emit('error', err, ctx);
-      return ctx.render('error');
-    }
-  });
-
-  app.use(async (ctx, next) => {
-    try {
-      await next();
-    } catch (err) {
-      err.stack = cleanStack(err.stack, relativePaths());
-      throw err;
-    }
-  });
-
-  /*
-   * Compiler middleware to add url properties to entities
-   */
-  app.compiler.use(async ({ components, assets }, next) => {
-    await next();
-    components.forEach(component => {
-      component.files.forEach(file => {
-        file.url = app.url('src', { file });
-      });
-      component.variants.forEach(variant => {
-        variant.url = app.url('inspect', { handle: variant });
-      });
-    });
-    assets.forEach(asset => {
-      asset.url = app.url('asset', { asset });
-    });
-  });
-
-  /*
-   * Styleguide-specific API methods
-   */
-  const styleguide = {};
-
-  styleguide.addJS = js => app.get('js').push(js);
-  styleguide.addCSS = css => app.get('css').push(css);
-  styleguide.addScript = src => app.get('scripts').push(src);
-  styleguide.addStylesheet = href => app.get('stylesheets').push(href);
-
-  app.styleguide = styleguide;
 
   /*
    * Load all core plugins, initialised with opts
    */
-  corePlugins.forEach(({ key, handler }) => {
+  plugins.forEach(({ key, handler }) => {
     const opts = get(config, key, {});
     const plugin = handler(opts);
-    app.addPlugin(plugin);
+    plugin(app, adapter);
   });
 
   /*
    * Load all user-defined plugins
    */
-  forEach(config.plugins, app.addPlugin);
+  forEach(config.plugins, plugin => plugin(app, adapter));
 
   /*
    * Run the init method for any final
    * fine-grained tweaking.
    */
   if (typeof config.init === 'function') {
-    config.init(app);
+    config.init(app, adapter);
   }
-
-  app.addViewGlobal('app', app.props());
 
   return app;
 };

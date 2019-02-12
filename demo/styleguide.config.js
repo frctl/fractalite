@@ -29,7 +29,7 @@ module.exports = {
     }
   },
 
-  init(app) {
+  init(app, adapter) {
     // Example compiler middleware to read notes from notes.md files
     app.compiler.use(async ({ components }) => {
       await Promise.all(

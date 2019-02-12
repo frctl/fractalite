@@ -1,6 +1,5 @@
 ---
 label: Using pages
-template: false
 ---
 
 You can add as many pages to your styleguide as you like.

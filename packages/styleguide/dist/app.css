@@ -796,10 +796,10 @@ pre {
   display: block;
 }
 
-.fr-code {
+.hljs {
   font-size: 15px;
 }
-.fr-code--wrap {
+.hljs--wrap {
   white-space: pre-wrap;
 }
 

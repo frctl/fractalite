@@ -6,15 +6,12 @@
 
   {%- block preStyles %}{% endblock %}
   {%- block styles %}
-  {% for url in app.stylesheets | resolveStack -%}
-  <link rel="stylesheet" href="{{ resourceUrl(url) }}">
+  {% for url in stylesheets -%}
+  <link rel="stylesheet" href="{{ url }}">
   {%- endfor %}
   {% endblock -%}
-  {% if app.css.length %}
-  <style>{{ app.css | join(`\n`) }}</style>
-  {% endif %}
   {% block postStyles %}{% endblock -%}
-  
+
   <title>{% block title %}{% if page.title %}{{ page.title }} | {% endif %}{{ app.meta.title }}{% endblock %}</title>
 </head>
 <body>
@@ -27,11 +24,10 @@
 
 {%- block preScripts %}{% endblock %}
 {%- block scripts %}
-{% for url in app.scripts | resolveStack -%}
-<script src="{{ resourceUrl(url) }}"></script>
+{% for url in scripts -%}
+<script src="{{ url }}"></script>
 {%- endfor %}
 {% endblock -%}
-{% if app.js.length %}<script>{{ app.js | join(`\n`) }}</script>{% endif %}
 {%- block postScripts %}{% endblock -%}
 
 </body>

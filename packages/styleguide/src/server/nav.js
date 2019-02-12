@@ -3,28 +3,24 @@ const { isFunction, isPlainObject, reject, find, flatMap, uniqBy, orderBy } = re
 const { titlize } = require('@fractalite/support/utils');
 const { Variant, Component, File } = require('@fractalite/core');
 
-module.exports = function(opts = {}) {
-  return function navigationPlugin(app) {
-    if (Array.isArray(opts) || isFunction(opts)) {
-      opts = { items: opts };
-    }
-    const items = opts.items || defaultGenerator;
+module.exports = function(app, adapter, opts = {}) {
+  if (Array.isArray(opts) || isFunction(opts)) {
+    opts = { items: opts };
+  }
+  const items = opts.items || defaultGenerator;
 
-    app.addRoute('api.navigation', '/api/navigation.json', ctx => {
-      const { pages, components, assets } = ctx;
-      ctx.body = {
-        items: buildNav(items, { pages, components, assets })
-      };
+  app.addRoute('api.navigation', '/api/navigation.json', ctx => {
+    const { pages, components, assets } = ctx.state;
+    ctx.body = {
+      items: buildNav(items, { pages, components, assets })
+    };
+  });
+
+  app.compiler.use(({ components }) => {
+    components.forEach(component => {
+      component.position = component.config.position || 1000;
     });
-
-    app.compiler.use(({ components }) => {
-      components.forEach(component => {
-        component.position = component.config.position || 1000;
-      });
-    });
-
-    app.addViewGlobal('nav', buildNav);
-  };
+  });
 };
 
 function defaultGenerator({ components, pages, toTree }) {
@@ -98,7 +94,7 @@ function toTree(items, pathProp) {
     leaf.position = item.position || leaf.position;
     return nodes;
   });
-  nodes = orderBy(uniqBy(nodes, 'path'), ['order'], ['asc']);
+  nodes = orderBy(uniqBy(nodes, 'path'), ['position'], ['asc']);
 
   return nodes.filter(node => node.depth === 1).map(node => {
     node.children = getChildNodes(node, nodes);
