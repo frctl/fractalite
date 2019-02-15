@@ -19,17 +19,16 @@ module.exports = function(opts = {}) {
             <h2 class="${className}__title">{{ component.label }}</h2>
           </div>
           <div class="${className}__content fr-prose">
-            <h4>Variants:</h4>
             <div class="fr-proptable ${className}__proptable">
-              {% for var in component.variants %}
+              {% for ctx in component.contexts %}
               <div class="fr-proptable__row">
                 <td class="fr-proptable__cell">
-                  <a href="{{ var.url }}">
-                    {% if variant.name == var.name %}<strong>{{ var.label }}</strong>{% else %}{{ var.label }}{% endif %}
+                  <a href="{{ ctx.url }}">
+                    {% if context.name == ctx.name %}<strong>{{ ctx.label }}</strong>{% else %}{{ ctx.label }}{% endif %}
                   </a>
                 </td>
                 <td class="fr-proptable__cell fr-proptable__cell--fit">
-                  <app-link to="{{ var.previewUrl }}" target="_blank">Preview</app-link>
+                  <app-link to="{{ ctx.previewUrl }}" target="_blank">Preview</app-link>
                 </td>
               </div>
               {% endfor %}
@@ -40,9 +39,6 @@ module.exports = function(opts = {}) {
               <div class="fr-proptable__row">
                 <td class="fr-proptable__cell">
                   {{ file.relative }}
-                </td>
-                <td class="fr-proptable__cell fr-proptable__cell--fit" style="opacity: 0.8; font-family: monospace;">
-                  @{{ file.handle }}
                 </td>
                 <td class="fr-proptable__cell fr-proptable__cell--fit">
                   {{ file.size }}
@@ -75,11 +71,5 @@ module.exports = function(opts = {}) {
         text-decoration: none;
       }
     `);
-
-    app.compiler.use(({ components }) => {
-      components.forEach(component => {
-        component.notes = component.notes || component.config.notes;
-      });
-    });
   };
 };

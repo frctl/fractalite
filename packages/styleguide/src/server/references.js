@@ -1,6 +1,6 @@
 // const { mapValues } = require('lodash');
 // const { rewriteUrls } = require('@fractalite/support/html');
-// const { resolveReference } = require('@fractalite/core/helpers');
+const { getContext } = require('@fractalite/core/helpers');
 // const { isAsset, isComponent, isFile, isVariant } = require('@fractalite/core/helpers');
 // const flatten = require('flat');
 // const { map } = require('asyncro');
@@ -12,10 +12,7 @@ module.exports = function(app, adapter, opts = {}) {
 
   const lookup = {
     component(state, identifier) {
-      return state.components.find(c => c.handle === identifier) || state.variants.find(c => c.handle === identifier);
-    },
-    variant(state, identifier) {
-      return state.variants.find(c => c.handle === identifier);
+      return state.components.find(c => c.name === identifier);
     },
     asset(state, identifier) {
       return state.assets.find(c => c.handle === identifier);
@@ -37,15 +34,18 @@ module.exports = function(app, adapter, opts = {}) {
       const [entity, identifier, prop = 'url'] = refParts;
 
       if (!lookup[entity]) {
-        app.emit('error', new Error(`Could not resolve reference tag - '${entity}' is not a recognised entity`));
+        throw new Error(`Could not resolve reference tag - '${entity}' is not a recognised entity`);
+      }
+      try {
+        const target = lookup[entity](app.compiler.getState(), identifier);
+        if (!target) {
+          throw new Error(`Could not resolve reference tag - '${entity}:${identifier}' not found`);
+        }
+        return target[prop] || '';
+      } catch (err) {
+        app.emit('error', err);
         return '';
       }
-      const target = lookup[entity](app.compiler.getState(), identifier);
-      if (!target) {
-        app.emit('error', new Error(`Could not resolve reference tag - '${entity}:${identifier}' not found`));
-        return '';
-      }
-      return target[prop] || '';
     });
   };
 };

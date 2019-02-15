@@ -27,13 +27,12 @@ module.exports = function(opts = {}) {
         />
       `,
       async props(state) {
-        const { variant } = state;
-        if (!variant) return;
+        const { context, component } = state;
 
         const renderer = createRenderer(state, adapter);
 
-        const html = await map(variant.previewProps, async props => {
-          const html = await renderer.render(variant, props);
+        const html = await map(context.previewProps, async props => {
+          const html = await renderer.render(component, props);
           return opts.prettify ? beautify.html(html, opts.prettify) : html;
         });
 

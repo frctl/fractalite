@@ -1,5 +1,5 @@
 module.exports = {
-  variants: [
+  contexts: [
     {
       name: 'next',
       props: {

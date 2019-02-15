@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 
 module.exports = {
-  title: 'Fractalite Demo',
+  title: 'Fractalite',
 
   adapter: require('@fractalite/adapter-nunjucks')(),
 

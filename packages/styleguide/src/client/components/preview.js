@@ -4,7 +4,6 @@ export default {
   methods: {
     reload: debounce(
       function() {
-        console.log('reloading');
         this.$refs.window.contentWindow.location.reload();
       },
       500,

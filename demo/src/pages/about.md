@@ -11,4 +11,4 @@ Pages are written in markdown and code samples are highlighted automatically:
 ```
 
 s
-You can use reference tags to link to your components: [Check out the button &rarr;]({variant:button/next:url})
+You can use reference tags to link to your components: [Check out the button &rarr;]({inspect:button})

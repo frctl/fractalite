@@ -51,14 +51,12 @@ function expandValues(items, app) {
     if (Component.isComponent(item)) {
       return {
         label: item.label,
-        children: expandValues(item.variants, app)
-      };
-    }
-
-    if (Variant.isVariant(item)) {
-      return {
-        label: item.label,
-        url: item.url
+        children: item.contexts.map(context => {
+          return {
+            label: context.label,
+            url: context.url
+          };
+        })
       };
     }
 

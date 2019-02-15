@@ -10,13 +10,6 @@ module.exports = function({ components = [], assets = [] } = {}) {
     enumerable: true
   });
 
-  Object.defineProperty(state, 'variants', {
-    get() {
-      return flatMap(state.components, component => component.variants);
-    },
-    enumerable: true
-  });
-
   state.update = ({ components = [], assets = [] } = {}) => {
     state.components = components;
     state.assets = assets;

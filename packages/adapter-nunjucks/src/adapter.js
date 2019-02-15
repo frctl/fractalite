@@ -30,7 +30,7 @@ module.exports = function(opts = {}) {
       state.components.forEach(component => {
         // Lookup view by handle: {% include 'button' %}
         views.push({
-          name: component.handle,
+          name: component.name,
           getContents: () => {
             const view = component.matchFile(opts.views);
             return view ? view.getContents() : null;

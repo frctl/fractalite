@@ -15,11 +15,8 @@ module.exports = function(opts = {}) {
       `,
 
       props(state) {
-        const { variant } = state;
-        if (!variant) return;
-
-        const items = variant.previewProps.map(props => mergeProps(state, variant, props));
-        return items.length > 1 ? items : items[0];
+        const { context } = state;
+        return context.previewProps.length > 1 ? context.previewProps : context.previewProps[0];
       }
     });
 

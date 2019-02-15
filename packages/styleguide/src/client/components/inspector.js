@@ -7,7 +7,7 @@ const supportsSrcdoc = Boolean('srcdoc' in document.createElement('iframe'));
 
 export default {
   template: '#inspector',
-  props: ['handle'],
+  props: ['componentName', 'contextName'],
   sockets: {
     async updated(state) {
       const previewSrc = this.preview;
@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       component: null,
-      variant: null,
+      context: null,
       preview: null,
       panels: [],
       currentTab: 0,
@@ -30,14 +30,17 @@ export default {
   },
   methods: {
     async load() {
-      if (this.handle) {
+      if (this.componentName) {
         try {
-          const response = await axios.get(`/api/inspect/${this.handle}.json`);
-          if (!response.data.variant) {
-            const variant = response.data.component.variants[0];
-            this.$router.push(`/inspect/${variant.handle}`);
+          if (!this.contextName) {
+            const response = await axios.get(`/api/components/${this.componentName}.json`);
+            const component = response.data;
+            const context = component.contexts[0];
+            this.$router.push(`/inspect/${component.name}/${context.name}`);
             return;
           }
+
+          const response = await axios.get(`/api/inspect/${this.componentName}/${this.contextName}.json`);
           Object.keys(response.data).forEach(key => {
             this[key] = response.data[key];
           });
@@ -52,19 +55,14 @@ export default {
       this.currentTab = i;
     }
   },
-  computed: {
-    panel() {
-      return {
-        template: '<div>hello</div>'
-        // Methods: this.$options.methods
-      };
-    }
-  },
   async mounted() {
     await this.load();
   },
   watch: {
-    async handle() {
+    async componentName() {
+      await this.load();
+    },
+    async contextName() {
       await this.load();
     }
   }

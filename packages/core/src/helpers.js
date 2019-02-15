@@ -3,51 +3,31 @@ const { isString, find } = require('lodash');
 const { defaultsDeep } = require('@fractalite/support/utils');
 const Component = require('./entities/component');
 const Asset = require('./entities/asset');
-const Variant = require('./entities/variant');
 const File = require('./entities/file');
 
 function getComponent({ components }, target, throwOnNotFound = false) {
   if (isComponent(target)) return target;
-  const component = find(components, { handle: target });
+  const component = find(components, { name: target });
   if (!component && throwOnNotFound) {
     throw new Error(`Component '${target}' was not found`);
   }
   return component;
 }
 
-function getVariant({ variants }, target, throwOnNotFound = false) {
-  if (isVariant(target)) return target;
-  const variant = find(variants, { handle: target });
-  if (!variant && throwOnNotFound) {
-    throw new Error(`Variant '${target}' was not found`);
+function getContext(component, name, throwOnNotFound = false) {
+  const context = find(component.contexts, { name });
+  if (!context && throwOnNotFound) {
+    throw new Error(`Context '${name}' for component '${component.name}' was not found`);
   }
-  return variant;
+  return context;
 }
 
-function getComponentFromVariant(state, target) {
-  const variant = getVariant(state, target, true);
-  return state.components.find(component => {
-    return component.variants.includes(variant);
-  });
-}
-
-function getComponentFromFile(state, file) {
-  file = getFile(state, file, true);
-  return state.components.find(component => {
-    return component.files.includes(file);
-  });
-}
-
-function getTarget(state, target, throwOnNotFound) {
-  const variant = getVariant(state, target);
-  if (variant) {
-    return variant;
+function getContextOrDefault(component, name, throwOnNotFound = false) {
+  if (!name) {
+    return component.contexts[0];
   }
-  const component = getComponent(state, target);
-  if (!component && throwOnNotFound) {
-    throw new Error(`Could not resolve target`);
-  }
-  return component;
+  const context = getContext(component, name, throwOnNotFound);
+  return context ? context : component.contexts[0];
 }
 
 function getFile({ files }, target, throwOnNotFound = false) {
@@ -69,32 +49,12 @@ function getAsset({ assets }, target, throwOnNotFound = false) {
 }
 
 function mergeProps(state, ...args) {
-  const targets = args.map(target => {
-    if (isString(target)) {
-      target = getTarget(state, target, true);
-    }
-    if (isComponent(target)) return {};
-    return isVariant(target) ? target.props : target;
-  });
-  return defaultsDeep(...targets.reverse());
-}
-
-function resolveReference(state, ref) {
-  if (extname(ref)) {
-    const file = ref.startsWith('@') ? getFile(state, ref.replace('@', '')) : getAsset(state, ref.replace('@', ''));
-    return file;
-  }
-  if (ref.startsWith('@')) {
-    return getTarget(state, ref.replace('@', ''));
-  }
+  // TODO: allow for resolving of string componet/context references?
+  return defaultsDeep(...args.reverse());
 }
 
 function isComponent(component) {
   return Component.isComponent(component);
-}
-
-function isVariant(variant) {
-  return Variant.isVariant(variant);
 }
 
 function isAsset(asset) {
@@ -107,15 +67,11 @@ function isFile(file) {
 
 module.exports = {
   getComponent,
-  getComponentFromVariant,
-  getComponentFromFile,
-  getTarget,
+  getContext,
+  getContextOrDefault,
   getAsset,
   getFile,
-  getVariant,
   mergeProps,
-  resolveReference,
-  isVariant,
   isComponent,
   isAsset,
   isFile

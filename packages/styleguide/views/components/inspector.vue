@@ -1,5 +1,5 @@
 <div class="fr-inspector" v-if="loaded">
-  <preview v-if="preview" :srcdoc="preview" :src="variant.previewUrl" class="fr-inspector__preview" ref="preview"></preview>
+  <preview v-if="preview" :srcdoc="preview" :src="context.previewUrl" class="fr-inspector__preview" ref="preview"></preview>
     <div class="fr-inspector__info">
     <ul class="fr-tabs fr-inspector__tabs" v-if="panels.length > 1">
       <li class="fr-tabs__tab" :class="{ 'is-current': currentTab === i }" v-for="(panel, i) in panels">
@@ -12,8 +12,8 @@
         v-show="currentTab === i"
         v-for="(panel, i) in panels">
         <component
-          :is="{ template: panel.template, props: ['variant', 'component', 'panel', 'preview'] }"
-          :variant="variant"
+          :is="{ template: panel.template, props: ['context', 'component', 'panel', 'preview'] }"
+          :context="context"
           :preview="preview"
           :component="component"
           :panel="panel"

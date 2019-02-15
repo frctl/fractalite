@@ -29,7 +29,7 @@ module.exports = async function(src, opts = {}) {
       path: dir.path,
       relative: dir.relative,
       root: clone(dir),
-      variants: [],
+      contexts: [],
       files: children.map(clone)
     });
   });

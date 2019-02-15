@@ -1,5 +1,5 @@
 module.exports = {
-  variants: [
+  contexts: [
     {
       name: 'cta',
       label: 'Call to action',

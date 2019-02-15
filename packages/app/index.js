@@ -115,29 +115,14 @@ module.exports = function(compiler, opts = {}) {
   /*
    * Add a route parameter loader for the :component param.
    */
-  router.param('component', (handle, ctx, next) => {
-    if (!handle) return next();
+  router.param('component', (name, ctx, next) => {
+    if (!name) return next();
     try {
-      ctx.component = getComponent(ctx.state, handle, true);
+      ctx.component = getComponent(ctx.state, name, true);
     } catch (err) {
       ctx.throw(404, err);
     }
     ctx.state.component = ctx.component;
-    return next();
-  });
-
-  /*
-   * Add a route parameter loader for the :variant param.
-   */
-  router.param('variant', (handle, ctx, next) => {
-    if (!handle) return next();
-    ctx.variant = getVariant(ctx.state, handle);
-    if (!ctx.variant) {
-      ctx.throw(404, `Variant '${handle}' not found`);
-    }
-    ctx.component = getComponent(ctx.state, ctx.variant);
-    ctx.state.component = ctx.component;
-    ctx.state.variant = ctx.variant;
     return next();
   });
 

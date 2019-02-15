@@ -20,7 +20,6 @@ module.exports.htmlAdapter = require('./src/html-adapter');
 module.exports.File = require('./src/entities/file');
 module.exports.Asset = require('./src/entities/asset');
 module.exports.Component = require('./src/entities/component');
-module.exports.Variant = require('./src/entities/variant');
 module.exports.Entity = require('./src/entities/entity');
 module.exports.middleware = require('./src/middleware');
 module.exports.read = require('./src/read');

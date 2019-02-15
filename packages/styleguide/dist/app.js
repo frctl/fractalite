@@ -41614,7 +41614,6 @@ var _default = {
   props: ['src', 'srcdoc'],
   methods: {
     reload: debounce(function () {
-      console.log('reloading');
       this.$refs.window.contentWindow.location.reload();
     }, 500, true)
   }
@@ -41655,7 +41654,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const supportsSrcdoc = Boolean('srcdoc' in document.createElement('iframe'));
 var _default = {
   template: '#inspector',
-  props: ['handle'],
+  props: ['componentName', 'contextName'],
   sockets: {
     async updated(state) {
       const previewSrc = this.preview;
@@ -41674,7 +41673,7 @@ var _default = {
   data() {
     return {
       component: null,
-      variant: null,
+      context: null,
       preview: null,
       panels: [],
       currentTab: 0,
@@ -41684,16 +41683,17 @@ var _default = {
 
   methods: {
     async load() {
-      if (this.handle) {
+      if (this.componentName) {
         try {
-          const response = await _axios.default.get(`/api/inspect/${this.handle}.json`);
-
-          if (!response.data.variant) {
-            const variant = response.data.component.variants[0];
-            this.$router.push(`/inspect/${variant.handle}`);
+          if (!this.contextName) {
+            const response = await _axios.default.get(`/api/components/${this.componentName}.json`);
+            const component = response.data;
+            const context = component.contexts[0];
+            this.$router.push(`/inspect/${component.name}/${context.name}`);
             return;
           }
 
+          const response = await _axios.default.get(`/api/inspect/${this.componentName}/${this.contextName}.json`);
           Object.keys(response.data).forEach(key => {
             this[key] = response.data[key];
           });
@@ -41710,22 +41710,17 @@ var _default = {
     }
 
   },
-  computed: {
-    panel() {
-      return {
-        template: '<div>hello</div>' // Methods: this.$options.methods
-
-      };
-    }
-
-  },
 
   async mounted() {
     await this.load();
   },
 
   watch: {
-    async handle() {
+    async componentName() {
+      await this.load();
+    },
+
+    async contextName() {
       await this.load();
     }
 
@@ -41814,7 +41809,7 @@ var _default = new _vueRouter.default({
   mode: 'history',
   routes: [{
     name: 'inspect',
-    path: '/inspect/:handle(.+)',
+    path: '/inspect/:componentName/:contextName?',
     component: _inspector.default,
     props: true
   }, {
@@ -41986,7 +41981,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64059" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60069" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
