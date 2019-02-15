@@ -18,34 +18,31 @@ module.exports = function(app, adapter, opts = {}) {
     return matter({ ...opts, content });
   };
 
-  app.utils.renderPage = async function(state, str = '', props = {}, opts = {}) {
+  app.utils.renderPage = async function(str = '', props = {}, opts = {}) {
+    const state = app.compiler.getState();
     if (opts.template === true) {
       str = await app.views.renderStringAsync(str, { ...state, ...props });
+    }
+    if (opts.refs === true) {
+      str = app.utils.parseRefs(str);
     }
     if (opts.markdown === true) {
       str = app.utils.renderMarkdown(str);
     }
-    if (opts.shortlinks === false) return str;
-    return app.utils.replaceShortlinkAttrs(state, str, 'inspect');
+    return str;
   };
-
-  app.use((ctx, next) => {
-    ctx.pages = pages;
-    ctx.state.pages = pages;
-    return next();
-  });
 
   app.addRoute('api.page', '/api/pages/:path(.+).json', async (ctx, next) => {
     const path = ctx.params.path === 'index' ? '/' : `/${ctx.params.path}`;
     const page = find(pages, { url: path });
     if (page) {
       const content = await app.utils.renderPage(
-        ctx.state,
         page.raw,
         { page },
         {
           markdown: page.markdown,
-          template: page.template
+          template: page.template,
+          refs: page.refs
         }
       );
       ctx.body = { page, content };
@@ -61,13 +58,15 @@ module.exports = function(app, adapter, opts = {}) {
     return next();
   });
 
-  app.on('initialised', async () => {
+  app.beforeStart(async (app, state) => {
     try {
       if (app.mode === 'develop') {
         pages = await getPages();
+        state.pages = pages;
         watch(opts.src.paths, { ignoreInitial: true }).on('all', async () => {
           try {
             pages = await getPages();
+            state.pages = pages;
             app.emit('updated');
           } catch (err) {
             app.emit('error', err);
@@ -75,6 +74,7 @@ module.exports = function(app, adapter, opts = {}) {
         });
       } else if (app.mode === 'build') {
         pages = await getPages();
+        state.pages = pages;
       }
     } catch (err) {
       app.emit('error', err);
@@ -115,12 +115,14 @@ module.exports = function(app, adapter, opts = {}) {
       page.label = page.label || titlize(file.name);
     }
 
+    page.handle = urlPath;
     page.title = page.title || page.label;
     page.treePath = urlPath;
     page.url = app.url('page', { path: '/' + urlPath });
 
     page.layout = typeof page.layout === 'boolean' ? page.layout : true;
 
+    page.refs = isBoolean(page.refs) ? page.refs : true;
     page.markdown = isBoolean(page.markdown) ? page.markdown : ['.md', '.markdown'].includes(file.ext);
     page.template = isBoolean(page.template) ? page.template : file.ext === '.njk';
 

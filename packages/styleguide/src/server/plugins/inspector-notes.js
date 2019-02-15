@@ -19,10 +19,11 @@ module.exports = function(opts = {}) {
 
           const renderOpts = defaultsDeep(data, {
             markdown: true,
-            template: false
+            template: false,
+            refs: true
           });
 
-          notes = await app.utils.renderPage(state, content, {}, renderOpts);
+          notes = await app.utils.renderPage(content, {}, renderOpts);
 
           // Rewrite relative URLs in output
           notes = rewriteUrls(notes, path => {

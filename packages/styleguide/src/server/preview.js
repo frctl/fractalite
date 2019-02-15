@@ -18,7 +18,8 @@ module.exports = function(app, adapter, opts = {}) {
     }
   });
 
-  app.utils.renderPreview = async (state, target, props = [], runtimeOpts = {}) => {
+  app.utils.renderPreview = async (target, props = [], runtimeOpts = {}) => {
+    const state = app.compiler.getState();
     let component;
     let variant;
     const renderer = createRenderer(state, adapter);
@@ -44,7 +45,8 @@ module.exports = function(app, adapter, opts = {}) {
     html = isFunction(wrap) ? wrap(html, wrapCtx) : html;
 
     // Resolve asset references for stylesheets and scripts
-    const lookupFile = path => app.utils.resolveShortlink(state, path);
+    // const lookupFile = path => app.utils.resolveShortlink(state, path);
+    const lookupFile = path => path;
 
     const stylesheets = processStack(opts.stylesheets, componentOpts.stylesheets, lookupFile);
     const scripts = processStack(opts.scripts, componentOpts.scripts, lookupFile);
@@ -63,13 +65,15 @@ module.exports = function(app, adapter, opts = {}) {
       content: html
     });
 
-    return app.utils.replaceShortlinkAttrs(state, rendered, 'preview');
+    return rendered;
+
+    // return app.utils.replaceShortlinkAttrs(state, rendered, 'preview');
   };
 
   app.addRoute('preview', `/preview/:handle(.+)`, async (ctx, next) => {
     const variant = getVariant(ctx.state, ctx.params.handle);
     if (variant) {
-      ctx.body = await app.utils.renderPreview(ctx.state, variant, variant.previewProps, {
+      ctx.body = await app.utils.renderPreview(variant, variant.previewProps, {
         reload: true
       });
     } else {

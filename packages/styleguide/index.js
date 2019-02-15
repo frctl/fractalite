@@ -47,7 +47,7 @@ module.exports = function({ components, assets, adapter, mode, ...config }) {
   adapter = adapter || htmlAdapter;
   adapter = isFunction(adapter) ? adapter(app, config) : adapter;
 
-  ['shortlinks', 'preview', 'pages', 'nav', 'inspector'].forEach(name => {
+  ['references', 'preview', 'pages', 'nav', 'inspector'].forEach(name => {
     require(`./src/server/${name}`)(app, adapter, get(config, name));
   });
 

@@ -1,9 +1,9 @@
 const { resolve } = require('path');
 
 module.exports = {
-  title: 'Styleguide Demo',
+  title: 'Fractalite Demo',
 
-  adapter: require('../packages/adapter-nunjucks')(),
+  adapter: require('@fractalite/adapter-nunjucks')(),
 
   components: resolve(__dirname, './src/components'),
   assets: resolve(__dirname, './dist/assets'),
@@ -34,9 +34,7 @@ module.exports = {
     app.compiler.use(async ({ components }) => {
       await Promise.all(
         components.map(async component => {
-          const notesfile = component.files.find(
-            file => file.basename.toLowerCase() === 'notes.md'
-          );
+          const notesfile = component.files.find(file => file.basename.toLowerCase() === 'notes.md');
           if (notesfile) {
             component.notes = await notesfile.getContents();
           }

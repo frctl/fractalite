@@ -4,6 +4,7 @@ const Koa = require('koa');
 const compress = require('koa-compress');
 const IO = require('koa-socket-2');
 const cleanStack = require('clean-stacktrace');
+const { map } = require('asyncro');
 const relativePaths = require('clean-stacktrace-relative-paths');
 const Emitter = require('@fractalite/support/emitter');
 const { permalinkify, defaultsDeep, processStack } = require('@fractalite/support/utils');
@@ -15,6 +16,7 @@ const getMode = require('./mode');
 module.exports = function(compiler, opts = {}) {
   const props = {};
   const middleware = [];
+  const initialisers = [];
   const ui = { js: [], scripts: [], css: [], stylesheets: [] };
 
   const mode = getMode(opts);
@@ -52,6 +54,8 @@ module.exports = function(compiler, opts = {}) {
     );
     koa.on('error', err => app.emit('error', err));
     app.on('updated', () => socket.broadcast('updated', state));
+
+    await map(initialisers, fn => fn(app, state));
 
     app.emit('initialised');
 
@@ -154,6 +158,11 @@ module.exports = function(compiler, opts = {}) {
       }
     }
     Object.assign(app, obj);
+  };
+
+  app.beforeStart = fn => {
+    initialisers.push(fn);
+    return app;
   };
 
   ['Filter', 'Extension', 'Path'].forEach(type => {

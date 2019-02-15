@@ -16,9 +16,7 @@ module.exports = function(app, adapter, opts = {}) {
 
       if (!noRender) {
         const tpl = panel.template;
-        panel.template = function(state) {
-          return app.utils.renderPage(state, resolveValue(tpl), {}, { template: true });
-        };
+        panel.template = () => app.utils.renderPage(resolveValue(tpl), {}, { template: true });
       }
 
       panels.push({ position, ...panel });
@@ -51,7 +49,7 @@ module.exports = function(app, adapter, opts = {}) {
     ctx.body = {
       component,
       variant,
-      preview: variant ? await app.utils.renderPreview(ctx.state, variant, variant.previewProps) : null,
+      preview: variant ? await app.utils.renderPreview(variant, variant.previewProps) : null,
       panels: panels.filter(panel => panel.template)
     };
     return next();
