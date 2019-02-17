@@ -31,11 +31,11 @@ module.exports = function(compiler, opts = {}) {
     const socket = new IO();
     socket.attach(koa);
 
-    const state = await compiler.run();
-
     koa.silent = true;
     koa.context.mode = mode;
     koa.context.utils = utils;
+
+    const state = await compiler.run();
 
     middleware.forEach(mw => koa.use(mw));
 
@@ -53,11 +53,11 @@ module.exports = function(compiler, opts = {}) {
       })
     );
     koa.on('error', err => app.emit('error', err));
-    app.on('updated', () => socket.broadcast('updated', state));
+    app.on('updated', state => socket.broadcast('updated', state));
 
     await map(initialisers, fn => fn(app, state));
 
-    app.emit('initialised');
+    app.emit('initialised', state);
 
     const port = await getPort({ port: mode.port });
     const server = await new Promise((resolve, reject) => {
