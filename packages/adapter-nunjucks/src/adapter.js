@@ -11,7 +11,7 @@ module.exports = function(opts = {}) {
   return {
     views: opts.views,
 
-    async renderComponent(component, props, state) {
+    async render(component, props, state) {
       const view = component.matchFile(opts.views);
       if (view === null) {
         throw new Error(`Nunjucks adapter: No view found for component '${component.name}'`);
