@@ -38,11 +38,15 @@ Vue.component('error', Error);
 window.app = new Vue({
   el: '#app',
   data: {
-    error: null
+    error: null,
+    loading: false
   },
   router,
   sockets: {
     err(err) {
+      if (err.status === 404) {
+        return;
+      }
       this.error = err;
     },
     updated() {
@@ -50,6 +54,9 @@ window.app = new Vue({
     }
   },
   mounted() {
+    this.$on('loading', isLoading => {
+      this.loading = isLoading;
+    });
     this.$on('error', err => {
       if (err.response) return;
       this.error = err;

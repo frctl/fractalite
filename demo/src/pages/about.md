@@ -10,5 +10,4 @@ Pages are written in markdown and code samples are highlighted automatically:
 <h2 class="example">Some HTML code here</h2>
 ```
 
-s
 You can use reference tags to link to your components: [Check out the button &rarr;]({inspect:button})

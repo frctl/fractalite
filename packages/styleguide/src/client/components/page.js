@@ -19,6 +19,7 @@ export default {
     async load() {
       if (this.path) {
         try {
+          this.$parent.$emit('loading', true);
           const response = await axios.get(`/api/pages/${this.path}.json`);
           this.page = response.data.page;
           this.content = response.data.content;
@@ -26,6 +27,7 @@ export default {
         } catch (err) {
           this.$parent.$emit('error', err);
         }
+        this.$parent.$emit('loading', false);
       }
     }
   },

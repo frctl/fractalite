@@ -3,21 +3,24 @@
 import axios from 'axios';
 import Preview from './preview';
 
-const supportsSrcdoc = Boolean('srcdoc' in document.createElement('iframe'));
+// const supportsSrcdoc = Boolean('srcdoc' in document.createElement('iframe'));
 
 export default {
   template: '#inspector',
   props: ['componentName', 'contextName'],
+  components: { Preview },
   sockets: {
-    async updated(state) {
+    async updated() {
       const previewSrc = this.preview;
       await this.load();
-      if (supportsSrcdoc && previewSrc === this.preview) {
-        this.$refs.preview.reload(); // Refresh iframe in case assets have changed
-      }
+      // if (supportsSrcdoc && previewSrc === this.preview) {
+      // this.$refs.preview.reload(); // Refresh iframe in case assets have changed
+      // }
+    },
+    refresh() {
+      this.$refs.preview.reload();
     }
   },
-  components: { Preview },
   data() {
     return {
       component: null,
@@ -31,6 +34,7 @@ export default {
   methods: {
     async load() {
       if (this.componentName) {
+        this.$parent.$emit('loading', true);
         try {
           if (!this.contextName) {
             const response = await axios.get(`/api/components/${this.componentName}.json`);
@@ -39,7 +43,6 @@ export default {
             this.$router.push(`/inspect/${component.name}/${context.name}`);
             return;
           }
-
           const response = await axios.get(`/api/inspect/${this.componentName}/${this.contextName}.json`);
           Object.keys(response.data).forEach(key => {
             this[key] = response.data[key];
@@ -49,6 +52,7 @@ export default {
         } catch (err) {
           this.$parent.$emit('error', err);
         }
+        this.$parent.$emit('loading', false);
       }
     },
     selectTab(i) {

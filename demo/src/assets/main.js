@@ -1,3 +1,1 @@
-// import button from '../components/units/@button/button.js';
-//
-// window.components = { button };
+import '../components/01-units/@button/button.js';

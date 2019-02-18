@@ -5,16 +5,24 @@ const { rewriteUrls } = require('@fractalite/support/html');
 const { defaultsDeep, toArray, processStack } = require('@fractalite/support/utils');
 const { getContext, getContextOrDefault, getComponent, getAsset } = require('@fractalite/core/helpers');
 const { createRenderer } = require('@fractalite/core');
+const { map } = require('asyncro');
 
 module.exports = function(app, adapter, opts = {}) {
-  const preview = { css: [], js: [] };
+  const preview = { css: [], js: [], scripts: [], stylesheets: [] };
 
   app.extend({
+    addPreviewStylesheet(url) {
+      preview.stylesheets.push(url);
+      return app;
+    },
     addPreviewCSS(css) {
       preview.css.push(css);
       return app;
     },
-
+    addPreviewScript(url) {
+      preview.scripts.push(url);
+      return app;
+    },
     addPreviewJS(js) {
       preview.js.push(js);
       return app;
@@ -44,9 +52,18 @@ module.exports = function(app, adapter, opts = {}) {
     html = html.join('\n');
     html = isFunction(wrap) ? wrap(html, wrapCtx) : html;
 
+    const resolvePaths = path => {
+      if (path.startsWith('./')) {
+        const file = component.files.find(file => `./${file.relative}` === path);
+        return file ? file.url : path;
+      }
+      const asset = getAsset(state, path);
+      return asset ? asset.url : path;
+    };
+
     // resolve the stylesheets and scripts for use in the preview
-    const stylesheets = processStack(opts.stylesheets, componentOpts.stylesheets);
-    const scripts = processStack(opts.scripts, componentOpts.scripts);
+    const stylesheets = processStack(preview.stylesheets, opts.stylesheets, componentOpts.stylesheets, resolvePaths);
+    const scripts = processStack(preview.scripts, opts.scripts, componentOpts.scripts, resolvePaths);
 
     if (mergedOpts.reload) {
       scripts.push(app.resourceUrl('app:reload.js'));
@@ -59,15 +76,11 @@ module.exports = function(app, adapter, opts = {}) {
       ...mergedOpts,
       scripts,
       stylesheets,
-      content: html
+      content: renderer.getPreviewString(html)
     });
 
-    // rewrite url attribute references as required
+    // rewrite links to other components in the templates
     return rewriteUrls(rendered, path => {
-      if (path.startsWith('./')) {
-        const file = component.files.find(file => `./${file.relative}` === path);
-        return file ? file.url : null;
-      }
       if (path.startsWith('@') && !extname(path)) {
         const [componentName, contextName] = path.replace('@', '').split('/');
         const component = getComponent(state, componentName);
@@ -76,15 +89,13 @@ module.exports = function(app, adapter, opts = {}) {
           return context.previewUrl;
         }
       }
-      const asset = getAsset(state, path);
-      return asset ? asset.url : null;
     });
   };
 
   app.addRoute('preview', `/preview/:component/:context`, async (ctx, next) => {
     const context = getContext(ctx.component, ctx.params.context, true);
     ctx.body = await app.utils.renderPreview(ctx.component, context, {
-      reload: true
+      reload: opts.reload === true
     });
   });
 
@@ -135,6 +146,23 @@ module.exports = function(app, adapter, opts = {}) {
         });
       });
     });
+  });
+
+  /*
+   * Compiler middleware to expand the relative urls in view templates
+   */
+  app.compiler.use(async ({ components, assets }, next) => {
+    await next();
+    if (adapter.views) {
+      await map(components, async component => {
+        const view = component.matchFile(adapter.views);
+        if (view) {
+          let contents = await view.getContents();
+          contents = rewriteUrls(contents, path => replaceRelativeUrl(path, component));
+          view.setContents(contents);
+        }
+      });
+    }
   });
 
   /*

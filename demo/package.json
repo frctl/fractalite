@@ -2,16 +2,13 @@
   "name": "@fractalite/demo",
   "private": true,
   "scripts": {
-    "start": "fractal-styleguide start --config styleguide.config.js --port 3030 & npm run parcel:watch",
-    "build": " npm run parcel:build && fractal-styleguide build --config styleguide.config.js",
-    "parcel:watch": "parcel watch ./src/assets/entry.js -d dist/assets --out-file=main.js --log-level 0 --no-hmr",
-    "parcel:build": "parcel build ./src/assets/entry.js -d dist/assets --out-file=main.js"
+    "start": "fractal-styleguide start --config fractal.config.js --port 3030",
+    "build": "fractal-styleguide build --config fractal.config.js"
   },
   "devDependencies": {
-    "@fractalite/styleguide": "^0.0.0",
     "@fractalite/adapter-nunjucks": "^0.0.0",
-    "lodash": "^4.17.10",
-    "parcel-bundler": "^1.10.1",
-    "sass": "^1.14.1"
+    "@fractalite/styleguide": "^0.0.0",
+    "@fractalite/styleguide-plugin-bundler": "^0.0.0",
+    "lodash": "^4.17.10"
   }
 }

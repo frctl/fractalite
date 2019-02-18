@@ -1,2 +1,4 @@
-import scripts from './main.js';
-import css from './main.scss';
+import './main.js';
+
+import './main.scss';
+import '../components/**/*.scss';

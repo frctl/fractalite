@@ -1,9 +1,4 @@
-// const { mapValues } = require('lodash');
-// const { rewriteUrls } = require('@fractalite/support/html');
 const { getContext } = require('@fractalite/core/helpers');
-// const { isAsset, isComponent, isFile, isVariant } = require('@fractalite/core/helpers');
-// const flatten = require('flat');
-// const { map } = require('asyncro');
 
 module.exports = function(app, adapter, opts = {}) {
   if (opts === false) return;

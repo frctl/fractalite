@@ -1,4 +1,4 @@
 {
-  "packages": ["packages/**", "demo", "demo-vue"],
+  "packages": ["packages/**", "demo", ".demo-vue"],
   "version": "0.0.0"
 }

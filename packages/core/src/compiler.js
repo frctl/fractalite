@@ -13,7 +13,7 @@ const entities = [
   {
     name: 'assets',
     read: require('./read-assets'),
-    parseEvents: ['add', 'unlink']
+    parseEvents: ['add', 'change', 'unlink']
   }
 ];
 
@@ -53,7 +53,7 @@ module.exports = function(config = {}) {
       const opts = Object.assign({ ignoreInitial: true }, watchSrc.opts);
 
       const watcher = watch(paths, opts)
-        .on('all', watchHandler(parseEvents))
+        .on('all', watchHandler(name, parseEvents))
         .on('error', err => watchCallbacks.forEach(cb => cb(err)));
       watchers.push(watcher);
     }
@@ -73,14 +73,13 @@ module.exports = function(config = {}) {
     return normalizeSrc(src);
   }
 
-  function watchHandler(parseEvents) {
+  function watchHandler(name, parseEvents) {
     let lastResult = null;
-    return debounce(async (evt, path) => {
-      // If (['addDir', 'unlinkDir'].includes(evt)) return; // ignore these events
+    return debounce(async (event, path) => {
       try {
         // Only re-parse for 'primary' events, otherwise just notify of changes
-        lastResult = parseEvents.includes(evt) ? await compiler.run() : lastResult;
-        watchCallbacks.forEach(cb => cb(null, lastResult));
+        lastResult = parseEvents.includes(event) ? await compiler.run() : lastResult;
+        watchCallbacks.forEach(cb => cb(null, lastResult, { name, path, event }));
       } catch (err) {
         watchCallbacks.forEach(cb => cb(err));
       }

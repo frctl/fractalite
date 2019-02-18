@@ -71,12 +71,13 @@ module.exports = function(compiler, opts = {}) {
    * File sending middleware
    */
   app.use((ctx, next) => {
-    ctx.response.sendFile = function(file) {
+    ctx.response.sendFile = async function(file) {
       if (!File.isFile(file)) {
         throw new Error('Only Files can be sent');
       }
+      const contents = await file.getContents();
       ctx.lastModified = file.stats.mtime;
-      ctx.length = file.stats.size;
+      ctx.length = contents.length;
       ctx.type = file.ext;
       ctx.type = ctx.response.type || 'text/plain';
       if (app.mode === 'develop') {
@@ -153,7 +154,7 @@ module.exports = function(compiler, opts = {}) {
   app.addRoute('src', '/src/:file(.+)', ctx => {
     const file = ctx.files.filter(f => !Asset.isAsset(f)).find(f => f.handle === ctx.params.file);
     if (file) {
-      ctx.sendFile(file);
+      return ctx.sendFile(file);
     } else {
       ctx.throw(404, 'Source file not found');
     }

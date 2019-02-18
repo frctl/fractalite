@@ -30,6 +30,7 @@ module.exports = function(compiler, opts = {}) {
     const koa = new Koa();
     const socket = new IO();
     socket.attach(koa);
+    app.socket = socket;
 
     koa.silent = true;
     koa.context.mode = mode;
@@ -53,7 +54,7 @@ module.exports = function(compiler, opts = {}) {
       })
     );
     koa.on('error', err => app.emit('error', err));
-    app.on('updated', state => socket.broadcast('updated', state));
+    app.on('updated', (...results) => socket.broadcast('updated', ...results));
 
     await map(initialisers, fn => fn(app, state));
 
@@ -72,9 +73,9 @@ module.exports = function(compiler, opts = {}) {
       return;
     }
 
-    compiler.watch((err, state) => {
+    compiler.watch((err, ...results) => {
       if (err) return app.emit('error', err);
-      app.emit('updated', state);
+      app.emit('updated', ...results);
     });
 
     app.emit('watching');

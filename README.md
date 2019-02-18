@@ -2,8 +2,6 @@
 
 Experimental, streamlined version of [Fractal](https://fractal.build).
 
-> Fractalite is **not** intended to be a replacement for Fractal, but rather a proposal for the way a future version of Fractal could be implemented.
-
 ## Running the demo
 
 1. Download or clone this repo
