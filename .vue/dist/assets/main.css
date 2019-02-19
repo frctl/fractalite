@@ -1,0 +1,24 @@
+.multicounter {
+  font-family: monospace;
+}
+.multicounter .counter {
+  margin-right: 10px;
+}
+.multicounter .total {
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 10px;
+  padding: 11px;
+  border-top: 1px solid #ddd;
+}.counter {
+  font-family: monospace;
+  display: inline-block;
+  padding: 10px;
+  background-color: #eee;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  user-select: none;
+  cursor: pointer;
+  font-size: 15px;
+}

@@ -1,0 +1,46 @@
+{
+  "name": "@frctl/fractalite",
+  "version": "0.0.0",
+  "dependencies": {
+    "@frctl/fractalite-app": "^0.0.0",
+    "@frctl/fractalite-core": "^0.0.0",
+    "@frctl/fractalite-support": "^0.0.0",
+    "asyncro": "^3.0.0",
+    "axios": "^0.18.0",
+    "common-tags": "^1.8.0",
+    "escape-html": "^1.0.3",
+    "flat": "^4.1.0",
+    "gray-matter": "^4.0.1",
+    "highlight.js": "^9.14.2",
+    "js-beautify": "^1.8.9",
+    "kleur": "^2.0.2",
+    "lodash": "^4.17.10",
+    "markdown-it": "^8.4.2",
+    "mri": "^1.1.1",
+    "signale": "^1.2.1",
+    "socket.io-client": "^2.2.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "codemirror": "^5.43.0",
+    "normalize.css": "^8.0.0",
+    "parcel-bundler": "^1.10.1",
+    "sass": "^1.14.1",
+    "vue": "^2.6.2",
+    "vue-awesome": "^3.3.1",
+    "vue-codemirror": "^4.0.6",
+    "vue-hot-reload-api": "^2.3.1",
+    "vue-json-pretty": "1.4.1",
+    "vue-router": "^3.0.2",
+    "vue-split-panel": "^1.0.4",
+    "vue-socket.io-extended": "^3.2.1"
+  },
+  "scripts": {
+    "build": "parcel build ./assets/app.js ./assets/reload.js --no-source-maps",
+    "dev": "parcel watch ./assets/app.js ./assets/reload.js --no-source-maps"
+  },
+  "bin": {
+    "fractalite": "./bin/fractalite"
+  }
+}

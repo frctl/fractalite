@@ -1,4 +1,4 @@
-const { assign } = require('@fractalite/support/utils');
+const { assign } = require('@frctl/fractalite-support/utils');
 
 class Entity {
   constructor(props) {

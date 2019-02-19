@@ -1,5 +1,5 @@
 const { get, isFunction, isString, debounce, fromPairs } = require('lodash');
-const { normalizeSrc } = require('@fractalite/support/utils');
+const { normalizeSrc } = require('@frctl/fractalite-support/utils');
 const { watch } = require('chokidar');
 const compose = require('./compose');
 const createState = require('./state');

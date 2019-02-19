@@ -4,7 +4,7 @@ const serve = require('koa-static');
 const mount = require('koa-mount');
 const compose = require('koa-compose');
 const globby = require('globby');
-const { normalizePath } = require('@fractalite/support/utils');
+const { normalizePath } = require('@frctl/fractalite-support/utils');
 
 module.exports = function(opts = {}) {
   const sources = [];

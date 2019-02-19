@@ -1,4 +1,4 @@
-const { titlize } = require('@fractalite/support/utils');
+const { titlize } = require('@frctl/fractalite-support/utils');
 
 module.exports = function() {
   return function componentLabel({ components }) {

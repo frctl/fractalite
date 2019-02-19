@@ -5,7 +5,7 @@ const globBase = require('glob-base');
 const { stat } = require('fs-extra');
 const slash = require('slash');
 const { map } = require('asyncro');
-const { normalizeName, toArray } = require('@fractalite/support/utils');
+const { normalizeName, toArray } = require('@frctl/fractalite-support/utils');
 const File = require('./entities/file');
 
 module.exports = async function(src = [], opts = {}) {

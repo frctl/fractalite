@@ -1,0 +1,9 @@
+{
+  "name": "@frctl/fractalite-plugin-assets-bundler",
+  "version": "0.0.0",
+  "dependencies": {
+    "fs-extra": "^7.0.1",
+    "parcel-bundler": "^1.11.0",
+    "signale": "^1.2.1"
+  }
+}

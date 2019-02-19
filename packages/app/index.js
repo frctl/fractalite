@@ -2,8 +2,8 @@ const fs = require('fs');
 const jsonErrors = require('koa-json-error');
 const cleanStack = require('clean-stacktrace');
 const relativePaths = require('clean-stacktrace-relative-paths');
-const { File, Asset } = require('@fractalite/core');
-const { getComponent, getAsset, getVariant } = require('@fractalite/core/helpers');
+const { File, Asset } = require('@frctl/fractalite-core');
+const { getComponent, getAsset, getVariant } = require('@frctl/fractalite-core/helpers');
 const App = require('./src/app');
 
 module.exports = function(compiler, opts = {}) {

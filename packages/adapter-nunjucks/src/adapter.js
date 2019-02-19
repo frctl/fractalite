@@ -1,4 +1,4 @@
-const { defaultsDeep } = require('@fractalite/support/utils');
+const { defaultsDeep } = require('@frctl/fractalite-support/utils');
 const nunjucksEnv = require('./env');
 
 const defaults = {

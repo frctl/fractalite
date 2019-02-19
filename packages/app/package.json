@@ -1,9 +1,9 @@
 {
-  "name": "@fractalite/app",
+  "name": "@frctl/fractalite-app",
   "version": "0.0.0",
   "dependencies": {
-    "@fractalite/support": "^0.0.0",
-    "@fractalite/core": "^0.0.0",
+    "@frctl/fractalite-support": "^0.0.0",
+    "@frctl/fractalite-core": "^0.0.0",
     "asyncro": "^3.0.0",
     "cp-file": "^6.0.0",
     "clean-stacktrace": "^1.1.0",

@@ -1,4 +1,4 @@
-const { slugify } = require('@fractalite/support/utils');
+const { slugify } = require('@frctl/fractalite-support/utils');
 
 module.exports = function() {
   return function componentName({ components }) {

@@ -1,6 +1,6 @@
 const { extname } = require('path');
 const { isString, find } = require('lodash');
-const { defaultsDeep } = require('@fractalite/support/utils');
+const { defaultsDeep } = require('@frctl/fractalite-support/utils');
 const Component = require('./entities/component');
 const Asset = require('./entities/asset');
 const File = require('./entities/file');

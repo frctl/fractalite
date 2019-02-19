@@ -1,3 +1,3 @@
-## @frctl/adapter-nunjucks
+## @frctl/fracatlite-adapter-nunjucks
 
-A Nunjucks template engine adapter for Fractal.
+A Nunjucks template engine adapter for the Fractalite prototype.

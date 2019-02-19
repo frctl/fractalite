@@ -1,5 +1,5 @@
 const { SafeString } = require('nunjucks').runtime;
-const { mergeProps, getComponent, getContext } = require('@fractalite/core/helpers');
+const { mergeProps, getComponent, getContext } = require('@frctl/fractalite-core/helpers');
 
 module.exports = class ComponentExtension {
   constructor() {

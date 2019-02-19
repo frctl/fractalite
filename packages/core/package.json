@@ -1,8 +1,8 @@
 {
-  "name": "@fractalite/core",
+  "name": "@frctl/fractalite-core",
   "version": "0.0.0",
   "dependencies": {
-    "@fractalite/support": "^0.0.0",
+    "@frctl/fractalite-support": "^0.0.0",
     "deep-freeze": "^0.0.1",
     "enhanced-require": "^0.5.0-beta6",
     "lodash": "^4.17.10",

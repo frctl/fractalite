@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "fractal-styleguide start --config fractal.config.js --port 3031",
+    "parcel:build": "parcel build ./entry.js -d dist/assets --out-file=main.js --no-source-maps",
+    "parcel:watch": "parcel watch ./entry.js -d dist/assets --out-file=main.js --no-source-maps --no-hmr"
+  },
+  "dependencies": {
+    "@fractalite/core": "^0.0.0",
+    "@fractalite/styleguide": "^0.0.0",
+    "@fractalite/styleguide-plugin-assets-bundler": "^0.0.0",
+    "common-tags": "^1.8.0",
+    "json5": "^2.1.0",
+    "src": "^1.1.2"
+  },
+  "devDependencies": {
+    "vue": "^2.6.2",
+    "vue-hot-reload-api": "^2.3.1",
+    "@vue/component-compiler-utils": "^2.5.2",
+    "vue-template-compiler": "^2.6.2"
+  }
+}

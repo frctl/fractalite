@@ -1,9 +1,9 @@
 {
-  "name": "@fractalite/adapter-nunjucks",
+  "name": "@frctl/fractalite-adapter-nunjucks",
   "version": "0.0.0",
   "dependencies": {
-    "@fractalite/core": "^0.0.0",
-    "@fractalite/support": "^0.0.0",
+    "@frctl/fractalite-core": "^0.0.0",
+    "@frctl/fractalite-support": "^0.0.0",
     "nunjucks": "^3.1.3"
   }
 }

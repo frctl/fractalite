@@ -1,5 +1,5 @@
 const { orderBy, difference, compact, clone } = require('lodash');
-const { addTrailingSeparator } = require('@fractalite/support/utils');
+const { addTrailingSeparator } = require('@frctl/fractalite-support/utils');
 const read = require('./read');
 const Component = require('./entities/component');
 

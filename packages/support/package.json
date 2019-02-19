@@ -1,5 +1,5 @@
 {
-  "name": "@fractalite/support",
+  "name": "@frctl/fractalite-support",
   "version": "0.0.0",
   "dependencies": {
     "cosmiconfig": "^5.0.6",

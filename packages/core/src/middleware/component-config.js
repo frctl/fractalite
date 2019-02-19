@@ -3,7 +3,7 @@ const deepFreeze = require('deep-freeze');
 const rewire = require('enhanced-require');
 const pupa = require('pupa');
 const { map } = require('asyncro');
-const { defaultsDeep } = require('@fractalite/support/utils');
+const { defaultsDeep } = require('@frctl/fractalite-support/utils');
 
 module.exports = function(opts = {}) {
   opts = defaultsDeep(opts, {

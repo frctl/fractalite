@@ -1,4 +1,4 @@
-const { titlize, slugify } = require('@fractalite/support/utils');
+const { titlize, slugify } = require('@frctl/fractalite-support/utils');
 const deepFreeze = require('deep-freeze');
 
 module.exports = function() {

@@ -1,3 +1,3 @@
-## @frctl/core
+## @frctl/fractalite-core
 
-Core compiler, middleware and renderer modules for Fractal.
+Core compiler, middleware and renderer modules for the Fractalite prototype.

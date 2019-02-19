@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "fractalite start --config fractal.config.js --port 3030",
+    "build": "fractalite build --config fractal.config.js"
+  },
+  "devDependencies": {
+    "@frctl/fractalite": "^0.0.0",
+    "@frctl/fractalite-adapter-nunjucks": "^0.0.0",
+    "@frctl/fractalite-plugin-assets-bundler": "^0.0.0",
+    "lodash": "^4.17.10",
+    "sass": "^1.17.0"
+  }
+}

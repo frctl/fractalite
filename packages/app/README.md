@@ -1,5 +1,5 @@
-## @frctl/app
+## @frctl/fractalite-app
 
-A web framework for building Fractal-based applications.
+A web framework for building Fractalite-based applications.
 
-Used to create the main Fractal styleguide UI.
+Used to create the main Fractalite styleguide UI.

@@ -1,3 +1,3 @@
-## @frctl/support
+## @frctl/fractalite-support
 
-Utilities and helpers for Fractal package development.
+Utilities and helpers for Fractalite package development.
