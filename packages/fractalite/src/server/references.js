@@ -1,5 +1,3 @@
-const { getContext } = require('@frctl/fractalite-core/helpers');
-
 module.exports = function(app, adapter, opts = {}) {
   if (opts === false) return;
 

@@ -15,7 +15,7 @@ module.exports = async function(src = [], opts = {}) {
       const root = slash(glob.isGlob ? glob.base : src);
       const paths = await globby([src, '!**/node_modules'], {
         onlyFiles: opts.onlyFiles || false,
-        gitignore: opts.gitignore === true ? true : false
+        gitignore: opts.gitignore === true
       });
       return map(paths, path => toFile(path, root));
     })

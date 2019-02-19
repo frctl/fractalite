@@ -3,7 +3,7 @@ const jsonErrors = require('koa-json-error');
 const cleanStack = require('clean-stacktrace');
 const relativePaths = require('clean-stacktrace-relative-paths');
 const { File, Asset } = require('@frctl/fractalite-core');
-const { getComponent, getAsset, getVariant } = require('@frctl/fractalite-core/helpers');
+const { getComponent, getAsset } = require('@frctl/fractalite-core/helpers');
 const App = require('./src/app');
 
 module.exports = function(compiler, opts = {}) {
@@ -155,9 +155,8 @@ module.exports = function(compiler, opts = {}) {
     const file = ctx.files.filter(f => !Asset.isAsset(f)).find(f => f.handle === ctx.params.file);
     if (file) {
       return ctx.sendFile(file);
-    } else {
-      ctx.throw(404, 'Source file not found');
     }
+    ctx.throw(404, 'Source file not found');
   });
 
   // App.addBuildStep('src', ({ copyFile, api }) => {

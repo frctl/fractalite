@@ -1,6 +1,6 @@
 const { isFunction } = require('lodash');
 const { map } = require('asyncro');
-const { mergeProps, getComponent } = require('./helpers');
+const { getComponent } = require('./helpers');
 
 module.exports = function(state, adapter) {
   adapter = adapter || (() => '');

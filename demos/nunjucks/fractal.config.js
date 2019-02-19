@@ -6,7 +6,6 @@ module.exports = {
   adapter: require('@frctl/fractalite-adapter-nunjucks')(),
 
   components: resolve(__dirname, './src/components'),
-  assets: resolve(__dirname, './dist/assets'),
   pages: resolve(__dirname, './src/pages'),
 
   nav: {

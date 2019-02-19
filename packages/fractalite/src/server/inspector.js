@@ -34,7 +34,7 @@ module.exports = function(app, adapter, opts = {}) {
   });
 
   app.addRoute('api.inspect', '/api/inspect/:component/:context.json', async (ctx, next) => {
-    const component = ctx.component;
+    const { component } = ctx;
     const context = getContext(component, ctx.params.context, true);
 
     const panels = await map(app.getInspectorPanels(), panel => {

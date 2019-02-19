@@ -3,7 +3,7 @@
 import axios from 'axios';
 import Preview from './preview';
 
-// const supportsSrcdoc = Boolean('srcdoc' in document.createElement('iframe'));
+// Const supportsSrcdoc = Boolean('srcdoc' in document.createElement('iframe'));
 
 export default {
   template: '#inspector',
@@ -13,7 +13,7 @@ export default {
     async updated() {
       const previewSrc = this.preview;
       await this.load();
-      // if (supportsSrcdoc && previewSrc === this.preview) {
+      // If (supportsSrcdoc && previewSrc === this.preview) {
       // this.$refs.preview.reload(); // Refresh iframe in case assets have changed
       // }
     },

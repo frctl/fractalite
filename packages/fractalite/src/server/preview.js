@@ -33,13 +33,13 @@ module.exports = function(app, adapter, opts = {}) {
     const state = app.compiler.getState();
     const renderer = createRenderer(state, adapter);
 
-    // replace relative URLs in preview props
+    // Replace relative URLs in preview props
     const previewProps = context.previewProps.map(props => {
       props = mapValues(flatten(props), value => replaceRelativeUrl(value, component));
       return flatten.unflatten(props);
     });
 
-    // render the component once for each set of preview props
+    // Render the component once for each set of preview props
     const items = await renderer.renderAll(component, previewProps);
 
     const componentOpts = component.preview || {};
@@ -61,7 +61,7 @@ module.exports = function(app, adapter, opts = {}) {
       return asset ? asset.url : path;
     };
 
-    // resolve the stylesheets and scripts for use in the preview
+    // Resolve the stylesheets and scripts for use in the preview
     const stylesheets = processStack(preview.stylesheets, opts.stylesheets, componentOpts.stylesheets, resolvePaths);
     const scripts = processStack(preview.scripts, opts.scripts, componentOpts.scripts, resolvePaths);
 
@@ -79,7 +79,7 @@ module.exports = function(app, adapter, opts = {}) {
       content: renderer.getPreviewString(html)
     });
 
-    // rewrite links to other components in the templates
+    // Rewrite links to other components in the templates
     return rewriteUrls(rendered, path => {
       if (path.startsWith('@') && !extname(path)) {
         const [componentName, contextName] = path.replace('@', '').split('/');
@@ -172,7 +172,7 @@ module.exports = function(app, adapter, opts = {}) {
     await next();
     components.forEach(component => {
       component.contexts.forEach(context => {
-        let props = mapValues(flatten(context.props), value => replaceRelativeUrl(value, component));
+        const props = mapValues(flatten(context.props), value => replaceRelativeUrl(value, component));
         context.props = flatten.unflatten(props);
       });
     });

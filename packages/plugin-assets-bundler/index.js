@@ -15,7 +15,7 @@ module.exports = function(opts = {}) {
 
       app.addStaticDir('bundled-assets', outDir, publicUrl);
 
-      // if an entry generator is provided, use that to
+      // If an entry generator is provided, use that to
       // dynamically create (and re-create) the entry file
       // when the compiler state changes
       await generateEntry(app.compiler.getState());
@@ -61,7 +61,7 @@ module.exports = function(opts = {}) {
           logLevel: 0,
           publicUrl,
           hmrHostname: opts.hmrHostname || 'localhost',
-          hmr: opts.hmr === false ? false : true
+          hmr: opts.hmr !== false
         });
 
         try {
@@ -99,7 +99,7 @@ module.exports = function(opts = {}) {
             });
 
             if (opts.addToPreview !== false) {
-              // automatically add the bundled scripts
+              // Automatically add the bundled scripts
               // and stylesheets to the preview
               for (const { type, url } of assets) {
                 if (type === 'css') {

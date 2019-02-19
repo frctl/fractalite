@@ -1,7 +1,7 @@
 const { dirname } = require('path');
 const { isFunction, isPlainObject, flatMap, uniqBy, orderBy } = require('lodash');
 const { titlize } = require('@frctl/fractalite-support/utils');
-const { Variant, Component, File } = require('@frctl/fractalite-core');
+const { isComponent, isFile } = require('@frctl/fractalite-core/helpers');
 
 module.exports = function(app, adapter, opts = {}) {
   if (Array.isArray(opts) || isFunction(opts)) {
@@ -48,7 +48,7 @@ function expandValues(items, app) {
       item = item.entity;
     }
 
-    if (Component.isComponent(item)) {
+    if (isComponent(item)) {
       return {
         label: item.label,
         children: item.contexts.map(context => {
@@ -60,7 +60,7 @@ function expandValues(items, app) {
       };
     }
 
-    if (File.isFile(item)) {
+    if (isFile(item)) {
       return {
         label: item.handle,
         url: item.url

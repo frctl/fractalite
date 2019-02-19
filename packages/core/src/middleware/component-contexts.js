@@ -11,7 +11,7 @@ module.exports = function() {
         const name = slugify(config.name || `context-${counter}`);
         const label = config.label || titlize(name);
         const props = config.props || {};
-        // const handle = function() {
+        // Const handle = function() {
         //   return this._handle || `${component.name}/${this.name}`;
         // };
 
@@ -19,7 +19,7 @@ module.exports = function() {
           name,
           label,
           props,
-          // handle: name,
+          // Handle: name,
           config: deepFreeze(config)
         };
       });

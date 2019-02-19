@@ -1,5 +1,4 @@
 const { html, stripIndent } = require('common-tags');
-const { mergeProps } = require('@frctl/fractalite-core/helpers');
 
 module.exports = function(opts = {}) {
   return function inspectorPropsPlugin(app) {
