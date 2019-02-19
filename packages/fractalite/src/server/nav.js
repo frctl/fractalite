@@ -23,7 +23,7 @@ module.exports = function(app, adapter, opts = {}) {
   });
 };
 
-function defaultGenerator({ components, pages, toTree }) {
+function defaultGenerator({ components, pages }, toTree) {
   return [
     toTree(pages),
     {
@@ -34,7 +34,7 @@ function defaultGenerator({ components, pages, toTree }) {
 }
 
 function buildNav(items, entities, app) {
-  items = isFunction(items) ? items({ ...entities, toTree }) : items;
+  items = isFunction(items) ? items(entities, toTree) : items;
   return expandValues(items, app);
 }
 

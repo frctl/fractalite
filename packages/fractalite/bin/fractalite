@@ -24,7 +24,7 @@ const args = mri(process.argv.slice(2));
 
 (async () => {
   try {
-    let loaded = await loadConfig({ cwd, path: args.config, name: 'styleguide' });
+    let loaded = await loadConfig({ cwd, path: args.config, name: 'fractal' });
     const rootPath = dirname(loaded.path);
     if (cwd !== rootPath) {
       process.chdir(rootPath);

@@ -11,9 +11,10 @@
     "bootstrap": "lerna bootstrap",
     "lint:fix": "xo --fix",
     "test": "xo && lerna run test",
-    "styleguide:build": "cd packages/styleguide && npm run build",
-    "styleguide:dev": "cd packages/styleguide && npm run dev",
-    "demo:nunjucks": "npm run bootstrap && cd demos/nunjucks && npm run start"
+    "fractalite:build": "cd packages/fractalite && npm run build",
+    "fractalite:dev": "cd packages/fractalite && npm run dev",
+    "demo:nunjucks": "npm run bootstrap && cd demos/nunjucks && npm run start",
+    "demo": "npm run demo:nunjucks"
   },
   "xo": {
     "extends": "@frctl/eslint-config-frctl",
