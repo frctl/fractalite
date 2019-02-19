@@ -1,5 +1,5 @@
 module.exports = {
-  contexts: [
+  scenarios: [
     {
       name: 'next',
       props: {
@@ -7,15 +7,7 @@ module.exports = {
         modifier: 'action',
         icon: './arrow-right.svg',
         iconPos: 'after'
-      },
-      previewProps: [
-        {
-          label: 'Go forward'
-        },
-        {
-          label: 'This way'
-        }
-      ]
+      }
     },
     {
       name: 'prev',
@@ -25,12 +17,12 @@ module.exports = {
         icon: './arrow-left.svg',
         iconPos: 'before'
       },
-      previewProps: [
+      preview: [
         {
-          label: 'Go back'
+          label: 'Back'
         },
         {
-          label: 'Return'
+          label: 'A prev button with a long label'
         }
       ]
     }

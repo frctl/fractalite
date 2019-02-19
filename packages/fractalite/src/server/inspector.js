@@ -1,6 +1,6 @@
 const { orderBy } = require('lodash');
 const { resolveValue, mapValuesAsync } = require('@frctl/fractalite-support/utils');
-const { getContext, getComponent } = require('@frctl/fractalite-core/helpers');
+const { getScenario, getComponent } = require('@frctl/fractalite-core/helpers');
 const { map } = require('asyncro');
 
 module.exports = function(app, adapter, opts = {}) {
@@ -33,25 +33,25 @@ module.exports = function(app, adapter, opts = {}) {
     }
   });
 
-  app.addRoute('api.inspect', '/api/inspect/:component/:context.json', async (ctx, next) => {
+  app.addRoute('api.inspect', '/api/inspect/:component/:scenario.json', async (ctx, next) => {
     const { component } = ctx;
-    const context = getContext(component, ctx.params.context, true);
+    const scenario = getScenario(component, ctx.params.scenario, true);
 
     const panels = await map(app.getInspectorPanels(), panel => {
-      return mapValuesAsync(panel, value => resolveValue(value, { ...ctx.state, context, component }));
+      return mapValuesAsync(panel, value => resolveValue(value, { ...ctx.state, scenario, component }));
     });
 
     ctx.body = {
       component,
-      context,
-      preview: await app.utils.renderPreview(component, context),
+      scenario,
+      preview: await app.utils.renderPreview(component, scenario),
       panels: panels.filter(panel => panel.template)
     };
 
     return next();
   });
 
-  app.addRoute('inspect', '/inspect/:component/:context?', (ctx, next) => ctx.render('app'));
+  app.addRoute('inspect', '/inspect/:component/:scenario?', (ctx, next) => ctx.render('app'));
 
   /*
    * Compiler middleware to add inspector url properties
@@ -60,18 +60,18 @@ module.exports = function(app, adapter, opts = {}) {
     await next();
     components.forEach(component => {
       component.url = app.url('inspect', { component: component.name });
-      component.contexts.forEach(context => {
-        context.url = app.url('inspect', { component: component.name, context: context.name });
+      component.scenarios.forEach(scenario => {
+        scenario.url = app.url('inspect', { component: component.name, scenario: scenario.name });
       });
     });
   });
 
   app.utils.addReferenceLookup('inspect', (state, identifier) => {
-    const [componentName, contextName] = identifier.split('/');
+    const [componentName, scenarioName] = identifier.split('/');
     const component = getComponent(state, componentName, true);
-    const context = contextName ? getContext(component, contextName, true) : component.contexts[0];
+    const scenario = scenarioName ? getScenario(component, scenarioName, true) : component.scenarios[0];
     return {
-      url: app.url('inspect', { component, context: context.name })
+      url: app.url('inspect', { component, scenario: scenario.name })
     };
   });
 

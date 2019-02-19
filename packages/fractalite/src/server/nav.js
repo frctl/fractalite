@@ -51,10 +51,10 @@ function expandValues(items, app) {
     if (isComponent(item)) {
       return {
         label: item.label,
-        children: item.contexts.map(context => {
+        children: item.scenarios.map(scenario => {
           return {
-            label: context.label,
-            url: context.url
+            label: scenario.label,
+            url: scenario.url
           };
         })
       };

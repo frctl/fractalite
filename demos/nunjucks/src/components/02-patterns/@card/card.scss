@@ -1,13 +1,14 @@
 .card {
   border: 1px solid #ddd;
   padding: 20px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 
   &__title {
     font-size: 20px;
     margin-bottom: 20px;
   }
 
-  &__content {
-    margin-bottom: 20px;
+  &__content + .button {
+    margin-top: 20px;
   }
 }

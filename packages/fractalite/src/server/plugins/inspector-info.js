@@ -20,11 +20,11 @@ module.exports = function(opts = {}) {
           </div>
           <div class="${className}__content fr-prose">
             <div class="fr-proptable ${className}__proptable">
-              {% for ctx in component.contexts %}
+              {% for ctx in component.scenarios %}
               <div class="fr-proptable__row">
                 <td class="fr-proptable__cell">
                   <a href="{{ ctx.url }}">
-                    {% if context.name == ctx.name %}<strong>{{ ctx.label }}</strong>{% else %}{{ ctx.label }}{% endif %}
+                    {% if scenario.name == ctx.name %}<strong>{{ ctx.label }}</strong>{% else %}{{ ctx.label }}{% endif %}
                   </a>
                 </td>
                 <td class="fr-proptable__cell fr-proptable__cell--fit">

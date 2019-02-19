@@ -10,7 +10,7 @@ export default new VueRouter({
   routes: [
     {
       name: 'inspect',
-      path: '/inspect/:componentName/:contextName?',
+      path: '/inspect/:componentName/:scenarioName?',
       component: Inspector,
       props: true
     },

@@ -16,7 +16,7 @@ module.exports = [
     handler: require('./component-label')
   },
   {
-    key: 'components.opts.contexts',
-    handler: require('./component-contexts')
+    key: 'components.opts.scenarios',
+    handler: require('./component-scenarios')
   }
 ];

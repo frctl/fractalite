@@ -14,8 +14,9 @@ module.exports = function(opts = {}) {
       `,
 
       props(state) {
-        const { context } = state;
-        return context.previewProps.length > 1 ? context.previewProps : context.previewProps[0];
+        const { scenario } = state;
+        const { props } = scenario.preview;
+        return props.length > 1 ? props : props[0];
       }
     });
 

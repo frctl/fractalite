@@ -13,20 +13,20 @@ function getComponent({ components }, target, throwOnNotFound = false) {
   return component;
 }
 
-function getContext(component, name, throwOnNotFound = false) {
-  const context = find(component.contexts, { name });
-  if (!context && throwOnNotFound) {
-    throw new Error(`Context '${name}' for component '${component.name}' was not found`);
+function getScenario(component, name, throwOnNotFound = false) {
+  const scenario = find(component.scenarios, { name });
+  if (!scenario && throwOnNotFound) {
+    throw new Error(`Scenario '${name}' for component '${component.name}' was not found`);
   }
-  return context;
+  return scenario;
 }
 
-function getContextOrDefault(component, name, throwOnNotFound = false) {
+function getScenarioOrDefault(component, name, throwOnNotFound = false) {
   if (!name) {
-    return component.contexts[0];
+    return component.scenarios[0];
   }
-  const context = getContext(component, name, throwOnNotFound);
-  return context ? context : component.contexts[0];
+  const scenario = getScenario(component, name, throwOnNotFound);
+  return scenario ? scenario : component.scenarios[0];
 }
 
 function getFile({ files }, target, throwOnNotFound = false) {
@@ -48,7 +48,7 @@ function getAsset({ assets }, target, throwOnNotFound = false) {
 }
 
 function mergeProps(state, ...args) {
-  // TODO: allow for resolving of string componet/context references?
+  // TODO: allow for resolving of string componet/scenario references?
   return defaultsDeep(...args.reverse());
 }
 
@@ -66,8 +66,8 @@ function isFile(file) {
 
 module.exports = {
   getComponent,
-  getContext,
-  getContextOrDefault,
+  getScenario,
+  getScenarioOrDefault,
   getAsset,
   getFile,
   mergeProps,

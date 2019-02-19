@@ -1,5 +1,5 @@
 const { SafeString } = require('nunjucks').runtime;
-const { mergeProps, getComponent, getContext } = require('@frctl/fractalite-core/helpers');
+const { mergeProps, getComponent, getScenario } = require('@frctl/fractalite-core/helpers');
 
 module.exports = class ComponentExtension {
   constructor() {
@@ -24,7 +24,7 @@ module.exports = class ComponentExtension {
     const [componentName, contextName] = handle.split('/');
 
     const component = getComponent(state, componentName, true);
-    const context = getContext(component, contextName, true);
+    const context = getScenario(component, contextName, true);
 
     props = shouldMerge === false ? props : mergeProps(state, context.props, props);
 

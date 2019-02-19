@@ -3,5 +3,7 @@
   <div class="card__content">
     {{ content | safe }}
   </div>
-  {% component 'button/next', button %}
+  {% if cta %}
+  {% component 'button/next', cta %}
+  {% endif %}
 </div>

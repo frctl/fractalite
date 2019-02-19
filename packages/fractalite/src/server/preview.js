@@ -3,7 +3,7 @@ const { isFunction, pick, mapValues } = require('lodash');
 const flatten = require('flat');
 const { rewriteUrls } = require('@frctl/fractalite-support/html');
 const { defaultsDeep, toArray, processStack } = require('@frctl/fractalite-support/utils');
-const { getContext, getContextOrDefault, getComponent, getAsset } = require('@frctl/fractalite-core/helpers');
+const { getScenario, getScenarioOrDefault, getComponent, getAsset } = require('@frctl/fractalite-core/helpers');
 const { createRenderer } = require('@frctl/fractalite-core');
 const { map } = require('asyncro');
 
@@ -29,12 +29,12 @@ module.exports = function(app, adapter, opts = {}) {
     }
   });
 
-  app.utils.renderPreview = async (component, context, runtimeOpts = {}) => {
+  app.utils.renderPreview = async (component, scenario, runtimeOpts = {}) => {
     const state = app.compiler.getState();
     const renderer = createRenderer(state, adapter);
 
     // Replace relative URLs in preview props
-    const previewProps = context.previewProps.map(props => {
+    const previewProps = scenario.preview.props.map(props => {
       props = mapValues(flatten(props), value => replaceRelativeUrl(value, component));
       return flatten.unflatten(props);
     });
@@ -47,7 +47,7 @@ module.exports = function(app, adapter, opts = {}) {
 
     // Wrap rendered preview items
     const { wrap, wrapEach } = mergedOpts;
-    const wrapCtx = { component, context };
+    const wrapCtx = { component, scenario };
     let html = isFunction(wrapEach) ? items.map((...args) => wrapEach(...args, wrapCtx)) : items;
     html = html.join('\n');
     html = isFunction(wrap) ? wrap(html, wrapCtx) : html;
@@ -82,29 +82,29 @@ module.exports = function(app, adapter, opts = {}) {
     // Rewrite links to other components in the templates
     return rewriteUrls(rendered, path => {
       if (path.startsWith('@') && !extname(path)) {
-        const [componentName, contextName] = path.replace('@', '').split('/');
+        const [componentName, scenarioName] = path.replace('@', '').split('/');
         const component = getComponent(state, componentName);
         if (component) {
-          const context = getContextOrDefault(component, contextName);
-          return context.previewUrl;
+          const scenario = getScenarioOrDefault(component, scenarioName);
+          return scenario.previewUrl;
         }
       }
     });
   };
 
-  app.addRoute('preview', `/preview/:component/:context`, async (ctx, next) => {
-    const context = getContext(ctx.component, ctx.params.context, true);
-    ctx.body = await app.utils.renderPreview(ctx.component, context, {
+  app.addRoute('preview', `/preview/:component/:scenario`, async (ctx, next) => {
+    const scenario = getScenario(ctx.component, ctx.params.scenario, true);
+    ctx.body = await app.utils.renderPreview(ctx.component, scenario, {
       reload: opts.reload === true
     });
   });
 
   app.utils.addReferenceLookup('preview', (state, identifier) => {
-    const [componentName, contextName] = identifier.split('/');
+    const [componentName, scenarioName] = identifier.split('/');
     const component = getComponent(state, componentName, true);
-    const context = getContextOrDefault(component, contextName, true);
+    const scenario = getScenarioOrDefault(component, scenarioName, true);
     return {
-      url: app.url('preview', { component, context: context.name })
+      url: app.url('preview', { component, scenario: scenario.name })
     };
   });
 
@@ -114,10 +114,10 @@ module.exports = function(app, adapter, opts = {}) {
   app.compiler.use(async ({ components, assets }, next) => {
     await next();
     components.forEach(component => {
-      component.contexts.forEach(context => {
-        context.previewUrl = app.url('preview', {
+      component.scenarios.forEach(scenario => {
+        scenario.previewUrl = app.url('preview', {
           component: component.name,
-          context: context.name
+          scenario: scenario.name
         });
       });
     });
@@ -140,9 +140,10 @@ module.exports = function(app, adapter, opts = {}) {
       component.preview.js = toArray(component.preview.js);
       component.preview.css = toArray(component.preview.css);
 
-      component.contexts.forEach(context => {
-        context.previewProps = toArray(context.config.previewProps || {}).map(pp => {
-          return defaultsDeep(pp, context.config.props);
+      component.scenarios.forEach(scenario => {
+        scenario.preview = {};
+        scenario.preview.props = toArray(scenario.config.preview || {}).map(pp => {
+          return defaultsDeep(pp, scenario.config.props);
         });
       });
     });
@@ -166,14 +167,14 @@ module.exports = function(app, adapter, opts = {}) {
   });
 
   /*
-   * Compiler middleware to expand any relative urls in context previewProp values
+   * Compiler middleware to expand any relative urls in scenario previewProp values
    */
   app.compiler.use(async ({ components, assets }, next) => {
     await next();
     components.forEach(component => {
-      component.contexts.forEach(context => {
-        const props = mapValues(flatten(context.props), value => replaceRelativeUrl(value, component));
-        context.props = flatten.unflatten(props);
+      component.scenarios.forEach(scenario => {
+        const props = mapValues(flatten(scenario.props), value => replaceRelativeUrl(value, component));
+        scenario.props = flatten.unflatten(props);
       });
     });
   });

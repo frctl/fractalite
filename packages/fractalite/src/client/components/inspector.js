@@ -7,7 +7,7 @@ import Preview from './preview';
 
 export default {
   template: '#inspector',
-  props: ['componentName', 'contextName'],
+  props: ['componentName', 'scenarioName'],
   components: { Preview },
   sockets: {
     async updated() {
@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       component: null,
-      context: null,
+      scenario: null,
       preview: null,
       panels: [],
       currentTab: 0,
@@ -36,14 +36,14 @@ export default {
       if (this.componentName) {
         this.$parent.$emit('loading', true);
         try {
-          if (!this.contextName) {
+          if (!this.scenarioName) {
             const response = await axios.get(`/api/components/${this.componentName}.json`);
             const component = response.data;
-            const context = component.contexts[0];
-            this.$router.push(`/inspect/${component.name}/${context.name}`);
+            const scenario = component.scenarios[0];
+            this.$router.push(`/inspect/${component.name}/${scenario.name}`);
             return;
           }
-          const response = await axios.get(`/api/inspect/${this.componentName}/${this.contextName}.json`);
+          const response = await axios.get(`/api/inspect/${this.componentName}/${this.scenarioName}.json`);
           Object.keys(response.data).forEach(key => {
             this[key] = response.data[key];
           });
@@ -66,7 +66,7 @@ export default {
     async componentName() {
       await this.load();
     },
-    async contextName() {
+    async scenarioName() {
       await this.load();
     }
   }
