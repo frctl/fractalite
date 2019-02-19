@@ -24,4 +24,4 @@ module.exports = {
 };
 ```
 
-The Nunjucks demo contains a [annotated example](demos/nunjucks) of a project configuration file.
+The Nunjucks demo contains a [annotated example](demos/nunjucks/fractal.config.js) of a project configuration file.
