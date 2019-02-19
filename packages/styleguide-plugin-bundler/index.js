@@ -13,6 +13,11 @@ module.exports = function(opts = {}) {
       const outDir = dirname(opts.outFile);
       const publicUrl = opts.publicUrl || '/assets';
 
+      app.addStaticDir('bundled-assets', outDir, publicUrl);
+
+      // if an entry generator is provided, use that to
+      // dynamically create (and re-create) the entry file
+      // when the compiler state changes
       await generateEntry(app.compiler.getState());
 
       let bundler = await createBundler(true);
@@ -60,9 +65,20 @@ module.exports = function(opts = {}) {
         });
 
         try {
+          if (initial) {
+            bundler.on('buildStart', () => logger.await('Rebundling assets...'));
+            bundler.on('buildEnd', () => {
+              if (opts.hmr === false) {
+                app.socket.broadcast('refresh');
+              }
+              logger.success('Asset bundling complete');
+            });
+            bundler.on('buildError', err => logger.error(err));
+          }
+
           const bundle = await bundler.bundle();
 
-          if (initial && opts.addToPreview !== false) {
+          if (initial) {
             function addBundles(bundle, bundles = []) {
               if (['js', 'css'].includes(bundle.type)) {
                 bundles.push(bundle);
@@ -75,27 +91,28 @@ module.exports = function(opts = {}) {
 
             const bundles = addBundles(bundle);
 
-            // add the bundled scripts and stylesheets to the preview
-            for (const bundle of bundles) {
-              const url = `${publicUrl}/${relative(outDir, bundle.name)}`;
-              if (bundle.type === 'css') {
-                app.addPreviewStylesheet(url);
-              }
-              if (bundle.type === 'js') {
-                app.addPreviewScript(url);
+            const assets = bundles.map(bundle => {
+              return {
+                url: `${publicUrl}/${relative(outDir, bundle.name)}`,
+                type: bundle.type
+              };
+            });
+
+            if (opts.addToPreview !== false) {
+              // automatically add the bundled scripts
+              // and stylesheets to the preview
+              for (const { type, url } of assets) {
+                if (type === 'css') {
+                  app.addPreviewStylesheet(url);
+                }
+                if (type === 'js') {
+                  app.addPreviewScript(url);
+                }
               }
             }
           }
 
           logger.success('Assets build complete');
-          bundler.on('buildStart', () => logger.await('Rebundling assets...'));
-          bundler.on('buildEnd', () => {
-            if (opts.hmr === false) {
-              app.socket.broadcast('refresh');
-            }
-            logger.success('Asset bundling complete');
-          });
-          bundler.on('buildError', err => logger.error(err));
         } catch (err) {
           logger.error(err);
         }

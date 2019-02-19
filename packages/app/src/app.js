@@ -40,6 +40,8 @@ module.exports = function(compiler, opts = {}) {
 
     middleware.forEach(mw => koa.use(mw));
 
+    await map(initialisers, fn => fn(app, state));
+
     koa.use(compress());
     koa.use(resources.routes());
     koa.use(router.routes());
@@ -55,8 +57,6 @@ module.exports = function(compiler, opts = {}) {
     );
     koa.on('error', err => app.emit('error', err));
     app.on('updated', (...results) => socket.broadcast('updated', ...results));
-
-    await map(initialisers, fn => fn(app, state));
 
     app.emit('initialised', state);
 

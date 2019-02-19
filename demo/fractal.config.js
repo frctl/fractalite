@@ -27,9 +27,8 @@ module.exports = {
 
   plugins: [
     require('@fractalite/styleguide-plugin-bundler')({
-      entryFile: resolve(__dirname, './src/assets/entry.js'),
-      outFile: resolve(__dirname, './dist/assets/main.js')
-      // hmr: false
+      entryFile: resolve(__dirname, './src/assets/preview.js'),
+      outFile: resolve(__dirname, './dist/assets/build.js')
     })
   ],
 
