@@ -36,5 +36,12 @@ module.exports = function(state, adapter) {
     return Promise.all([renderToStaticMarkup(target, props)]);
   }
 
-  return { render, renderAll, renderToStaticMarkup, renderAllToStaticMarkup };
+  function getPreviewString(content) {
+    if (isFunction(adapter.getPreviewString)) {
+      return adapter.getPreviewString(content, state);
+    }
+    return content;
+  }
+
+  return { render, renderAll, renderToStaticMarkup, renderAllToStaticMarkup, getPreviewString };
 };
