@@ -1,13 +1,11 @@
 /* eslint camelcase: "off" */
-
 const beautify = require('js-beautify');
 const { defaultsDeep } = require('@frctl/fractalite-support/utils');
-const { createRenderer } = require('@frctl/fractalite-core');
 const { map } = require('asyncro');
 const { html } = require('common-tags');
 
 module.exports = function(opts = {}) {
-  return function inspectorHTMLPlugin(app, adapter) {
+  return function inspectorHTMLPlugin(app, compiler, renderer) {
     if (opts === false) return;
 
     opts = defaultsDeep(opts, {
@@ -28,8 +26,6 @@ module.exports = function(opts = {}) {
       `,
       async props(state) {
         const { scenario, component } = state;
-
-        const renderer = createRenderer(state, adapter);
 
         const html = await map(scenario.preview.props, async props => {
           const html = await renderer.render(component, props);

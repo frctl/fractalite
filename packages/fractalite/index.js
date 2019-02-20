@@ -2,7 +2,7 @@ const { resolve } = require('path');
 const { forEach, get, isFunction } = require('lodash');
 const { defaultsDeep } = require('@frctl/fractalite-support/utils');
 const createApp = require('@frctl/fractalite-app');
-const createCompiler = require('@frctl/fractalite-core');
+const { createCompiler, createRenderer } = require('@frctl/fractalite-core');
 const { htmlAdapter } = require('@frctl/fractalite-core');
 const highlight = require('./src/server/utils/highlight');
 const markdown = require('./src/server/utils/markdown');
@@ -11,6 +11,7 @@ const plugins = require('./src/server/plugins');
 module.exports = function({ components, assets, adapter, mode, ...config }) {
   const compiler = createCompiler({ components, assets });
   const app = createApp(compiler, mode);
+  const renderer = createRenderer(compiler.getState(), adapter);
 
   app.props({
     config,
@@ -57,7 +58,7 @@ module.exports = function({ components, assets, adapter, mode, ...config }) {
   plugins.forEach(({ key, handler }) => {
     const opts = get(config, key, {});
     const plugin = handler(opts);
-    plugin(app, adapter);
+    plugin(app, compiler, renderer);
   });
 
   /*

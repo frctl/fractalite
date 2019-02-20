@@ -1,5 +1,5 @@
 const { extname } = require('path');
-const { isFunction, pick, mapValues } = require('lodash');
+const { isFunction, pick, mapValues, cloneDeep } = require('lodash');
 const flatten = require('flat');
 const { rewriteUrls } = require('@frctl/fractalite-support/html');
 const { defaultsDeep, toArray, processStack } = require('@frctl/fractalite-support/utils');
@@ -8,23 +8,45 @@ const { createRenderer } = require('@frctl/fractalite-core');
 const { map } = require('asyncro');
 
 module.exports = function(app, adapter, opts = {}) {
-  const preview = { css: [], js: [], scripts: [], stylesheets: [] };
+  const previewAssets = { css: [], js: [], scripts: [], stylesheets: [] };
+  const hooks = {
+    beforeScenarioRender: [],
+    afterScenarioRender: [],
+    beforePreviewRender: [],
+    afterPreviewRender: []
+  };
 
   app.extend({
     addPreviewStylesheet(url) {
-      preview.stylesheets.push(url);
+      previewAssets.stylesheets.push(url);
       return app;
     },
     addPreviewCSS(css) {
-      preview.css.push(css);
+      previewAssets.css.push(css);
       return app;
     },
     addPreviewScript(url) {
-      preview.scripts.push(url);
+      previewAssets.scripts.push(url);
       return app;
     },
     addPreviewJS(js) {
-      preview.js.push(js);
+      previewAssets.js.push(js);
+      return app;
+    },
+    beforeScenarioRender(fn) {
+      hooks.beforeScenarioRender.push(fn);
+      return app;
+    },
+    afterScenarioRender(fn) {
+      hooks.afterScenarioRender.push(fn);
+      return app;
+    },
+    beforePreviewRender(fn) {
+      hooks.beforePreviewRender.push(fn);
+      return app;
+    },
+    afterPreviewRender(fn) {
+      hooks.afterPreviewRender.push(fn);
       return app;
     }
   });
@@ -32,15 +54,16 @@ module.exports = function(app, adapter, opts = {}) {
   app.utils.renderPreview = async (component, scenario, runtimeOpts = {}) => {
     const state = app.compiler.getState();
     const renderer = createRenderer(state, adapter);
+    const hookCtx = { ...state, component, scenario };
 
-    // Replace relative URLs in preview props
-    const previewProps = scenario.preview.props.map(props => {
-      props = mapValues(flatten(props), value => replaceRelativeUrl(value, component));
-      return flatten.unflatten(props);
-    });
+    // allow hooks to manipulate the props array before rendering
+    previewProps = await applyHooks('beforeScenarioRender', cloneDeep(scenario.preview.props), hookCtx);
 
     // Render the component once for each set of preview props
-    const items = await renderer.renderAll(component, previewProps);
+    let items = await renderer.renderAll(component, previewProps);
+
+    // allow hooks to manipulate the rendered output
+    items = await applyHooks('afterScenarioRender', items, hookCtx);
 
     const componentOpts = component.preview || {};
     const mergedOpts = defaultsDeep(runtimeOpts, componentOpts, pick(opts, ['meta', 'wrap', 'wrapEach']));
@@ -62,25 +85,36 @@ module.exports = function(app, adapter, opts = {}) {
     };
 
     // Resolve the stylesheets and scripts for use in the preview
-    const stylesheets = processStack(preview.stylesheets, opts.stylesheets, componentOpts.stylesheets, resolvePaths);
-    const scripts = processStack(preview.scripts, opts.scripts, componentOpts.scripts, resolvePaths);
+    const stylesheets = processStack(previewAssets.stylesheets, opts.stylesheets, componentOpts.stylesheets, resolvePaths);
+    const scripts = processStack(previewAssets.scripts, opts.scripts, componentOpts.scripts, resolvePaths);
 
     if (mergedOpts.reload) {
       scripts.push(app.resourceUrl('app:reload.js'));
     }
 
-    mergedOpts.js = preview.js.concat(mergedOpts.js);
-    mergedOpts.css = preview.css.concat(mergedOpts.css);
+    mergedOpts.js = previewAssets.js.concat(mergedOpts.js);
+    mergedOpts.css = previewAssets.css.concat(mergedOpts.css);
 
-    const rendered = await app.views.renderAsync('preview', {
-      ...mergedOpts,
-      scripts,
-      stylesheets,
-      content: renderer.getPreviewString(html)
+    // allow hooks to manipulate the preview object
+    let preview = { ...mergedOpts, scripts, stylesheets, content: html };
+    preview = await applyHooks('beforePreviewRender', preview, hookCtx);
+
+    const output = await app.views.renderAsync('preview', preview);
+
+    return applyHooks('beforePreviewRender', output, hookCtx);
+  };
+
+  // Replace relative URLs in preview props prior to rendering
+  app.beforeScenarioRender((previewProps, { component }) => {
+    return previewProps.map(props => {
+      props = mapValues(flatten(props), value => replaceRelativeUrl(value, component));
+      return flatten.unflatten(props);
     });
+  });
 
-    // Rewrite links to other components in the templates
-    return rewriteUrls(rendered, path => {
+  // Rewrite links to other components in the templates
+  app.afterPreviewRender((html, { component }) => {
+    return rewriteUrls(html, path => {
       if (path.startsWith('@') && !extname(path)) {
         const [componentName, scenarioName] = path.replace('@', '').split('/');
         const component = getComponent(state, componentName);
@@ -90,7 +124,7 @@ module.exports = function(app, adapter, opts = {}) {
         }
       }
     });
-  };
+  });
 
   app.addRoute('preview', `/preview/:component/:scenario`, async (ctx, next) => {
     const scenario = getScenario(ctx.component, ctx.params.scenario, true);
@@ -167,7 +201,7 @@ module.exports = function(app, adapter, opts = {}) {
   });
 
   /*
-   * Compiler middleware to expand any relative urls in scenario previewProp values
+   * Compiler middleware to expand any relative urls in scenario prop values
    */
   app.compiler.use(async ({ components, assets }, next) => {
     await next();
@@ -185,5 +219,12 @@ module.exports = function(app, adapter, opts = {}) {
       return file ? app.url('src', { file }) : value;
     }
     return value;
+  }
+
+  async function applyHooks(name, target, ctx) {
+    for (const hook of hooks[name]) {
+      target = await hook(target, ctx); // TODO: validate return target
+    }
+    return target;
   }
 };

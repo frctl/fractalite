@@ -3,7 +3,7 @@ const { rewriteUrls } = require('@frctl/fractalite-support/html');
 const { stripIndent } = require('common-tags');
 
 module.exports = function(opts = {}) {
-  return function inspectorOverviewPlugin(app) {
+  return function inspectorOverviewPlugin(app, compiler) {
     if (opts === false) return;
 
     app.addInspectorPanel({
@@ -46,7 +46,7 @@ module.exports = function(opts = {}) {
       }
     `);
 
-    app.compiler.use(({ components }) => {
+    compiler.use(({ components }) => {
       components.forEach(component => {
         component.notes = component.notes || component.config.notes;
       });
