@@ -100,30 +100,23 @@ module.exports = {
     require('@frctl/fractalite-plugin-assets-bundler')({
       entryFile: resolve(__dirname, './src/assets/preview.js'),
       outFile: resolve(__dirname, './dist/assets/build.js')
-    })
-  ],
+    }),
 
-  /*
-   * The init option gives a place to add project-specific
-   * tweaks to the component compilation process and/or the
-   * Fractalite UI.
-   *
-   * The init function is effectively just a inline plugin that
-   * is run after all other plugins have been applied.
-   */
-  init(app) {
     /*
-     * Example compiler middleware to read notes from notes.md files.
+     * Example inline-plugin that adds compiler middleware
+     * to read notes from notes.md files.
      */
-    app.compiler.use(async components => {
-      await Promise.all(
-        components.map(async component => {
-          const notesfile = component.files.find(file => file.basename.toLowerCase() === 'notes.md');
-          if (notesfile) {
-            component.notes = await notesfile.getContents();
-          }
-        })
-      );
-    });
-  }
+    function(app, compiler) {
+      compiler.use(async components => {
+        await Promise.all(
+          components.map(async component => {
+            const notesfile = component.files.find(file => file.basename.toLowerCase() === 'notes.md');
+            if (notesfile) {
+              component.notes = await notesfile.getContents();
+            }
+          })
+        );
+      });
+    }
+  ]
 };

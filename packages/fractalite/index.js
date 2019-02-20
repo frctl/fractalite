@@ -65,13 +65,5 @@ module.exports = function({ components, adapter, mode, ...config }) {
    */
   forEach(config.plugins, plugin => plugin(app, compiler, renderer));
 
-  /*
-   * Run the init method for any final
-   * fine-grained tweaking.
-   */
-  if (typeof config.init === 'function') {
-    config.init(app, compiler, renderer);
-  }
-
   return app;
 };

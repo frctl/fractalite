@@ -13,6 +13,7 @@ module.exports = function(opts = {}) {
       const outDir = dirname(opts.outFile);
       const publicUrl = opts.publicUrl || '/assets';
 
+      // Serve any assets generated in the output dir
       app.addStaticDir('bundled-assets', outDir, publicUrl);
 
       // If an entry generator is provided, use that to

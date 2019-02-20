@@ -1,4 +1,4 @@
-const { extname } = require('path');
+const { extname, isAbsolute, relative } = require('path');
 const { isFunction, pick, mapValues, cloneDeep } = require('lodash');
 const flatten = require('flat');
 const { rewriteUrls } = require('@frctl/fractalite-support/html');
@@ -17,16 +17,18 @@ module.exports = function(app, compiler, renderer, opts = {}) {
   };
 
   app.extend({
-    addPreviewStylesheet(url) {
+    addPreviewStylesheet(url, path) {
       previewAssets.stylesheets.push(url);
+      if (path) app.serveFile(url, path);
       return app;
     },
     addPreviewCSS(css) {
       previewAssets.css.push(css);
       return app;
     },
-    addPreviewScript(url) {
+    addPreviewScript(url, path) {
       previewAssets.scripts.push(url);
+      if (path) app.serveFile(url, path);
       return app;
     },
     addPreviewJS(js) {

@@ -48,11 +48,14 @@ module.exports = function(opts = {}) {
       return path; // ignore external or absolute paths
     }
     const [sourceName, relativePath] = path.split(':');
-    const source = sources.find(src => src.name === sourceName);
-    if (!source) {
-      throw new Error(`'${sourceName}' is not a recognised static asset source`);
+    if (relativePath) {
+      const source = sources.find(src => src.name === sourceName);
+      if (!source) {
+        throw new Error(`'${sourceName}' is not a recognised static asset source`);
+      }
+      return join(source.mount || '/', relativePath);
     }
-    return join(source.mount || '/', relativePath);
+    return path;
   }
 
   return { add, routes, url, list };

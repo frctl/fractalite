@@ -1,8 +1,10 @@
+const { isAbsolute, relative } = require('path');
 const { assign, get, set, mapValues } = require('lodash');
 const getPort = require('get-port');
 const Koa = require('koa');
 const compress = require('koa-compress');
 const IO = require('koa-socket-2');
+const send = require('koa-send');
 const cleanStack = require('clean-stacktrace');
 const { map } = require('asyncro');
 const relativePaths = require('clean-stacktrace-relative-paths');
@@ -83,7 +85,7 @@ module.exports = function(compiler, opts = {}) {
     return server;
   }
 
-  Object.assign(app, { router, resources, views, emitter, compiler, utils });
+  Object.assign(app, { router, resources, views, emitter, utils, compiler });
 
   app.mode = mode.mode;
 
@@ -132,8 +134,8 @@ module.exports = function(compiler, opts = {}) {
     return permalinkify(decodeURIComponent(router.url(name, stringParams)), mode);
   };
 
-  app.resourceUrl = (name, path) => {
-    const url = decodeURIComponent(resources.url(name, path));
+  app.resourceUrl = path => {
+    const url = decodeURIComponent(resources.url(path));
     return permalinkify(url, mode);
   };
 
@@ -178,17 +180,31 @@ module.exports = function(compiler, opts = {}) {
     return app;
   };
 
+  app.serveFile = (url, path) => {
+    path = isAbsolute(path) ? relative(process.cwd(), path) : path;
+    app.router.use(url, ctx => send(ctx, path, { root: process.cwd() }));
+    // TODO: Add url//path to builder copy tasks
+  };
+
   // UI-related helpers -----------------------------------
 
   app.addJS = js => ui.push(js);
   app.addCSS = css => ui.css.push(css);
-  app.addScript = src => ui.scripts.push(src);
-  app.addStylesheet = href => ui.stylesheets.push(href);
+
+  app.addScript = (url, path) => {
+    ui.scripts.push(url);
+    if (path) app.serveFile(url, path);
+  };
+
+  app.addStylesheet = (url, path) => {
+    ui.stylesheets.push(url);
+    if (path) app.serveFile(url, path);
+  };
 
   app.getCSS = () => ui.css.join('\n');
   app.getJS = () => ui.js.join('\n');
-  app.getScripts = () => processStack(ui.scripts, app.resourceUrl);
-  app.getStylesheets = () => processStack(ui.stylesheets, app.resourceUrl);
+  app.getScripts = () => ui.scripts.map(app.resourceUrl);
+  app.getStylesheets = () => ui.stylesheets.map(app.resourceUrl);
 
   return app;
 };
