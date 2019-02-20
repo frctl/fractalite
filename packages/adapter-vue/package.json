@@ -1,0 +1,9 @@
+{
+  "name": "@frctl/fractalite-adapter-vue",
+  "version": "0.0.0",
+  "dependencies": {
+    "common-tags": "^1.8.0",
+    "json5": "^2.1.0",
+    "lodash": "^4.17.10"
+  }
+}

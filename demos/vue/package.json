@@ -1,0 +1,19 @@
+{
+  "name": "@frctl/fractalite-demo-vue",
+  "private": true,
+  "scripts": {
+    "start": "fractalite start --config fractal.config.js --port 3030",
+    "build": "fractalite build --config fractal.config.js"
+  },
+  "devDependencies": {
+    "@frctl/fractalite": "^0.0.0",
+    "@frctl/fractalite-adapter-vue": "^0.0.0",
+    "@frctl/fractalite-plugin-assets-bundler": "^0.0.0",
+    "@vue/component-compiler-utils": "^2.5.2",
+    "vue-template-compiler": "^2.6.6"
+  },
+  "dependencies": {
+    "vue": "^2.6.6",
+    "vue-hot-reload-api": "^2.3.2"
+  }
+}

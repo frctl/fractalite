@@ -13,6 +13,7 @@
     "test": "xo && lerna run test",
     "fractalite:build": "cd packages/fractalite && npm run build",
     "fractalite:dev": "cd packages/fractalite && npm run dev",
+    "demo:vue": "npm run bootstrap && cd demos/vue && npm run start",
     "demo:nunjucks": "npm run bootstrap && cd demos/nunjucks && npm run start",
     "demo": "npm run demo:nunjucks"
   },
