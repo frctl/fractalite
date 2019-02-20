@@ -21,12 +21,12 @@ module.exports = class ComponentExtension {
     const shouldMerge = args.shift();
     const { state } = env;
 
-    const [componentName, contextName] = handle.split('/');
+    const [componentName, scenarioName] = handle.split('/');
 
     const component = getComponent(state, componentName, true);
-    const context = getScenario(component, contextName, true);
+    const scenario = getScenario(component, scenarioName, true);
 
-    props = shouldMerge === false ? props : mergeProps(state, context.props, props);
+    props = shouldMerge === false ? props : mergeProps(state, scenario.props, props);
 
     env.render(component.name, props, (err, result) => {
       if (err) {

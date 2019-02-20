@@ -46,7 +46,7 @@ module.exports = function(opts = {}) {
       }
     `);
 
-    compiler.use(({ components }) => {
+    compiler.use(components => {
       components.forEach(component => {
         component.notes = component.notes || component.config.notes;
       });

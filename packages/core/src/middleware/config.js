@@ -18,7 +18,7 @@ module.exports = function(opts = {}) {
     process: config => config
   });
 
-  return async function componentConfig(ctx) {
+  return async function configMiddleware(components) {
     const load = rewire(module, {
       recursive: true,
       resolve: {
@@ -27,7 +27,7 @@ module.exports = function(opts = {}) {
     });
     const cosmiconfig = load('cosmiconfig');
 
-    await map(ctx.components, async component => {
+    await map(components, async component => {
       const { path, name } = component.root;
       const finderOpts = opts.finder || {};
       const cosmiOpts = Object.assign({}, finderOpts, {
@@ -40,7 +40,7 @@ module.exports = function(opts = {}) {
       if (searchResult) {
         component.configFile = component.files.find(file => file.path === searchResult.filepath);
         if (isFunction(config)) {
-          config = await config(ctx);
+          config = await config(components);
         }
       } else {
         // This.debug(`No config file found for component '${component.root.relative}'`);

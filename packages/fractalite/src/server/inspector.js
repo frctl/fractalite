@@ -3,7 +3,7 @@ const { resolveValue, mapValuesAsync } = require('@frctl/fractalite-support/util
 const { getScenario, getComponent } = require('@frctl/fractalite-core/helpers');
 const { map } = require('asyncro');
 
-module.exports = function(app, adapter, opts = {}) {
+module.exports = function(app, compiler, renderer, opts = {}) {
   let panels = [];
 
   app.extend({
@@ -56,7 +56,7 @@ module.exports = function(app, adapter, opts = {}) {
   /*
    * Compiler middleware to add inspector url properties
    */
-  app.compiler.use(async ({ components, assets }, next) => {
+  compiler.use(async (components, next) => {
     await next();
     components.forEach(component => {
       component.url = app.url('inspect', { component: component.name });

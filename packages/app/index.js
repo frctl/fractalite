@@ -2,8 +2,7 @@ const fs = require('fs');
 const jsonErrors = require('koa-json-error');
 const cleanStack = require('clean-stacktrace');
 const relativePaths = require('clean-stacktrace-relative-paths');
-const { File, Asset } = require('@frctl/fractalite-core');
-const { getComponent, getAsset } = require('@frctl/fractalite-core/helpers');
+const { getComponent, isFile } = require('@frctl/fractalite-core/helpers');
 const App = require('./src/app');
 
 module.exports = function(compiler, opts = {}) {
@@ -72,7 +71,7 @@ module.exports = function(compiler, opts = {}) {
    */
   app.use((ctx, next) => {
     ctx.response.sendFile = async function(file) {
-      if (!File.isFile(file)) {
+      if (!isFile(file)) {
         throw new Error('Only Files can be sent');
       }
       const contents = await file.getContents();
@@ -127,32 +126,12 @@ module.exports = function(compiler, opts = {}) {
     return next();
   });
 
-  /*
-   * Add a route parameter loader for the :asset param.
-   */
-  router.param('asset', (handle, ctx, next) => {
-    if (!handle) return next();
-    try {
-      ctx.asset = getAsset(ctx.state, handle, true);
-    } catch (err) {
-      ctx.throw(404, err);
-    }
-    ctx.state.asset = ctx.asset;
-    return next();
-  });
-
   views.addGlobal('app', app.props());
   views.addGlobal('url', (name, params) => app.url(name, params));
   views.addGlobal('resourceUrl', (name, path) => app.resourceUrl(name, path));
 
-  app.addRoute('asset', '/assets/:asset(.+)', ctx => ctx.sendFile(ctx.asset));
-
-  // App.addBuildStep('asset', ({ copyFile, api }) => {
-  //   app.api.assets.forEach(asset => copyFile(asset.path, app.url('asset', { asset })));
-  // });
-
   app.addRoute('src', '/src/:file(.+)', ctx => {
-    const file = ctx.files.filter(f => !Asset.isAsset(f)).find(f => f.handle === ctx.params.file);
+    const file = ctx.files.find(f => f.handle === ctx.params.file);
     if (file) {
       return ctx.sendFile(file);
     }
@@ -166,15 +145,12 @@ module.exports = function(compiler, opts = {}) {
   /*
    * Compiler middleware to add url properties to files and assets
    */
-  app.compiler.use(async ({ components, assets }, next) => {
+  app.compiler.use(async (components, next) => {
     await next();
     components.forEach(component => {
       component.files.forEach(file => {
         file.url = app.url('src', { file });
       });
-    });
-    assets.forEach(asset => {
-      asset.url = app.url('asset', { asset });
     });
   });
 

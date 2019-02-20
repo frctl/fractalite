@@ -3,11 +3,11 @@ const { isFunction, pick, mapValues, cloneDeep } = require('lodash');
 const flatten = require('flat');
 const { rewriteUrls } = require('@frctl/fractalite-support/html');
 const { defaultsDeep, toArray, processStack } = require('@frctl/fractalite-support/utils');
-const { getScenario, getScenarioOrDefault, getComponent, getAsset } = require('@frctl/fractalite-core/helpers');
+const { getScenario, getScenarioOrDefault, getComponent } = require('@frctl/fractalite-core/helpers');
 const { createRenderer } = require('@frctl/fractalite-core');
 const { map } = require('asyncro');
 
-module.exports = function(app, adapter, opts = {}) {
+module.exports = function(app, compiler, renderer, opts = {}) {
   const previewAssets = { css: [], js: [], scripts: [], stylesheets: [] };
   const hooks = {
     beforeScenarioRender: [],
@@ -52,8 +52,7 @@ module.exports = function(app, adapter, opts = {}) {
   });
 
   app.utils.renderPreview = async (component, scenario, runtimeOpts = {}) => {
-    const state = app.compiler.getState();
-    const renderer = createRenderer(state, adapter);
+    const state = compiler.getState();
     const hookCtx = { ...state, component, scenario };
 
     // allow hooks to manipulate the props array before rendering
@@ -80,8 +79,7 @@ module.exports = function(app, adapter, opts = {}) {
         const file = component.files.find(file => `./${file.relative}` === path);
         return file ? file.url : path;
       }
-      const asset = getAsset(state, path);
-      return asset ? asset.url : path;
+      return path;
     };
 
     // Resolve the stylesheets and scripts for use in the preview
@@ -145,7 +143,7 @@ module.exports = function(app, adapter, opts = {}) {
   /*
    * Middleware to add preview urls to variants.
    */
-  app.compiler.use(async ({ components, assets }, next) => {
+  compiler.use(async (components, next) => {
     await next();
     components.forEach(component => {
       component.scenarios.forEach(scenario => {
@@ -160,7 +158,7 @@ module.exports = function(app, adapter, opts = {}) {
   /*
    * Middleware to add preview data from config files.
    */
-  app.compiler.use(({ components }) => {
+  compiler.use(components => {
     components.forEach(component => {
       component.preview = defaultsDeep(component.config.preview || {}, {
         meta: {
@@ -186,24 +184,23 @@ module.exports = function(app, adapter, opts = {}) {
   /*
    * Compiler middleware to expand the relative urls in view templates
    */
-  app.compiler.use(async ({ components, assets }, next) => {
+  compiler.use(async (components, next) => {
     await next();
-    if (adapter.views) {
-      await map(components, async component => {
-        const view = component.matchFile(adapter.views);
-        if (view) {
-          let contents = await view.getContents();
+    await map(components, async component => {
+      component.files.forEach(async file => {
+        if (file.isHTMLFragment) {
+          let contents = await file.getContents();
           contents = rewriteUrls(contents, path => replaceRelativeUrl(path, component));
-          view.setContents(contents);
+          file.setContents(contents);
         }
       });
-    }
+    });
   });
 
   /*
    * Compiler middleware to expand any relative urls in scenario prop values
    */
-  app.compiler.use(async ({ components, assets }, next) => {
+  compiler.use(async (components, next) => {
     await next();
     components.forEach(component => {
       component.scenarios.forEach(scenario => {

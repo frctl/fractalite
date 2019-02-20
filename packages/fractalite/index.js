@@ -8,9 +8,11 @@ const highlight = require('./src/server/utils/highlight');
 const markdown = require('./src/server/utils/markdown');
 const plugins = require('./src/server/plugins');
 
-module.exports = function({ components, assets, adapter, mode, ...config }) {
-  const compiler = createCompiler({ components, assets });
+module.exports = function({ components, adapter, mode, ...config }) {
+  const compiler = createCompiler(components);
   const app = createApp(compiler, mode);
+  adapter = adapter || htmlAdapter;
+  adapter = isFunction(adapter) ? adapter(app, compiler, config) : adapter;
   const renderer = createRenderer(compiler.getState(), adapter);
 
   app.props({
@@ -45,11 +47,8 @@ module.exports = function({ components, assets, adapter, mode, ...config }) {
     ...get(config, 'opts.markdown')
   });
 
-  adapter = adapter || htmlAdapter;
-  adapter = isFunction(adapter) ? adapter(app, config) : adapter;
-
   ['references', 'preview', 'pages', 'nav', 'inspector'].forEach(name => {
-    require(`./src/server/${name}`)(app, adapter, get(config, name));
+    require(`./src/server/${name}`)(app, compiler, renderer, get(config, name));
   });
 
   /*
@@ -64,14 +63,14 @@ module.exports = function({ components, assets, adapter, mode, ...config }) {
   /*
    * Load all user-defined plugins
    */
-  forEach(config.plugins, plugin => plugin(app, adapter));
+  forEach(config.plugins, plugin => plugin(app, compiler, renderer));
 
   /*
    * Run the init method for any final
    * fine-grained tweaking.
    */
   if (typeof config.init === 'function') {
-    config.init(app, adapter);
+    config.init(app, compiler, renderer);
   }
 
   return app;

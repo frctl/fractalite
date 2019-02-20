@@ -39,6 +39,7 @@ export default {
           if (!this.scenarioName) {
             const response = await axios.get(`/api/components/${this.componentName}.json`);
             const component = response.data;
+            console.log(component);
             const scenario = component.scenarios[0];
             this.$router.push(`/inspect/${component.name}/${scenario.name}`);
             return;

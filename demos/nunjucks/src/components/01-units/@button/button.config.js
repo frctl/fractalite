@@ -29,7 +29,7 @@ module.exports = {
       },
       /*
        * Multiple scenario instances can be rendered in the same preview
-       * by providing an array of props as the value of the `preview` key.
+       * by providing an array of props for the `preview` option.
        * Each preview props object will be merged with the default scenario
        * props defined above.
        */

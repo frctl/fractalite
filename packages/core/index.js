@@ -18,7 +18,6 @@ module.exports.createCompiler = init;
 module.exports.createRenderer = require('./src/renderer');
 module.exports.htmlAdapter = require('./src/html-adapter');
 module.exports.File = require('./src/entities/file');
-module.exports.Asset = require('./src/entities/asset');
 module.exports.Component = require('./src/entities/component');
 module.exports.Entity = require('./src/entities/entity');
 module.exports.middleware = require('./src/middleware');

@@ -115,7 +115,7 @@ module.exports = {
     /*
      * Example compiler middleware to read notes from notes.md files.
      */
-    app.compiler.use(async ({ components }) => {
+    app.compiler.use(async components => {
       await Promise.all(
         components.map(async component => {
           const notesfile = component.files.find(file => file.basename.toLowerCase() === 'notes.md');

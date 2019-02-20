@@ -22,9 +22,9 @@ class Component extends Entity {
     return true;
   }
 
-  matchFile(matcher) {
+  matchFiles(matcher) {
     matcher = [].concat(matcher).map(match => pupa(match, this));
-    return this.files.find(file => multimatch(file.relative, matcher, { matchBase: true }).length);
+    return this.files.filter(file => multimatch(file.relative, matcher, { matchBase: true }).length);
   }
 
   static isComponent(item) {

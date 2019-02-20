@@ -1,22 +1,22 @@
 module.exports = [
   {
     key: 'components.opts.files',
-    handler: require('./component-files')
+    handler: require('./files')
   },
   {
     key: 'components.opts.config',
-    handler: require('./component-config')
+    handler: require('./config')
   },
   {
     key: 'components.opts.name',
-    handler: require('./component-name')
+    handler: require('./name')
   },
   {
     key: 'components.opts.label',
-    handler: require('./component-label')
+    handler: require('./label')
   },
   {
     key: 'components.opts.scenarios',
-    handler: require('./component-scenarios')
+    handler: require('./scenarios')
   }
 ];

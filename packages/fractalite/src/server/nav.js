@@ -3,7 +3,7 @@ const { isFunction, isPlainObject, flatMap, uniqBy, orderBy } = require('lodash'
 const { titlize } = require('@frctl/fractalite-support/utils');
 const { isComponent, isFile } = require('@frctl/fractalite-core/helpers');
 
-module.exports = function(app, adapter, opts = {}) {
+module.exports = function(app, compiler, renderer, opts = {}) {
   if (Array.isArray(opts) || isFunction(opts)) {
     opts = { items: opts };
   }
@@ -16,7 +16,7 @@ module.exports = function(app, adapter, opts = {}) {
     };
   });
 
-  app.compiler.use(({ components }) => {
+  compiler.use(components => {
     components.forEach(component => {
       component.position = component.config.position || 1000;
     });

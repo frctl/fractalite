@@ -1,7 +1,6 @@
 const { find } = require('lodash');
 const { defaultsDeep } = require('@frctl/fractalite-support/utils');
 const Component = require('./entities/component');
-const Asset = require('./entities/asset');
 const File = require('./entities/file');
 
 function getComponent({ components }, target, throwOnNotFound = false) {
@@ -38,15 +37,6 @@ function getFile({ files }, target, throwOnNotFound = false) {
   return file;
 }
 
-function getAsset({ assets }, target, throwOnNotFound = false) {
-  if (isAsset(target)) return target;
-  const asset = find(assets, { handle: target });
-  if (!asset && throwOnNotFound) {
-    throw new Error(`Asset '${target}' was not found`);
-  }
-  return asset;
-}
-
 function mergeProps(state, ...args) {
   // TODO: allow for resolving of string componet/scenario references?
   return defaultsDeep(...args.reverse());
@@ -54,10 +44,6 @@ function mergeProps(state, ...args) {
 
 function isComponent(component) {
   return Component.isComponent(component);
-}
-
-function isAsset(asset) {
-  return Asset.isAsset(asset);
 }
 
 function isFile(file) {
@@ -68,10 +54,8 @@ module.exports = {
   getComponent,
   getScenario,
   getScenarioOrDefault,
-  getAsset,
   getFile,
   mergeProps,
   isComponent,
-  isAsset,
   isFile
 };

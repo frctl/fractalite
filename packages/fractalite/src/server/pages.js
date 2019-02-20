@@ -6,7 +6,7 @@ const { read, watch } = require('@frctl/fractalite-core');
 const { map } = require('asyncro');
 const matter = require('gray-matter');
 
-module.exports = function(app, adapter, opts = {}) {
+module.exports = function(app, compiler, renderer, opts = {}) {
   if (typeof opts === 'string' || Array.isArray(opts)) opts = { src: opts };
   opts = cloneDeep(opts);
   opts.src = normalizeSrc(opts.src);
@@ -19,7 +19,7 @@ module.exports = function(app, adapter, opts = {}) {
   };
 
   app.utils.renderPage = async function(str = '', props = {}, opts = {}) {
-    const state = app.compiler.getState();
+    const state = compiler.getState();
     if (opts.template === true) {
       str = await app.views.renderStringAsync(str, { ...state, ...props });
     }

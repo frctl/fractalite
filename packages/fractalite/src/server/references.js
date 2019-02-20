@@ -1,4 +1,4 @@
-module.exports = function(app, adapter, opts = {}) {
+module.exports = function(app, compiler, renderer, opts = {}) {
   if (opts === false) return;
 
   const refMatcher = opts.match || /{(.*?)}/g;
@@ -6,9 +6,6 @@ module.exports = function(app, adapter, opts = {}) {
   const lookup = {
     component(state, identifier) {
       return state.components.find(c => c.name === identifier);
-    },
-    asset(state, identifier) {
-      return state.assets.find(c => c.handle === identifier);
     },
     file(state, identifier) {
       return state.files.find(c => c.handle === identifier);
@@ -30,7 +27,7 @@ module.exports = function(app, adapter, opts = {}) {
         throw new Error(`Could not resolve reference tag - '${entity}' is not a recognised entity`);
       }
       try {
-        const target = lookup[entity](app.compiler.getState(), identifier);
+        const target = lookup[entity](compiler.getState(), identifier);
         if (!target) {
           throw new Error(`Could not resolve reference tag - '${entity}:${identifier}' not found`);
         }
