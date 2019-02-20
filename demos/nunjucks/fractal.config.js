@@ -4,7 +4,7 @@ module.exports = {
   /*
    * Project title used in the UI
    */
-  title: 'Fractalite Demo',
+  title: 'Nunjucks Demo',
 
   /*
    * Template engine adapter
