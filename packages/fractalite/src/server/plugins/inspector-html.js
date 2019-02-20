@@ -27,12 +27,10 @@ module.exports = function(opts = {}) {
       async props(state) {
         const { scenario, component } = state;
 
-        const html = await map(scenario.preview.props, async props => {
-          const html = await renderer.render(component, props);
-          return opts.prettify ? beautify.html(html, opts.prettify) : html;
-        });
+        let items = await renderer.renderAllToStaticMarkup(component, scenario.preview.props);
+        items = items.map(item => (opts.prettify ? beautify.html(item, opts.prettify) : item));
 
-        return { html };
+        return { html: items };
       }
     });
   };

@@ -8,13 +8,22 @@ const highlight = require('./src/server/utils/highlight');
 const markdown = require('./src/server/utils/markdown');
 const plugins = require('./src/server/plugins');
 
+const configDefaults = {
+  plugins: []
+};
+
 module.exports = function({ components, adapter, mode, ...config }) {
+  config = defaultsDeep(config, configDefaults);
+
   const compiler = createCompiler(components);
   const app = createApp(compiler, mode);
+
   adapter = adapter || htmlAdapter;
-  adapter = isFunction(adapter) ? adapter(app, compiler, config) : adapter;
+  adapter = isFunction(adapter) ? adapter(app, compiler) : adapter;
+
   const renderer = createRenderer(compiler.getState(), adapter);
 
+  // TODO: kill app.props? Is it useful?
   app.props({
     config,
     title: config.title || 'Styleguide',

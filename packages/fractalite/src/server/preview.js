@@ -96,6 +96,8 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     mergedOpts.css = previewAssets.css.concat(mergedOpts.css);
 
     // allow hooks to manipulate the preview object
+    html = renderer.getPreviewString(html);
+
     let preview = { ...mergedOpts, scripts, stylesheets, content: html };
     preview = await applyHooks('beforePreviewRender', preview, hookCtx);
 
