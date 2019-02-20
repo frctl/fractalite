@@ -11,7 +11,12 @@ A prototype to help explore future development ideas for [Fractal](https://fract
 
 ## Usage / info
 
-### Project Configuration
+* [Project Configuration](#project-configuration)
+* [Components](#components)
+* [Plugins](#plugins)
+* [API](#api)
+
+## Project Configuration
 
 Fractalite config is kept in a `fractal.config.js` file in the project root directory. Only the `components` property is required.
 
@@ -27,13 +32,7 @@ module.exports = {
 
 The Nunjucks demo contains a [annotated example](demos/nunjucks/fractal.config.js) of a project configuration file that contains more detail on the available options.
 
-<!-- ### Adapters
-
-**Adapters** allow Fractal to support different template engines and even frameworks such as Vue or React.
- -->
-
-
-### Components
+## Components
 
 Each component is represented by a directory. The directory name must begin with an `@` symbol - for example `@button` or `@media-block`.
 
@@ -48,7 +47,7 @@ The file structure for a basic [Nunjucks](https://mozilla.github.io/nunjucks) bu
 └── view.njk
 ```
 
-#### Config files
+### Config files
 
 Component **config files** can be JSON, YAML or CommonJS module format, although the latter is recommended for flexibility.
 
@@ -66,7 +65,7 @@ module.exports = {
 
 See the demo button component for an [annotated example](demos/nunjucks/src/components/01-units/@button/button.config.js) of some of the available config options.
 
-#### View templates
+### View templates
 
 View templates are **template-engine specific** files that contain the code required to render the component.
 
@@ -83,7 +82,7 @@ However, in the case of 'simple' template engines such as Nunjucks or Handlebars
 
 More complex frameworks such as Vue or React may have different requirements and feature support will be determined by the adapter used.
 
-### Plugins
+## Plugins
 
 Plugins the primary way that the Fractalite app can be customised, and can affect both the UI and the component parsing/compilation process.
 
@@ -115,7 +114,7 @@ module.exports = {
 };
 ```
 
-#### Example plugin - author info
+### Example plugin - author info
 
 The following is an example of a fairly basic plugin that reads author information from component config files and adds a tab to the component inspector UI to display this information.
 
@@ -189,3 +188,102 @@ module.exports = {
   }
 }
 ```
+
+## API
+
+## Compiler
+
+#### `compiler.use(fn)`
+
+Push a compiler middleware function onto the stack.
+
+Middleware receive the `components` array as the first argument, and a Koa-style `next` function as the second argument.
+
+Middleware can mutate the contents of the components array as needed. Unlike in Koa middleware The `next` function only needs to be called if the middleware should wait for latter middleware to complete before running.
+
+```js
+// 'plain' middleware, no awaiting
+compiler.use(components => {
+  components.forEach(component => {
+    // do something
+  })
+})
+```
+
+```js
+// middleware that waits for latter middleware to complete first
+compiler.use(async (components, next) => {
+  await next();
+  components.forEach(component => {
+    // do something
+  })
+})
+```
+
+#### `compiler.getState()`
+
+Returns an object representing the current state of the compiler. By default this includes `components` and `files` properties.
+
+## Application
+
+### Properties
+
+#### `app.mode`
+#### `app.router`
+#### `app.views`
+
+### UI
+
+#### `app.addInspectorPanel(props)`
+#### `app.getInspectorPanels()`
+#### `app.removeInspectorPanel(name)`
+
+### Previews
+
+#### `app.addPreviewStylesheet(url, [path])`
+#### `app.addPreviewScript(url, [path])`
+#### `app.addPreviewCSS(css)`
+#### `app.addPreviewJS(js)`
+#### `app.beforeScenarioRender(fn)`
+#### `app.afterScenarioRender(fn)`
+#### `app.beforePreviewRender(fn)`
+#### `app.afterPreviewRender(fn)`
+
+### Routing
+
+#### `app.addRoute(name, path, handler)`
+#### `app.url(name, params)`
+
+### Lifecycle
+
+#### `app.beforeStart(fn)`
+#### `app.on(event, handler)`
+#### `app.emit(event, [...args])`
+
+### Views
+
+#### `app.addViewPath(path)`
+#### `app.addViewExtension(name, ext)`
+#### `app.addViewFilter(name, filter)`
+#### `app.addViewGlobal(name, value)`
+
+### Assets
+
+#### `app.addStylesheet(url, [path])`
+#### `app.addScript(url, [path])`
+#### `app.addCSS(css)`
+#### `app.addJS(js)`
+#### `app.addStaticDir(name, path, [mount])`
+#### `app.serveFile(url, path)`
+
+### Utils
+
+#### `app.utils.renderMarkdown(str)`
+#### `app.utils.highlightCode(code)`
+#### `app.utils.parseFrontMatter(str)`
+#### `app.utils.renderPage(str, [props], [opts])`
+#### `app.utils.addReferenceLookup(key, handler)`
+
+### Other
+
+#### `app.extend(methods)`
