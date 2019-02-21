@@ -58,6 +58,7 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 * [Plugins](#plugins)
   * [Example plugin - author info](#example-plugin-author-info)
   * [Assets bundler plugin](#assets-bundler-plugin)
+  * [Notes plugin](#notes-plugin)
 * [API](#api)
   * [Compiler](#compiler)
   * [Application](#application)
@@ -478,6 +479,24 @@ const bundlerPlugin = require('@frctl/fractalite-plugin-assets-bundler')({
   entryFile: './src/preview.js',
   outFile: './dist/build.js'
 })
+```
+
+### Notes plugin
+
+The [notes plugin](packages/plugin-notes) adds a inspector panel to display component notes.
+
+Notes can be defined via the `notes` property in the component config file, or alternatively kept in a markdown file in the component directory.
+
+```js
+// fractal.config.js
+module.exports = {
+  // ...  
+  plugins: [
+    require('@frctl/fractalite-plugin-notes')({
+      notesFile: 'notes.md' // optional, only if notes should be read from files 
+    })
+  ]
+};
 ```
 
 ## API
