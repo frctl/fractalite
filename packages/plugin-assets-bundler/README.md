@@ -2,13 +2,13 @@
 
 Uses [Parcel](https://parceljs.org) to handle asset bundling for Fractal component libraries.
 
-** 1. Install in your project:**
+#### 1. Install in your project:
 
 ```bash
 npm i --save-dev @frctl/fractalite-plugin-assets-bundler
 ```
 
-** 2. Add plugin to Fractal config file: **
+#### 2. Add plugin to Fractal config file: 
 
 ```js
 // fractal.config.js
@@ -23,7 +23,7 @@ module.exports = {
 };
 ```
 
-** 3. Create entry file:**
+#### 3. Create entry file:
 
 ```js
 // ./assets/preview.js
@@ -33,6 +33,6 @@ import button from '../components/@button/button.js'
 
 > See the Parcel docs on module resolution for more info on paths, globbing and aliases: https://parceljs.org/module_resolution.html
 
-** 4. View your components...**
+#### 4. View your components...
 
 The asset bundler handles serving assets and injecting them into your component previews so no further configuration is needed.
