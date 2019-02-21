@@ -1,14 +1,10 @@
 const { dirname, basename, relative } = require('path');
 const Bundler = require('parcel-bundler');
-const { Signale } = require('signale');
 const { outputFile } = require('fs-extra');
 
 module.exports = function(opts = {}) {
   return function(app) {
-    const logger = new Signale({ interactive: true });
     app.beforeStart(async () => {
-      logger.await('Building assets...');
-
       const entryDir = dirname(opts.entryFile);
       const outDir = dirname(opts.outFile);
       const publicUrl = opts.publicUrl || '/assets';
@@ -59,63 +55,54 @@ module.exports = function(opts = {}) {
           outDir,
           outFile: basename(opts.outFile),
           watch: app.mode === 'develop',
-          logLevel: 0,
+          logLevel: 3,
           publicUrl,
           hmrHostname: opts.hmrHostname || 'localhost',
           hmr: opts.hmr !== false
         });
 
-        try {
-          if (initial) {
-            bundler.on('buildStart', () => logger.await('Rebundling assets...'));
-            bundler.on('buildEnd', () => {
-              if (opts.hmr === false) {
-                app.socket.broadcast('refresh');
-              }
-              logger.success('Asset bundling complete');
-            });
-            bundler.on('buildError', err => logger.error(err));
+        if (initial) {
+          bundler.on('buildEnd', () => {
+            if (opts.hmr === false) {
+              app.socket.broadcast('refresh');
+            }
+          });
+        }
+
+        const bundle = await bundler.bundle();
+
+        if (initial) {
+          function addBundles(bundle, bundles = []) {
+            if (['js', 'css'].includes(bundle.type)) {
+              bundles.push(bundle);
+            }
+            for (const childBundle of bundle.childBundles) {
+              addBundles(childBundle, bundles);
+            }
+            return bundles;
           }
 
-          const bundle = await bundler.bundle();
+          const bundles = addBundles(bundle);
 
-          if (initial) {
-            function addBundles(bundle, bundles = []) {
-              if (['js', 'css'].includes(bundle.type)) {
-                bundles.push(bundle);
+          const assets = bundles.map(bundle => {
+            return {
+              url: `${publicUrl}/${relative(outDir, bundle.name)}`,
+              type: bundle.type
+            };
+          });
+
+          if (opts.addToPreview !== false) {
+            // Automatically add the bundled scripts
+            // and stylesheets to the preview
+            for (const { type, url } of assets) {
+              if (type === 'css') {
+                app.addPreviewStylesheet(url);
               }
-              for (const childBundle of bundle.childBundles) {
-                addBundles(childBundle, bundles);
-              }
-              return bundles;
-            }
-
-            const bundles = addBundles(bundle);
-
-            const assets = bundles.map(bundle => {
-              return {
-                url: `${publicUrl}/${relative(outDir, bundle.name)}`,
-                type: bundle.type
-              };
-            });
-
-            if (opts.addToPreview !== false) {
-              // Automatically add the bundled scripts
-              // and stylesheets to the preview
-              for (const { type, url } of assets) {
-                if (type === 'css') {
-                  app.addPreviewStylesheet(url);
-                }
-                if (type === 'js') {
-                  app.addPreviewScript(url);
-                }
+              if (type === 'js') {
+                app.addPreviewScript(url);
               }
             }
           }
-
-          logger.success('Assets build complete');
-        } catch (err) {
-          logger.error(err);
         }
 
         return bundler;
