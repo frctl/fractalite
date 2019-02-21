@@ -2,6 +2,24 @@
 
 A prototype to help explore future development ideas for [Fractal](https://fractal.build).
 
+### Features
+
+* Middleware-based components parser/compiler
+* Plugin system for compiler and UI customisation
+* Adapter-based component rendering
+* Dynamic page builder
+* Asset bundler plugin
+* Hybrid client/server side-rendered UI (using [Vue](https://vuejs.org))
+
+Still missing/in progress...
+
+* [ ] Community feedback and input! :-)
+* [ ] Proper UI design & implementation
+* [ ] Tests
+* [ ] Documentation
+* [ ] Additional template engine adapters
+* [ ] More extensive feature demo
+
 ## Demo
 
 The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the [Nunjucks adapter](packages/adapter-nunjucks) and the [Asset Bundler](packages/plugin-assets-bundler) plugin.
@@ -26,6 +44,11 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
   * [Scenarios](#scenarios)
   * [Configuration](#configuration)
   * [View templates](#view-templates)
+* [Pages](#pages)
+  * [Usage](#pages-usage)
+  * [Reference tags](#pages-reference-tags)
+  * [Nunjucks templates](#pages-nunjucks-templates)
+  * [Front Matter](#pages-frontmatter)
 * [Plugins](#plugins)
   * [Example plugin - author info](#example-plugin-author-info)
   * [Assets bundler plugin](#assets-bundler-plugin)
@@ -182,6 +205,102 @@ Referencing local component assets in view templates can be done via relative pa
 ```
 
 Any relative paths in [html attributes that expect a URL value](https://www.npmjs.com/package/html-url-attributes) will be dynamically rewritten to reference the asset correctly.
+
+## Pages
+
+Each project can specify a directory of pages to be displayed in the app.
+
+Pages can either be Markdown documents (with a `.md` extension) or Nunjucks templates (with a `.njk` extension) and can define Jekyll-style [front matter](https://jekyllrb.com/docs/front-matter/) blocks for configuration options.
+
+### Usage {#pages-usage}
+
+Add the absolute path to the pages directory to the project config file:
+
+```js
+// fractal.config.js
+const { resolve } = require('path');
+module.exports = {
+  // ...
+  pages: resolve(__dirname, './pages'), // absolute path to the pages directory
+};
+```
+
+Then create the pages:
+
+```
+./pages
+├── about.njk
+└── index.md
+```
+
+> If an `index` file (either with `.md` or `.njk` extension) is added in the root of the pages directory then this will override the default application welcome page.
+
+### Reference tags {#pages-reference-tags}
+
+Reference tags can be used in pages to make linking to other pages, component previews and source files both easier and less fragile. They also allow basic access to properties of page and component objects.
+
+Reference tags take the form `{target:identifier:property}`.
+
+* `target`: one of `component`, `page`, `file`, `inspect` or `preview`
+* `identifier`: unique identifier for the target - for example the component name or page handle
+* `property`: optional, defaults to `url`  
+
+Some example reference tags:
+
+```html
+ <!-- button component inspector URL -->
+{inspect:button}
+
+ <!-- standalone preview URL for button component with 'next scenario' -->
+{preview:button/next}
+
+ <!-- URL of raw source of the button view template -->
+{file:button/view.njk}
+
+<!-- URL of the about page -->
+{page:about}
+
+<!-- title of the about page -->
+{page:about:title}
+```
+
+### Nunjucks templates {#pages-nunjucks-templates}
+
+Nunjucks templates (pages with a `.njk` extension) have access to the current compiler state properties as well as any data provided in the front matter block:
+
+```html
+<!-- about.njk -->
+<p>The following components are available</p>
+<ul>
+  {% for component in components %}
+  <li><a href="{{ component.url }}">{{ component.label }}</a></li>
+  {% endfor %}  
+</ul>
+```
+
+### Front Matter {#pages-frontmatter} 
+
+The following page configuration options are available and can be set in a front matter block at the top of pages that require it.
+
+**`title`** [string]
+
+The title displayed at the top of the page.
+
+**`label`** [string]
+
+Used to refer to the page in any navigation
+
+**`handle`** [string]
+
+Used in reference tags to refer to the page. Defaults to the page URL with slashes replaced by dashes.
+
+**`markdown`** [boolean]
+
+Whether or not to run the page contents through the markdown renderer. _[Defaults to `true` for `.md` pages, false for all others.]_
+
+**`template`** [boolean]
+
+Whether or not to run the page contents through the Nunjucks renderer. _[Defaults to `true` for `.njk` pages, false for all others.]_
 
 ## Plugins
 
