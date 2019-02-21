@@ -19,7 +19,6 @@ A prototype to help explore development ideas for future [Fractal](https://fract
   * [ ] Responsive UI
   * [ ] Loading states
   * [ ] Component search
-  * [ ] Resizable panes
   * [ ] Collapsible nav
 * [ ] Tests
 * [ ] Documentation
