@@ -2,7 +2,27 @@
 
 A prototype to help explore development ideas for future [Fractal](https://fractal.build) versions.
 
-### Features & status
+## Demo
+
+The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the [Nunjucks adapter](packages/adapter-nunjucks) alongside the [Asset Bundler](packages/plugin-assets-bundler) and [Notes](packages/plugin-notes) plugins.
+
+> The source code for the Nunjucks demo contains commented examples of some of the main features of this prototype and is worth investigating in conjunction with the web UI.
+
+<img src="./assets/nunjucks-demo.png" alt="Screenshot of the Nunjucks demo" width="100%">
+
+### Running the demo
+
+1. Download or clone this repo
+2. `npm install` - install top-level dependencies
+3. `npm run bootstrap`: bootstrap packages together (may take some time on first run!)
+4. `npm run demo` - Start the default demo server
+5. Point a browser at http://localhost:3030 to view the application UI.
+
+#### Other demos
+
+* [Vue demo](demos/vue) - Basic proof-of-concept, client-side rendered Vue integration. `npm run demo:vue`
+
+## Features & status
 
 * Middleware-based components parser/compiler
 * Plugin system for compiler and UI customisation
@@ -20,30 +40,13 @@ A prototype to help explore development ideas for future [Fractal](https://fract
   * [ ] Loading states
   * [ ] Component search
   * [ ] Collapsible nav
+  * [ ] Theme variables
 * [ ] Tests
 * [ ] Documentation
 * [ ] Additional template engine adapters
 * [ ] More UI customisation hooks?
 * [ ] More extensive feature demo
 * [ ] Any other suggestions...?
-
-## Demo
-
-The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the [Nunjucks adapter](packages/adapter-nunjucks) alongside the [Asset Bundler](packages/plugin-assets-bundler) and [Notes](packages/plugin-notes) plugins.
-
-> The source code for the Nunjucks demo contains commented examples of some of the main features of this prototype and is worth browsing in conjunction with the web UI.
-
-### Running the demo
-
-1. Download or clone this repo
-2. `npm install` - install top-level dependencies
-3. `npm run bootstrap`: bootstrap packages together (may take some time on first run!)
-4. `npm run demo` - Start the default demo server
-5. Point a browser at http://localhost:3030 to view the Fractal UI.
-
-#### Other demos
-
-* [Vue demo](demos/vue) - Basic proof-of-concept, client-side rendered Vue integration. `npm run demo:vue`
 
 ## Usage / info
 
