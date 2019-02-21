@@ -1,5 +1,6 @@
 const fs = require('fs');
 const jsonErrors = require('koa-json-error');
+const prettier = require('prettier');
 const cleanStack = require('clean-stacktrace');
 const relativePaths = require('clean-stacktrace-relative-paths');
 const { getComponent, isFile } = require('@frctl/fractalite-core/helpers');
@@ -156,12 +157,12 @@ module.exports = function(compiler, opts = {}) {
 
   app.addRoute('app-css', `/app/assets/bundle.css`, ctx => {
     ctx.type = 'text/css';
-    ctx.body = app.getCSS();
+    ctx.body = prettier.format(app.getCSS(), { parser: 'css' });
   });
 
   app.addRoute('app-js', `/app/assets/bundle.js`, ctx => {
     ctx.type = 'application/javascript';
-    ctx.body = app.getJS();
+    ctx.body = prettier.format(app.getJS(), { parser: 'babel' });
   });
 
   app.use((ctx, next) => {
