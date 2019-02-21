@@ -9,7 +9,7 @@
   color: #333;
   text-decoration: none;
 
-  &__label {
+  &__text {
     font-size: 16px;
   }
 
@@ -17,11 +17,11 @@
     width: 14px;
   }
 
-  &__label + &__icon {
+  &__text + &__icon {
     margin-left: 10px;
   }
 
-  &__icon + &__label {
+  &__icon + &__text {
     margin-left: 10px;
   }
 }

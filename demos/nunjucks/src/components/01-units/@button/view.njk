@@ -1,5 +1,5 @@
 <a href="{{ href | default('#') }}" type="button" class="button{% if modifier %} button--{{ modifier }}{% endif %}">
   {% if icon and iconPos == 'before' %}<img src="{{ icon }}" class="button__icon">{% endif %}
-  <span class="button__label">{{ label }}</span>
+  <span class="button__text">{{ text }}</span>
   {% if icon and iconPos == 'after' %}<img src="{{ icon }}" class="button__icon">{% endif %}
 </a>

@@ -13,7 +13,7 @@ module.exports = {
        * when the component is being rendered.
        */
       props: {
-        label: 'Next',
+        text: 'Next',
         modifier: 'action',
         icon: './arrow-right.svg', // component-relative file paths are automatically converted to URLs
         iconPos: 'after'
@@ -22,7 +22,7 @@ module.exports = {
     {
       name: 'prev',
       props: {
-        label: 'Prev',
+        text: 'Prev',
         modifier: 'action',
         icon: './arrow-left.svg',
         iconPos: 'before'
@@ -35,10 +35,10 @@ module.exports = {
        */
       preview: [
         {
-          label: 'Back'
+          text: 'Back'
         },
         {
-          label: 'A prev button with a long label'
+          text: 'A prev button with a long label'
         }
       ]
     }

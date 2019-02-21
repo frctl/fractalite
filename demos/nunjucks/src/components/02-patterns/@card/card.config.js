@@ -16,7 +16,7 @@ module.exports = {
         title: 'Sign up now',
         content: '<p>Click the button below to do this thing.</p>',
         cta: {
-          label: 'Click me'
+          text: 'Click me'
         }
       }
     }

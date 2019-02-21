@@ -1,9 +1,24 @@
+{#
+ # The Nunjucks adapter supports importing of child components
+ # via the {% component %} tag.
+ #
+ # Some examples of how it can be used:
+ #
+ # {% component 'component-name' %}
+ # {% component 'component-name/scenario-name' %}
+ # {% component 'component-name', props %}
+ # {% component 'component-name/scenario-name', props %}
+ #
+ # Note that `props` above can be a variable or an inline-object of property values.
+ # If a scenario name *and* props are specified then the two objects are merged.
+ #
+ # In the example below, the 'button' component is rendered using the props from
+ # the 'next' scenario merged with data from the `cta` object.
+ #}
 <div class="card">
   <h2 class="card__title">{{ title }}</h2>
   <div class="card__content">
     {{ content | safe }}
   </div>
-  {% if cta %}
-  {% component 'button/next', cta %}
-  {% endif %}
+  {% if cta %}{% component 'button/next', cta %}{% endif %}
 </div>
