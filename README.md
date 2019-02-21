@@ -54,7 +54,7 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 
 ## Usage
 
-Some basic documentation to help get across some of the key aspects of the Fractalite prototype.
+Preliminary documentation to help get across some of the key aspects of the Fractalite prototype.
 
 * [Installation](#installation)
 * [Project Configuration](#project-configuration)
