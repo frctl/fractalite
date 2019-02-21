@@ -9,10 +9,10 @@ module.exports = function(opts = {}) {
        * Compiler middleware to read notes content from notes files
        */
       compiler.use(async components => {
-        const filename = typeof opts.notesFile === 'string' ? opts.notesFile : 'notes.md';
+        const filePath = typeof opts.notesFile === 'string' ? opts.notesFile : 'notes.md';
         await Promise.all(
           components.map(async component => {
-            const notesFile = component.files.find(file => file.basename === filename);
+            const notesFile = component.files.find(file => file.relative === filePath);
             if (notesFile) {
               component.notes = await notesFile.getContents();
             }
