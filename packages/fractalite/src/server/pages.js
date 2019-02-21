@@ -15,7 +15,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
   let pages = [];
 
   app.utils.addReferenceLookup('page', (state, identifier) => {
-    let page = state.pages.find(page => page.name === identifier);
+    let page = state.pages.find(page => page.handle === identifier);
     if (!page) {
       page = state.pages.find(page => page.url === identifier);
     }
@@ -123,9 +123,9 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       page.label = page.label || titlize(file.name);
     }
 
-    page.name = page.name || urlPath.replace('/', '-');
-    if (page.name === '') {
-      page.name = 'index';
+    page.handle = page.handle || urlPath.replace('/', '-');
+    if (page.handle === '') {
+      page.handle = 'index';
     }
 
     page.title = page.title || page.label;

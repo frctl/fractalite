@@ -36,7 +36,7 @@ module.exports = {
    * run through a Nunjucks renderer to give dynamic access
    * to component information.
    */
-  pages: resolve(__dirname, './src/pages'),
+  pages: resolve(__dirname, './pages'),
 
   nav: {
     /*
