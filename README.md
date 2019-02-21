@@ -36,9 +36,10 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 ### Running the demo
 
 1. Download or clone this repo
-2. `npm install` - install project-level dependencies
-3. `npm run demo` - bootstrap packages together (may take some time on first run!) and start the default demo server
-4. Point a browser at http://localhost:3030 to view the Fractal UI.
+2. `npm install` - install top-level dependencies
+3. `npm run bootstrap`: bootstrap packages together (may take some time on first run!)
+4. `npm run demo` - Start the default demo server
+5. Point a browser at http://localhost:3030 to view the Fractal UI.
 
 #### Other demos
 

@@ -11,6 +11,7 @@
     "bootstrap": "lerna bootstrap",
     "lint:fix": "xo --fix",
     "test": "xo && lerna run test",
+    "bootstrap": "lerna bootstrap",
     "fractalite:build": "cd packages/fractalite && npm run build",
     "fractalite:dev": "cd packages/fractalite && npm run dev",
     "demo:vue": "npm run bootstrap && cd demos/vue && npm run start",
