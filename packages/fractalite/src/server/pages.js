@@ -14,6 +14,14 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 
   let pages = [];
 
+  app.utils.addReferenceLookup('page', (state, identifier) => {
+    let page = state.pages.find(page => page.name === identifier);
+    if (!page) {
+      page = state.pages.find(page => page.url === identifier);
+    }
+    return page;
+  });
+
   app.utils.parseFrontMatter = function(content, opts = {}) {
     return matter({ ...opts, content });
   };
@@ -115,7 +123,11 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       page.label = page.label || titlize(file.name);
     }
 
-    page.handle = urlPath;
+    page.name = page.name || urlPath.replace('/', '-');
+    if (page.name === '') {
+      page.name = 'index';
+    }
+
     page.title = page.title || page.label;
     page.treePath = urlPath;
     page.url = app.url('page', { path: '/' + urlPath });
