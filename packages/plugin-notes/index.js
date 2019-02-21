@@ -35,8 +35,8 @@ module.exports = function(opts = {}) {
 
     app.addInspectorPanel({
       name: 'notes',
-      label: opts.label || 'Notes',
-      render: false,
+      label: opts.label,
+      renderServer: false,
       async template(state) {
         const { component } = state;
         let notes;
@@ -56,7 +56,7 @@ module.exports = function(opts = {}) {
 
           notes = await app.utils.renderPage(content, {}, renderOpts);
 
-          // Rewrite relative URLs in output
+          // Rewrite relative URLs to src files in output
           notes = rewriteUrls(notes, path => {
             if (path.startsWith('./')) {
               const file = component.files.find(file => `./${file.relative}` === path);
@@ -68,13 +68,13 @@ module.exports = function(opts = {}) {
         }
 
         return `<div class="inspector-panel-notes fr-prose">${notes}</div>`;
-      }
-    });
+      },
 
-    app.addCSS(`
-      .inspector-panel-notes {
-        padding: 12px;
-      }
-    `);
+      css: `
+        .inspector-panel-notes {
+          padding: 12px;
+        }
+      `
+    });
   };
 };

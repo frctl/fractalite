@@ -413,20 +413,16 @@ module.exports = function(opts = {}) {
              {% endif %}
            </ul>
          </div>
-       `
+       `,
+       css: `
+        .author-panel {
+          padding: 20px;
+        }
+        .author-panel ul {
+          margin-top: 20px;
+        }
+      `
     });
-
-    /*
-     * Finally add some basic CSS to style the author panel.
-     */
-    app.addCSS(`
-       .author-panel {
-         padding: 20px;
-       }
-       .author-panel ul {
-         margin-top: 20px;
-       }
-     `);
   };
 };
 ```
