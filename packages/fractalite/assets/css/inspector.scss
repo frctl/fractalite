@@ -1,20 +1,16 @@
 .fr-inspector {
-  display: flex;
-  flex-direction: column;
   width: 100%;
   height: 100vh;
   background: #e8ebee;
   overflow: hidden;
 
   &__preview {
-    flex: 0;
-    border-bottom: 1px solid rgba(70, 81, 94, 0.25);
     background-color: #fff;
-    min-height: 50%;
     position: relative;
   }
 
   &__info {
+    border-top: 1px solid rgba(70, 81, 94, 0.25);
     flex: 1;
     background-color: #fff;
     overflow: hidden;

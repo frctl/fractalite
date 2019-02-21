@@ -5,14 +5,14 @@
   overflow: hidden;
 
   &__sidebar {
-    width: 280px;
+    width: 260px;
     height: 100%;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
   }
 
   &__main {
-    width: calc(100% - 280px);
+    width: calc(100% - 260px);
     height: 100vh;
     position: relative;
   }

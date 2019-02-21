@@ -33,7 +33,7 @@
     "vue-hot-reload-api": "^2.3.1",
     "vue-json-pretty": "1.4.1",
     "vue-router": "^3.0.2",
-    "vue-split-panel": "^1.0.4",
+    "vue-splitjs": "0.0.4",
     "vue-socket.io-extended": "^3.2.1"
   },
   "scripts": {

@@ -1,6 +1,6 @@
-<div class="fr-inspector" v-if="loaded">
-  <preview v-if="preview" :srcdoc="preview" :src="scenario.previewUrl" class="fr-inspector__preview" ref="preview"></preview>
-    <div class="fr-inspector__info">
+<split-pane class="fr-inspector" v-if="loaded" :elements="['#inspector-preview', '#inspector-info']" direction="vertical" :min-size="200" :gutter-size="10">
+  <preview id="inspector-preview" v-if="preview" :srcdoc="preview" :src="scenario.previewUrl" class="fr-inspector__preview" ref="preview"></preview>
+  <div id="inspector-info" class="fr-inspector__info">
     <ul class="fr-tabs fr-inspector__tabs" v-if="panels.length > 1">
       <li class="fr-tabs__tab" :class="{ 'is-current': currentTab === i }" v-for="(panel, i) in panels">
         <a href="#" @click="selectTab(i)">{{ panel.label }}</a>
@@ -23,4 +23,4 @@
       </div>
     </div>
   </div>
-</div>
+</split-pane>

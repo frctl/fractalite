@@ -4,15 +4,16 @@
 import Vue from 'vue/dist/vue';
 import VueSocketio from 'vue-socket.io-extended';
 import io from 'socket.io-client';
-import VueSplit from 'vue-split-panel';
 import VueCodemirror from 'vue-codemirror';
 import VueJsonPretty from 'vue-json-pretty';
+import VueSplit from 'vue-splitjs';
 
+import 'codemirror/mode/css/css';
+import 'codemirror/mode/sass/sass';
+import 'codemirror/mode/yaml/yaml';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/htmlmixed/htmlmixed';
 import 'codemirror/addon/display/autorefresh';
-
-import 'codemirror/lib/codemirror.css';
 
 import Navigation from './components/navigation';
 import Error from './components/error';
@@ -20,9 +21,6 @@ import AppLink from './components/app-link';
 import router from './router';
 
 Vue.use(VueSocketio, io());
-Vue.use(VueSplit);
-Vue.component('vue-json-pretty', VueJsonPretty);
-
 Vue.use(VueCodemirror, {
   options: {
     lineNumbers: true,
@@ -31,7 +29,8 @@ Vue.use(VueCodemirror, {
     autoRefresh: true
   }
 });
-Vue.component('navigation', Navigation);
+Vue.component('split-pane', VueSplit);
+Vue.component('vue-json-pretty', VueJsonPretty);
 Vue.component('app-link', AppLink);
 Vue.component('error', Error);
 
@@ -40,6 +39,9 @@ window.app = new Vue({
   data: {
     error: null,
     loading: false
+  },
+  components: {
+    navigation: Navigation
   },
   router,
   sockets: {
@@ -61,6 +63,10 @@ window.app = new Vue({
       if (err.response) return;
       this.error = err;
     });
+    /*
+     * Capture clicks in outside of Vue code and determine
+     * whether to re-route them via vue-router.
+     */
     window.addEventListener('click', event => {
       const { target } = event;
       if (target && target.matches("a:not([href*='://'])") && target.href) {

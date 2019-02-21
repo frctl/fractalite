@@ -4,20 +4,12 @@ $preview-resizer-width: 10px;
   display: flex;
 
   &__wrapper {
-    width: calc(100% - #{$preview-resizer-width});
     height: 100%;
     position: relative;
   }
 
-  &__resizer {
-    width: $preview-resizer-width;
-    height: 100%;
-    background-color: #eee;
-  }
-
-  &__resizer:hover {
-    background-color: #ddd;
-    cursor: ew-resize;
+  &__spacer {
+    background: #f7f8f9;
   }
 
   &__window {

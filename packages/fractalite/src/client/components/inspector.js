@@ -3,8 +3,6 @@
 import axios from 'axios';
 import Preview from './preview';
 
-// Const supportsSrcdoc = Boolean('srcdoc' in document.createElement('iframe'));
-
 export default {
   template: '#inspector',
   props: ['componentName', 'scenarioName'],
@@ -13,9 +11,6 @@ export default {
     async updated() {
       const previewSrc = this.preview;
       await this.load();
-      // If (supportsSrcdoc && previewSrc === this.preview) {
-      // this.$refs.preview.reload(); // Refresh iframe in case assets have changed
-      // }
     },
     refresh() {
       this.$refs.preview.reload();
@@ -39,7 +34,6 @@ export default {
           if (!this.scenarioName) {
             const response = await axios.get(`/api/components/${this.componentName}.json`);
             const component = response.data;
-            console.log(component);
             const scenario = component.scenarios[0];
             this.$router.push(`/inspect/${component.name}/${scenario.name}`);
             return;
