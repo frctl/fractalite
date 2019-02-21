@@ -18,18 +18,15 @@ module.exports = function(opts = {}) {
     app.addInspectorPanel({
       name: 'html',
       label: opts.label || 'HTML',
-      template: html`
-        <codemirror
-          :value="panel.props.html.join('\\n\\n')"
-          :options="{ mode: 'htmlmixed' }"
-        />
+      renderServer: false,
+      renderClient: true,
+      template: `
+        <codemirror :value="panel.props.html.join('\\n\\n')" :options="{ mode: 'htmlmixed' }" />
       `,
       async props(state) {
         const { scenario, component } = state;
-
         let items = await renderer.renderAllToStaticMarkup(component, scenario.preview.props);
         items = items.map(item => (opts.prettify ? beautify.html(item, opts.prettify) : item));
-
         return { html: items };
       }
     });

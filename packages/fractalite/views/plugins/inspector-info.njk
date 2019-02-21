@@ -1,0 +1,36 @@
+<div class="{{ panel.props.panel.props.className }}">
+  <div class="{{ panel.props.className }}__header">
+    <h2 class="{{ panel.props.className }}__title">{{ component.label }}</h2>
+  </div>
+  <div class="{{ panel.props.className }}__content fr-prose">
+    <h4>Scenarios:</h4>
+    <div class="fr-proptable {{ panel.props.className }}__proptable">
+      {% for scene in component.scenarios %}
+      <div class="fr-proptable__row">
+        <div class="fr-proptable__cell">
+          <a href="{{ scene.url }}"> {% if scenario.name == scene.name %}<strong>{{ scene.label }}</strong>{% else %}{{ scene.label }}{% endif %} </a>
+        </div>
+        <div class="fr-proptable__cell fr-proptable__cell--fit">
+          <a href="{{ scene.previewUrl }}" target="_blank">Preview</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <h4>Files:</h4>
+    <div class="fr-proptable {{ panel.props.className }}__proptable">
+      {% for file in component.files %}
+      <div class="fr-proptable__row">
+        <div class="fr-proptable__cell">
+          {{ file.relative }}
+        </div>
+        <div class="fr-proptable__cell fr-proptable__cell--fit">
+          {{ file.size }}
+        </div>
+        <div class="fr-proptable__cell fr-proptable__cell--fit">
+          <a href="{{ file.url }}" target="_blank">View</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

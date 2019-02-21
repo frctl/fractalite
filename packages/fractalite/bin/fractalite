@@ -37,11 +37,12 @@ const args = mri(process.argv.slice(2));
       // TODO: run interactive config creator?
       loaded = { config: {} };
       logger.warn(`Config file not found. Continuing without config.`);
+    } else {
+      throw err;
     }
   }
 
   try {
-
     const command = args._[0] || 'start';
     const { config } = loaded;
 

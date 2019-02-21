@@ -17,7 +17,9 @@
           :preview="preview"
           :component="component"
           :panel="panel"
+          v-if="panel.renderClient"
         />
+        <div v-html="panel.template" v-else></div>
       </div>
     </div>
   </div>

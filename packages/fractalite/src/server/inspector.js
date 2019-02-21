@@ -1,5 +1,5 @@
-const { orderBy } = require('lodash');
-const { resolveValue, mapValuesAsync } = require('@frctl/fractalite-support/utils');
+const { orderBy, merge, isString } = require('lodash');
+const { titlize, resolveValue, mapValuesAsync } = require('@frctl/fractalite-support/utils');
 const { getScenario, getComponent } = require('@frctl/fractalite-core/helpers');
 const { map } = require('asyncro');
 
@@ -11,16 +11,42 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       if (typeof panel.name !== 'string') {
         throw new TypeError(`Inspector panels must specify a .name property`);
       }
-      const position = panels.length + 1;
-      const noRender = panel.render === false;
-      const props = panel.props || {};
 
-      if (!noRender) {
-        const tpl = panel.template;
-        panel.template = state => app.utils.renderPage(resolveValue(tpl), { ...state, ...props }, { template: true });
+      const panelDefaults = {
+        label: titlize(panel.name),
+        position: panels.length + 1,
+        renderServer: true,
+        renderClient: false,
+        props: {},
+        template: ''
+      };
+
+      panel = merge({}, panelDefaults, panel);
+
+      if (isString(panel.templateFile)) {
+        panel.template = async () => {
+          const tpl = await app.views.getTemplateAsync(panel.templateFile);
+          return tpl.tmplStr;
+        };
       }
 
-      panels.push({ position, ...panel });
+      if (panel.renderServer) {
+        const tpl = panel.template;
+        panel.template = async ctx => {
+          const tplString = await resolveValue(tpl, ctx);
+          return app.utils.renderPage(tplString, { ...ctx, panel }, { template: true });
+        };
+      }
+
+      if (isString(panel.css)) {
+        app.addCSS(panel.css);
+      }
+
+      if (isString(panel.js)) {
+        app.addJS(panel.js);
+      }
+
+      panels.push(panel);
       return app;
     },
 

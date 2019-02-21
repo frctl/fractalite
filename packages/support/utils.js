@@ -121,7 +121,7 @@ const utils = {
   },
 
   resolveValue(value, ctx) {
-    return _.isFunction(value) ? value(ctx) : value;
+    return Promise.resolve(_.isFunction(value) ? value(ctx) : value);
   },
 
   async mapValuesAsync(obj, asyncFn) {

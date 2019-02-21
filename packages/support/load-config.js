@@ -13,7 +13,7 @@ module.exports = async function(opts = {}) {
     configFile = await configFinder.search();
   }
 
-  if (configFile === null) {
+  if (!configFile) {
     const error = new Error('Config file not found.');
     error.type = 'CONFIG_NOT_FOUND';
     throw error;
