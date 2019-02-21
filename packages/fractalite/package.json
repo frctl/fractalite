@@ -37,6 +37,7 @@
     "vue-socket.io-extended": "^3.2.1"
   },
   "scripts": {
+    "prepublish": "npm run build",
     "build": "parcel build ./assets/app.js ./assets/reload.js --no-source-maps",
     "dev": "parcel watch ./assets/app.js ./assets/reload.js --no-source-maps"
   },
