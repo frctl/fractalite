@@ -28,7 +28,7 @@ A prototype to help explore future development ideas for [Fractal](https://fract
 
 ## Demo
 
-The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the [Nunjucks adapter](packages/adapter-nunjucks) and the [Asset Bundler](packages/plugin-assets-bundler) plugin.
+The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the [Nunjucks adapter](packages/adapter-nunjucks) alongside the [Asset Bundler](packages/plugin-assets-bundler) and [Notes](packages/plugin-notes) plugins.
 
 > The source code for the Nunjucks demo contains commented examples of some of the main features of this prototype and is worth browsing in conjunction with the web UI.
 
@@ -493,7 +493,7 @@ module.exports = {
   // ...  
   plugins: [
     require('@frctl/fractalite-plugin-notes')({
-      notesFile: 'notes.md' // optional, only if notes should be read from files 
+      notesFile: 'notes.md' // optional, only if notes should be read from files
     })
   ]
 };
