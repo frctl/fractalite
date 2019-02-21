@@ -13,10 +13,11 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       }
       const position = panels.length + 1;
       const noRender = panel.render === false;
+      const props = panel.props || {};
 
       if (!noRender) {
         const tpl = panel.template;
-        panel.template = state => app.utils.renderPage(resolveValue(tpl), state, { template: true });
+        panel.template = state => app.utils.renderPage(resolveValue(tpl), { ...state, ...props }, { template: true });
       }
 
       panels.push({ position, ...panel });
