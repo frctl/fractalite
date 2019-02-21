@@ -2,6 +2,8 @@
 
 A prototype to help explore development ideas for future [Fractal](https://fractal.build) versions.
 
+[Demo](#demo) | [Features & Status](#features--status) | [Usage](#usage)
+
 ## Demo
 
 The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the [Nunjucks adapter](packages/adapter-nunjucks) alongside the [Asset Bundler](packages/plugin-assets-bundler) and [Notes](packages/plugin-notes) plugins.
@@ -9,6 +11,8 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 > The source code for the Nunjucks demo contains commented examples of some of the main features of this prototype and is worth investigating in conjunction with the web UI.
 
 <img src="./assets/nunjucks-demo.png" alt="Screenshot of the Nunjucks demo" width="100%">
+
+<small><em>Demo colour scheme shamelessly ripped off from the excellent [Kanbasu](https://kanbasu.liip.ch/2/) component library :-)</em></small>
 
 ### Running the demo
 
@@ -48,7 +52,9 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 * [ ] More extensive feature demo
 * [ ] Any other suggestions...?
 
-## Usage / info
+## Usage
+
+Some basic documentation to help get across some of the key aspects of the Fractalite prototype.
 
 * [Installation](#installation)
 * [Project Configuration](#project-configuration)
