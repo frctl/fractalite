@@ -91,5 +91,15 @@ module.exports = {
         margin-bottom: 10px;
       }
     `
-  }
+  },
+
+  /*
+   * The notes property is used by the Notes plugin. Any text here will
+   * be rendered in a custom notes panel in the inspector.
+   */
+  notes: `
+    Some notes on the button component.
+    
+    These were added inline in the [button config file]({file:button/button.config.js})
+  `
 };

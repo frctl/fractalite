@@ -1,10 +1,37 @@
 const { defaultsDeep } = require('@frctl/fractalite-support/utils');
 const { rewriteUrls } = require('@frctl/fractalite-support/html');
-const { stripIndent } = require('common-tags');
+const stripIndent = require('strip-indent');
 
 module.exports = function(opts = {}) {
-  return function inspectorOverviewPlugin(app, compiler) {
-    if (opts === false) return;
+  return function inspectorNotesPlugin(app, compiler) {
+    if (opts.notesFile) {
+      /*
+       * Compiler middleware to read notes content from notes files
+       */
+      compiler.use(async components => {
+        const filename = typeof opts.notesFile === 'string' ? opts.notesFile : 'notes.md';
+        await Promise.all(
+          components.map(async component => {
+            const notesFile = component.files.find(file => file.basename === filename);
+            if (notesFile) {
+              component.notes = await notesFile.getContents();
+            }
+          })
+        );
+      });
+    }
+
+    /*
+     * Compiler middleware to extract notes from config.
+     * Will override notes from the notesFile if supplied.
+     */
+    compiler.use(components => {
+      components.forEach(component => {
+        if (component.config.notes) {
+          component.notes = stripIndent(component.config.notes);
+        }
+      });
+    });
 
     app.addInspectorPanel({
       name: 'notes',
@@ -15,6 +42,10 @@ module.exports = function(opts = {}) {
         let notes;
 
         if (typeof component.notes === 'string') {
+          /*
+           * Notes are parsed in the same way as pages and can contain frontmatter
+           * and reference tags.
+           */
           const { content, data } = app.utils.parseFrontMatter(component.notes);
 
           const renderOpts = defaultsDeep(data, {
@@ -40,16 +71,10 @@ module.exports = function(opts = {}) {
       }
     });
 
-    app.addCSS(stripIndent`
+    app.addCSS(`
       .inspector-panel-notes {
         padding: 12px;
       }
     `);
-
-    compiler.use(components => {
-      components.forEach(component => {
-        component.notes = component.notes || component.config.notes;
-      });
-    });
   };
 };

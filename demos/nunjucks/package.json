@@ -9,6 +9,7 @@
     "@frctl/fractalite": "^0.0.0",
     "@frctl/fractalite-adapter-nunjucks": "^0.0.0",
     "@frctl/fractalite-plugin-assets-bundler": "^0.0.0",
+    "@frctl/fractalite-plugin-notes": "^0.0.0",
     "sass": "^1.17.1"
   }
 }

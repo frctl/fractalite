@@ -1,0 +1,9 @@
+{
+  "name": "@frctl/fractalite-plugin-notes",
+  "version": "0.0.0",
+  "dependencies": {
+    "@frctl/fractalite-core": "^0.0.0",
+    "@frctl/fractalite-support": "^0.0.0",
+    "strip-indent": "^2.0.0"
+  }
+}

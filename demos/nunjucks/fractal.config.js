@@ -103,20 +103,12 @@ module.exports = {
     }),
 
     /*
-     * Example inline-plugin that adds compiler middleware
-     * to read notes from notes.md files.
+     * The notes plugin allows component notes to be
+     * specified in component config files and/or (optionally)
+     * read from a markdown file in the component directory.
      */
-    function(app, compiler) {
-      compiler.use(async components => {
-        await Promise.all(
-          components.map(async component => {
-            const notesfile = component.files.find(file => file.basename.toLowerCase() === 'notes.md');
-            if (notesfile) {
-              component.notes = await notesfile.getContents();
-            }
-          })
-        );
-      });
-    }
+    require('@frctl/fractalite-plugin-notes')({
+      notesFile: 'notes.md'
+    })
   ]
 };
