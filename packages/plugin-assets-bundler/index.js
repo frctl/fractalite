@@ -1,5 +1,6 @@
 const { dirname, basename, relative } = require('path');
 const Bundler = require('parcel-bundler');
+const prettier = require('prettier');
 const { outputFile } = require('fs-extra');
 
 module.exports = function(opts = {}) {
@@ -44,7 +45,7 @@ module.exports = function(opts = {}) {
         }
         try {
           const entry = await opts.entryBuilder(state, { dir: entryDir });
-          await outputFile(opts.entryFile, entry);
+          await outputFile(opts.entryFile, prettier.format(entry));
         } catch (err) {
           app.emit('error', err);
         }
