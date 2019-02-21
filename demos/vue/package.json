@@ -2,8 +2,8 @@
   "name": "@frctl/fractalite-demo-vue",
   "private": true,
   "scripts": {
-    "start": "fractalite start --config fractal.config.js --port 3031",
-    "build": "fractalite build --config fractal.config.js"
+    "start": "fractalite start --port 3031",
+    "build": "fractalite build"
   },
   "devDependencies": {
     "@frctl/fractalite": "^0.0.0",

@@ -1,6 +1,6 @@
 # Fractalite
 
-A prototype to help explore future development ideas for [Fractal](https://fractal.build).
+A prototype to help explore development ideas for future [Fractal](https://fractal.build) versions.
 
 ### Features & status
 
@@ -8,7 +8,7 @@ A prototype to help explore future development ideas for [Fractal](https://fract
 * Plugin system for compiler and UI customisation
 * Adapter-based component rendering
 * Dynamic page builder
-* Asset bundler plugin
+* Asset bundling via plugin
 * Hybrid client/server side-rendered UI (using [Vue](https://vuejs.org))
 
 #### Still missing/in progress...
@@ -16,6 +16,7 @@ A prototype to help explore future development ideas for [Fractal](https://fract
 * [ ] Community feedback and input! :-)
 * [ ] Static export builder
 * [ ] Proper UI design & implementation
+  * [ ] Responsive UI
   * [ ] Loading states
   * [ ] Component search
   * [ ] Resizable panes
@@ -46,6 +47,7 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 
 ## Usage / info
 
+* [Installation](#installation)
 * [Project Configuration](#project-configuration)
 * [Components](#components)
   * [Scenarios](#scenarios)
@@ -64,6 +66,29 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
   * [Compiler](#compiler)
   * [Application](#application)
   * [Renderer](#renderer)
+
+## Installation
+
+**Note: Fractalite is not currently published to NPM.** The following steps are for information purposes only until published.
+
+Install via NPM:
+
+```bash
+npm i @frctl/fractalite --save-dev
+```
+
+Add the following NPM scripts to the project `package.json` file:
+
+```js
+{
+  "scripts": {
+    "start": "fractalite start --port 3333",
+    "build": "fractalite build"
+  }
+}
+```
+
+You can now start the Fractalite app by running the `npm start` command from within the project directory.
 
 ## Project Configuration
 

@@ -2,8 +2,8 @@
   "name": "@frctl/fractalite-demo-nunjucks",
   "private": true,
   "scripts": {
-    "start": "fractalite start --config fractal.config.js --port 3030",
-    "build": "fractalite build --config fractal.config.js"
+    "start": "fractalite start --port 3030",
+    "build": "fractalite build"
   },
   "devDependencies": {
     "@frctl/fractalite": "^0.0.0",
