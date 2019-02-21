@@ -212,7 +212,7 @@ Each project can specify a directory of pages to be displayed in the app.
 
 Pages can either be Markdown documents (with a `.md` extension) or Nunjucks templates (with a `.njk` extension) and can define Jekyll-style [front matter](https://jekyllrb.com/docs/front-matter/) blocks for configuration options.
 
-### Usage {#pages-usage}
+<h3 id="pages-usage">Usage</h3>
 
 Add the absolute path to the pages directory to the project config file:
 
@@ -235,7 +235,7 @@ Then create the pages:
 
 > If an `index` file (either with `.md` or `.njk` extension) is added in the root of the pages directory then this will override the default application welcome page.
 
-### Reference tags {#pages-reference-tags}
+<h3 id="pages-reference-tags">Reference tags</h3>
 
 Reference tags can be used in pages to make linking to other pages, component previews and source files both easier and less fragile. They also allow basic access to properties of page and component objects.
 
@@ -264,7 +264,7 @@ Some example reference tags:
 {page:about:title}
 ```
 
-### Nunjucks templates {#pages-nunjucks-templates}
+<h3 id="pages-nunjucks-templates">Nunjucks templates</h3>
 
 Nunjucks templates (pages with a `.njk` extension) have access to the current compiler state properties as well as any data provided in the front matter block:
 
@@ -278,7 +278,7 @@ Nunjucks templates (pages with a `.njk` extension) have access to the current co
 </ul>
 ```
 
-### Front Matter {#pages-frontmatter} 
+<h3 id="pages-frontmatter">Front Matter</h3>
 
 The following page configuration options are available and can be set in a front matter block at the top of pages that require it.
 
