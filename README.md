@@ -41,7 +41,7 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 3. `npm run demo` - bootstrap packages together (may take some time on first run!) and start the default demo server
 4. Point a browser at http://localhost:3030 to view the Fractal UI.
 
-### Other demos
+#### Other demos
 
 * [Vue demo](demos/vue) - Basic proof-of-concept, client-side rendered Vue integration. `npm run demo:vue`
 
