@@ -2,7 +2,7 @@
 
 A prototype to help explore future development ideas for [Fractal](https://fractal.build).
 
-### Features
+### Features & status
 
 * Middleware-based components parser/compiler
 * Plugin system for compiler and UI customisation
@@ -11,14 +11,20 @@ A prototype to help explore future development ideas for [Fractal](https://fract
 * Asset bundler plugin
 * Hybrid client/server side-rendered UI (using [Vue](https://vuejs.org))
 
-Still missing/in progress...
+#### Still missing/in progress...
 
 * [ ] Community feedback and input! :-)
+* [ ] Static export builder
 * [ ] Proper UI design & implementation
+  * [ ] Component search
+  * [ ] Resizable panes
+  * [ ] Collapsible nav
 * [ ] Tests
 * [ ] Documentation
 * [ ] Additional template engine adapters
+* [ ] More UI customisation hooks?
 * [ ] More extensive feature demo
+* [ ] Any other suggestions...?
 
 ## Demo
 
@@ -30,7 +36,7 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 
 1. Download or clone this repo
 2. `npm install` - install project-level dependencies
-3. `npm run demo` - bootstrap packages together and start the default demo server
+3. `npm run demo` - bootstrap packages together (may take some time on first run!) and start the default demo server
 4. Point a browser at http://localhost:3030 to view the Fractal UI.
 
 ### Other demos
