@@ -14,7 +14,9 @@ module.exports = async function(opts = {}) {
   }
 
   if (configFile === null) {
-    throw new Error('Config file not found.');
+    const error = new Error('Config file not found.');
+    error.type = 'CONFIG_NOT_FOUND';
+    throw error;
   }
 
   return {

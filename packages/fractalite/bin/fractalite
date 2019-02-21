@@ -4,7 +4,7 @@ const { relative, resolve, dirname } = require('path');
 const mri = require('mri');
 const { cyan, dim, red } = require('kleur');
 const { Signale } = require('signale');
-const { stripIndent } = require('common-tags');
+const { stripIndent, source } = require('common-tags');
 const { loadConfig } = require('@frctl/fractalite-support');
 const ip = require('ip');
 const styleguide = require('../.');
@@ -23,14 +23,24 @@ const cwd = process.cwd();
 const args = mri(process.argv.slice(2));
 
 (async () => {
+  let loaded;
+
   try {
-    let loaded = await loadConfig({ cwd, path: args.config, name: 'fractal' });
+    loaded = await loadConfig({ cwd, path: args.config, name: 'fractal' });
     const rootPath = dirname(loaded.path);
     if (cwd !== rootPath) {
       process.chdir(rootPath);
     }
-
     logger.info(`Using config file ${cyan(`./${relative(cwd, loaded.path)}`)}`);
+  } catch(err) {
+    if (err.type === 'CONFIG_NOT_FOUND') {
+      // TODO: run interactive config creator?
+      loaded = { config: {} };
+      logger.warn(`Config file not found. Continuing without config.`);
+    }
+  }
+
+  try {
 
     const command = args._[0] || 'start';
     const { config } = loaded;

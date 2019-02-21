@@ -1,5 +1,5 @@
 const { dirname } = require('path');
-const { isFunction, isPlainObject, flatMap, uniqBy, orderBy } = require('lodash');
+const { isFunction, isPlainObject, flatMap, uniqBy, orderBy, compact } = require('lodash');
 const { titlize } = require('@frctl/fractalite-support/utils');
 const { isComponent, isFile } = require('@frctl/fractalite-core/helpers');
 
@@ -26,10 +26,12 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 function defaultGenerator({ components, pages }, toTree) {
   return [
     toTree(pages),
-    {
-      label: 'Components',
-      children: toTree(components)
-    }
+    components.length
+      ? {
+          label: 'Components',
+          children: toTree(components)
+        }
+      : null
   ];
 }
 
@@ -39,7 +41,7 @@ function buildNav(items, entities, app) {
 }
 
 function expandValues(items, app) {
-  return flatMap(items, item => {
+  return flatMap(compact(items), item => {
     if (Array.isArray(item)) {
       return expandValues(item, app);
     }
@@ -93,10 +95,12 @@ function toTree(items, pathProp) {
   });
   nodes = orderBy(uniqBy(nodes, 'path'), ['position'], ['asc']);
 
-  return nodes.filter(node => node.depth === 1).map(node => {
-    node.children = getChildNodes(node, nodes);
-    return node;
-  });
+  return nodes
+    .filter(node => node.depth === 1)
+    .map(node => {
+      node.children = getChildNodes(node, nodes);
+      return node;
+    });
 }
 
 function getChildNodes(parent, nodes) {
