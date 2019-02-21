@@ -16,6 +16,7 @@ A prototype to help explore future development ideas for [Fractal](https://fract
 * [ ] Community feedback and input! :-)
 * [ ] Static export builder
 * [ ] Proper UI design & implementation
+  * [ ] Loading states
   * [ ] Component search
   * [ ] Resizable panes
   * [ ] Collapsible nav
