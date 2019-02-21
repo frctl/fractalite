@@ -45,7 +45,7 @@ module.exports = function(opts = {}) {
         }
         try {
           const entry = await opts.entryBuilder(state, { dir: entryDir });
-          await outputFile(opts.entryFile, prettier.format(entry));
+          await outputFile(opts.entryFile, prettier.format(entry, { parser: 'babel' }));
         } catch (err) {
           app.emit('error', err);
         }
