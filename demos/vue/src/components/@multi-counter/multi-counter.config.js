@@ -10,9 +10,6 @@ module.exports = {
           },
           {
             label: 'B'
-          },
-          {
-            label: 'C'
           }
         ]
       }
