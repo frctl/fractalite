@@ -11,10 +11,12 @@
   {{ css | safe }}
   </style>
   {% endif %}
-  <title>{{ meta.title | default('Preview') }}</title>
+  <title>{% block title %}{{ meta.title | default('Preview') }}{% endblock %}</title>
 </head>
 <body>
+  {% block content %}
   {{ content | safe }}
+  {% endblock %}
   {% for url in scripts %}
   <script src="{{ url }}"></script>
   {% endfor %}
