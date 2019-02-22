@@ -6,9 +6,9 @@
   {% for url in stylesheets %}
   <link rel="stylesheet" href="{{ url }}">
   {% endfor %}
-  {% if css.length %}
+  {% if css %}
   <style>
-  {{ css | join('\n') | safe }}
+  {{ css | safe }}
   </style>
   {% endif %}
   <title>{{ meta.title | default('Preview') }}</title>
@@ -18,9 +18,9 @@
   {% for url in scripts %}
   <script src="{{ url }}"></script>
   {% endfor %}
-  {% if js.length %}
+  {% if js %}
   <script>
-  {{ js | join('\n') | safe }}
+  {{ js | safe }}
   </script>
   {% endif %}
 </body>

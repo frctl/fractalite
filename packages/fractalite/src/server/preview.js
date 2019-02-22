@@ -1,20 +1,33 @@
-const { extname, isAbsolute, relative } = require('path');
-const { isFunction, pick, mapValues, cloneDeep } = require('lodash');
+const { extname, isAbsolute, relative, basename } = require('path');
+const { isPlainObject, isFunction, isString, pick, mapValues, cloneDeep, get } = require('lodash');
 const flatten = require('flat');
 const { rewriteUrls } = require('@frctl/fractalite-support/html');
-const { defaultsDeep, toArray, processStack } = require('@frctl/fractalite-support/utils');
+const { defaultsDeep, toArray, normalizePath } = require('@frctl/fractalite-support/utils');
 const { getScenario, getScenarioOrDefault, getComponent } = require('@frctl/fractalite-core/helpers');
 const { createRenderer } = require('@frctl/fractalite-core');
 const { map } = require('asyncro');
 
+const defaultOpts = {
+  meta: {},
+  scripts: [],
+  stylesheets: [],
+  js: [],
+  css: [],
+  wrap: null,
+  wrapEach: null
+};
+
 module.exports = function(app, compiler, renderer, opts = {}) {
   const previewAssets = { css: [], js: [], scripts: [], stylesheets: [] };
+  const previewWrappers = { each: [], all: [] };
   const hooks = {
     beforeScenarioRender: [],
     afterScenarioRender: [],
     beforePreviewRender: [],
     afterPreviewRender: []
   };
+
+  opts = defaultsDeep(opts, defaultOpts);
 
   app.extend({
     addPreviewStylesheet(url, path) {
@@ -50,9 +63,46 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     afterPreviewRender(fn) {
       hooks.afterPreviewRender.push(fn);
       return app;
+    },
+    addPreviewWrapper(wrapper, each = false) {
+      if (each) {
+        previewWrappers.each.push(wrapper);
+      } else {
+        previewWrappers.all.push(wrapper);
+      }
     }
   });
 
+  /*
+   * Serve all assts specified in the preview config opts
+   *
+   * Assets can be specified as:
+   * - A full URL: `http://example.com/styles.css`
+   * - A filesystem path of a file: `./assets/styles.css` or `/Users/mark/blah/assets/styles.css`
+   * - an object with `path` and `url` properties: { path: `./assets/styles.css`, url: '/my-app/styles.css' }
+   */
+  opts.stylesheets.forEach(stylesheet => {
+    const { path, url } = resolveAsset(stylesheet);
+    app.addPreviewStylesheet(url, path);
+  });
+  opts.scripts.forEach(script => {
+    const { path, url } = resolveAsset(script);
+    app.addPreviewScript(url, path);
+  });
+
+  if (opts.wrap) {
+    app.addPreviewWrapper(opts.wrap, false);
+  }
+  if (opts.wrapEach) {
+    app.addPreviewWrapper(opts.wrapEach, true);
+  }
+
+  /*
+   * Render a scenario preview for a component.
+   *
+   * Hooks allow for plugin-level customisation of
+   * the preview rendering process.
+   */
   app.utils.renderPreview = async (component, scenario, runtimeOpts = {}) => {
     const state = compiler.getState();
     const hookCtx = { ...state, component, scenario };
@@ -66,39 +116,61 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     // allow hooks to manipulate the rendered output
     items = await applyHooks('afterScenarioRender', items, hookCtx);
 
-    const componentOpts = component.preview || {};
-    const mergedOpts = defaultsDeep(runtimeOpts, componentOpts, pick(opts, ['meta', 'wrap', 'wrapEach']));
+    const componentOpts = component.preview;
+    const meta = defaultsDeep(componentOpts.meta, opts.meta);
 
-    // Wrap rendered preview items
-    const { wrap, wrapEach } = mergedOpts;
+    /*
+     * Apply preview wrappers.
+     *
+     * Each scenario instance is wrapped first, with wrappers defined on
+     * the component being applied first and global wrappers applied after.
+     *
+     * Then the scenario instances are joined into one HTML fragment and
+     * the outer `wrap` wrappers are applied, component first and then global.
+     */
+    const wrapAll = [...previewWrappers.all, componentOpts.wrap];
+    const wrapEach = [...previewWrappers.each, componentOpts.wrapEach];
     const wrapCtx = { component, scenario };
-    let html = isFunction(wrapEach) ? items.map((...args) => wrapEach(...args, wrapCtx)) : items;
-    html = html.join('\n');
-    html = isFunction(wrap) ? wrap(html, wrapCtx) : html;
 
-    const resolvePaths = path => {
-      if (path.startsWith('./')) {
-        const file = component.files.find(file => `./${file.relative}` === path);
-        return file ? file.url : path;
+    for (const wrapper of wrapEach.reverse()) {
+      if (isFunction(wrapper)) {
+        items = items.map((...args) => wrapper(...args, wrapCtx));
       }
-      return path;
-    };
-
-    // Resolve the stylesheets and scripts for use in the preview
-    const stylesheets = processStack(previewAssets.stylesheets, opts.stylesheets, componentOpts.stylesheets, resolvePaths);
-    const scripts = processStack(previewAssets.scripts, opts.scripts, componentOpts.scripts, resolvePaths);
-
-    if (mergedOpts.reload) {
-      scripts.push(app.resourceUrl('app:reload.js'));
     }
 
-    mergedOpts.js = previewAssets.js.concat(mergedOpts.js);
-    mergedOpts.css = previewAssets.css.concat(mergedOpts.css);
+    let html = items.join('\n');
+
+    for (const wrapper of wrapAll.reverse()) {
+      if (isFunction(wrapper)) {
+        html = wrapper(html, wrapCtx);
+      }
+    }
+
+    /*
+     * Resolve stylesheets, scripts and 'inline' CSS/JS
+     *
+     * Components can only reference local scripts/stylesheets via
+     * relative paths, use a resourceUrl reference to link to a public
+     * directory file or point to an external URL. Linking to arbitary
+     * files by supplying a path (as in the global preview options) is not supported.
+     */
+    const css = app.utils.prettify(previewAssets.css.concat(componentOpts.css).join('\n'), 'css');
+    const js = app.utils.prettify(previewAssets.js.concat(componentOpts.js).join('\n'), 'js');
+
+    const componentStylesheets = componentOpts.stylesheets.map(path => resolveComponentAssetUrl(path, component));
+    const componentScripts = componentOpts.scripts.map(path => resolveComponentAssetUrl(path, component));
+
+    const stylesheets = [...previewAssets.stylesheets, ...componentStylesheets];
+    const scripts = [...previewAssets.scripts, ...componentScripts];
+
+    if (runtimeOpts.reload) {
+      scripts.push(app.resourceUrl('app:reload.js'));
+    }
 
     // allow hooks to manipulate the preview object
     html = renderer.getPreviewString(html);
 
-    let preview = { ...mergedOpts, scripts, stylesheets, content: html };
+    let preview = { js, css, meta, scripts, stylesheets, content: html };
     preview = await applyHooks('beforePreviewRender', preview, hookCtx);
 
     const output = await app.views.renderAsync('preview', preview);
@@ -164,14 +236,11 @@ module.exports = function(app, compiler, renderer, opts = {}) {
    */
   compiler.use(components => {
     components.forEach(component => {
-      component.preview = defaultsDeep(component.config.preview || {}, {
+      const previewConfig = component.config.preview || {};
+      component.preview = defaultsDeep(previewConfig, defaultOpts, {
         meta: {
           title: `${component.label} | Preview`
-        },
-        scripts: [],
-        stylesheets: [],
-        js: [],
-        css: []
+        }
       });
       component.preview.js = toArray(component.preview.js);
       component.preview.css = toArray(component.preview.css);
@@ -227,5 +296,50 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       target = await hook(target, ctx); // TODO: validate return target
     }
     return target;
+  }
+
+  function resolveAsset(asset) {
+    let path, url;
+    if (isString(asset)) {
+      if (asset.startsWith('//') || asset.includes('://')) {
+        url = asset; // full URL, use as-is
+      } else if (asset.includes(':')) {
+        // reference a file in a static directory
+        url = app.resourceUrl(asset);
+      } else {
+        // assume it's a path
+        path = asset;
+      }
+    } else if (isPlainObject(asset)) {
+      path = asset.path;
+      url = asset.url;
+      if (!path && !url) {
+        throw new Error(`Cannot add asset - either a .url or a .path property must be defined`);
+      }
+    } else {
+      throw new Error(`Cannot add asset - either a string or an object description is required`);
+    }
+    path = path ? normalizePath(path) : path;
+    if (!url) {
+      url = `/${basename(path)}`;
+    }
+    return { path, url };
+  }
+
+  function resolveComponentAsset(path, component) {
+    if (isString(path)) {
+      if (path.startsWith('./')) {
+        const file = component.files.find(file => `./${file.relative}` === path);
+        if (!file) {
+          throw new Error(`Preview asset '${path}' not found`);
+        }
+        return file.url;
+      } else if (path.startsWith('//') || path.includes('://')) {
+        return path;
+      } else if (path.includes(':')) {
+        return app.resourceUrl(path);
+      }
+    }
+    throw new Error(`Invalid component preview asset path`);
   }
 };
