@@ -31,8 +31,10 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 * Middleware-based components parser/compiler
 * Plugin system for compiler and UI customisation
 * Adapter-based component rendering
+* Completely customisable nav generation
+* Easy asset referencing within components
 * Dynamic page builder
-* Asset bundling via plugin
+* Zero-config asset bundling (via plugin)
 * Hybrid client/server side-rendered UI (using [Vue](https://vuejs.org))
 
 #### Still missing/in progress...
