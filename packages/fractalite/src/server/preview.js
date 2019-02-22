@@ -136,7 +136,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 
     for (const wrapper of wrapEach.reverse()) {
       if (isFunction(wrapper)) {
-        items = items.map((...args) => wrapper(...args, wrapCtx));
+        items = items.map((item, index, items) => wrapper(item, { ...wrapCtx, index, items }));
       }
     }
 
