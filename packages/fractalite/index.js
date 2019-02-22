@@ -31,10 +31,16 @@ module.exports = function({ components, adapter, mode, ...config }) {
   app.addScript('app:app.js');
 
   app.addRoute('overview', '/', (ctx, next) => ctx.render('app'));
+  app.addBuilder((state, { request }) => request({ name: 'overview' }));
 
   app.addRoute('api.component', '/api/components/:component.json', (ctx, next) => {
     ctx.body = ctx.component;
     return next();
+  });
+  app.addBuilder((state, { request }) => {
+    state.components.forEach(component => {
+      request({ name: 'api.component', params: { component } });
+    });
   });
 
   /*

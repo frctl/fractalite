@@ -138,9 +138,9 @@ module.exports = function(compiler, opts = {}) {
     ctx.throw(404, 'Source file not found');
   });
 
-  // App.addBuildStep('src', ({ copyFile, api }) => {
-  //   app.api.files.forEach(file => copyFile(file.path, app.url('src', { file })));
-  // });
+  app.addBuilder((state, { copy }) => {
+    state.files.forEach(file => copy(file.path, { name: 'src', params: { file } }));
+  });
 
   /*
    * Compiler middleware to add url properties to files and assets
@@ -163,6 +163,9 @@ module.exports = function(compiler, opts = {}) {
     ctx.type = 'application/javascript';
     ctx.body = prettier.format(app.getJS(), { parser: 'babel' });
   });
+
+  app.addBuilder((state, { request }) => request({ name: 'app-css' }));
+  app.addBuilder((state, { request }) => request({ name: 'app-js' }));
 
   app.use((ctx, next) => {
     ctx.state.scripts = app.getScripts();

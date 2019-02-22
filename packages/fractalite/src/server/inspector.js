@@ -78,6 +78,14 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     return next();
   });
 
+  app.addBuilder((state, { request }) => {
+    state.components.forEach(component => {
+      component.scenarios.forEach(scenario => {
+        request({ name: 'api.inspect', params: { component, scenario: scenario.name } });
+      });
+    });
+  });
+
   app.addRoute('inspect', '/inspect/:component/:scenario?', (ctx, next) => ctx.render('app'));
 
   /*

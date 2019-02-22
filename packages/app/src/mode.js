@@ -17,6 +17,7 @@ module.exports = function(opts) {
       ext: '.html',
       clean: false,
       gitignore: false,
+      hostname: 'localhost',
       cache: true
     }
   ];

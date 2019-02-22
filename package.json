@@ -16,7 +16,9 @@
     "fractalite:dev": "cd packages/fractalite && npm run dev",
     "demo:vue": "npm run bootstrap && cd demos/vue && npm run start",
     "demo:nunjucks": "npm run bootstrap && cd demos/nunjucks && npm run start",
-    "demo": "npm run demo:nunjucks"
+    "demo:nunjucks:build": "npm run bootstrap && cd demos/nunjucks && npm run build",
+    "demo": "npm run demo:nunjucks",
+    "demo:build": "npm run demo:nunjucks:build"
   },
   "xo": {
     "extends": "@frctl/eslint-config-frctl",

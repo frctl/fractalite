@@ -31,7 +31,7 @@ module.exports = function(opts = {}) {
             const relPath = relative(source.path, file);
             return {
               path: file,
-              url: url(source.name, relPath)
+              url: url(`${source.name}:${relPath}`)
             };
           });
         })

@@ -41,8 +41,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
   };
 
   app.addRoute('api.page', '/api/pages/:path(.+).json', async (ctx, next) => {
-    const path = ctx.params.path === 'index' ? '/' : `/${ctx.params.path}`;
-    const page = find(pages, { url: path });
+    const page = find(pages, { indexPath: ctx.params.path });
     if (page) {
       const content = await app.utils.renderPage(
         await page.getContents(),
@@ -58,8 +57,14 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     return next();
   });
 
+  app.addBuilder((state, { request }) => {
+    state.pages.forEach(page => {
+      request({ name: 'api.page', params: { path: page.indexPath } });
+    });
+  });
+
   app.addRoute('page', ':path(.*)', async (ctx, next) => {
-    const page = find(pages, { url: ctx.params.path });
+    const page = find(pages, { urlPath: ctx.params.path });
     if (page) {
       await ctx.render('app');
     }
@@ -88,11 +93,6 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       app.emit('error', err);
     }
   });
-
-  // // app.addBuildStep('page', ({ requestRoute }) => {
-  // //   pages.forEach(page => requestRoute('page', { path: page.path }));
-  // // });
-  //
 
   async function getPages() {
     const files = await read(opts.src.paths, { ...opts.src.opts, onlyFiles: true });
@@ -130,7 +130,10 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 
     page.title = page.title || page.label;
     page.treePath = urlPath;
-    page.url = app.url('page', { path: '/' + urlPath });
+    page.urlPath = '/' + urlPath;
+    page.indexPath = (urlPath + (page.index ? '/index' : '')).replace(/^\//, '');
+
+    page.url = app.url('page', { path: page.urlPath });
 
     page.layout = typeof page.layout === 'boolean' ? page.layout : true;
 

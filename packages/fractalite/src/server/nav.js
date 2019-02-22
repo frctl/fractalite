@@ -16,6 +16,8 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     };
   });
 
+  app.addBuilder((state, { request }) => request({ name: 'api.navigation' }));
+
   compiler.use(components => {
     components.forEach(component => {
       component.position = component.config.position || 1000;

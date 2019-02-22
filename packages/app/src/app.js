@@ -1,5 +1,5 @@
 const { isAbsolute, relative } = require('path');
-const { assign, get, set, mapValues } = require('lodash');
+const { assign, get, set, mapValues, isPlainObject } = require('lodash');
 const getPort = require('get-port');
 const Koa = require('koa');
 const compress = require('koa-compress');
@@ -13,11 +13,15 @@ const { permalinkify, defaultsDeep, processStack } = require('@frctl/fractalite-
 const Router = require('./router');
 const Resources = require('./resources');
 const Views = require('./views');
+const createBuilder = require('./builder');
+const serveStatic = require('./serve');
 const getMode = require('./mode');
 
 module.exports = function(compiler, opts = {}) {
   const middleware = [];
   const initialisers = [];
+  const builders = [];
+  const builderCopyTasks = [];
   const ui = { js: [], scripts: [], css: [], stylesheets: [] };
 
   const mode = getMode(opts);
@@ -62,16 +66,47 @@ module.exports = function(compiler, opts = {}) {
     app.emit('initialised', state);
 
     const port = await getPort({ port: mode.port });
-    const server = await new Promise((resolve, reject) => {
+    let server = await new Promise((resolve, reject) => {
       const httpServer = koa.listen(port, err => (err ? reject(err) : resolve(httpServer)));
     });
 
     app.emit('started', server);
 
     if (app.mode === 'build') {
-      // TODO
+      const builder = createBuilder();
+
+      const staticFiles = await resources.list();
+
+      staticFiles.forEach(({ path, url }) =>
+        builder.addCopyTask({
+          from: path,
+          to: url
+        })
+      );
+
+      builderCopyTasks.forEach(builder.addCopyTask);
+
+      const copyTasks = [];
+      const requestTasks = [];
+      await map(builders, fn => fn(state, copyTasks, requestTasks));
+
+      copyTasks.forEach(builder.addCopyTask);
+      requestTasks.forEach(builder.addRequestTask);
+
+      app.emit('build.start');
+
+      const result = await builder.run(server, mode);
+
+      app.emit('build.end', result);
+
       server.close();
-      return;
+
+      if (mode.serve === true) {
+        server = await serveStatic(mode.dest, port);
+        app.emit('build.serving', server);
+      }
+
+      return server;
     }
 
     compiler.watch((err, ...results) => {
@@ -95,22 +130,43 @@ module.exports = function(compiler, opts = {}) {
 
   app.addRoute = (name, url, handler, builder) => {
     router.add({ name, url, handler });
-    // Web.addBuildStep(name, builder || (({ requestRoute }) => requestRoute(name)));
+    if (builder) {
+      app.addBuilder(builder);
+    }
     return app;
   };
 
-  app.addBuildStep = (...args) => {
-    // Web.addBuildStep(...args);
+  app.addBuilder = builder => {
+    builders.push((state, copyTasks = [], requestTasks = []) => {
+      const copy = (from, to) => {
+        if (isPlainObject(to)) {
+          to = app.url(to.name, to.params || {}, false);
+        }
+        copyTasks.push({ from, to });
+      };
+      const request = url => {
+        if (isPlainObject(url)) {
+          url = app.url(url.name, url.params || {}, false);
+        }
+        requestTasks.push({ from: url, to: app.permalink(url) });
+      };
+      return builder(state, { copy, request });
+    });
     return app;
   };
 
-  app.url = (name, params) => {
+  app.url = (name, params, permalink = true) => {
     const stringParams = mapValues(params, value => String(value));
-    return permalinkify(decodeURIComponent(router.url(name, stringParams)), mode);
+    const url = decodeURIComponent(router.url(name, stringParams));
+    return permalink ? permalinkify(url, mode) : url;
   };
 
   app.resourceUrl = path => {
     const url = decodeURIComponent(resources.url(path));
+    return permalinkify(url, mode);
+  };
+
+  app.permalink = url => {
     return permalinkify(url, mode);
   };
 
@@ -158,7 +214,7 @@ module.exports = function(compiler, opts = {}) {
   app.serveFile = (url, path) => {
     path = isAbsolute(path) ? relative(process.cwd(), path) : path;
     app.router.use(url, ctx => send(ctx, path, { root: process.cwd() }));
-    // TODO: Add url//path to builder copy tasks
+    builderCopyTasks.push({ from: path, to: url });
   };
 
   // UI-related helpers -----------------------------------

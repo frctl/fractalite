@@ -218,6 +218,14 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     });
   });
 
+  app.addBuilder((state, { request }) => {
+    state.components.forEach(component => {
+      component.scenarios.forEach(scenario => {
+        request({ name: 'preview', params: { component, scenario: scenario.name } });
+      });
+    });
+  });
+
   app.utils.addReferenceLookup('preview', (state, identifier) => {
     const [componentName, scenarioName] = identifier.split('/');
     const component = getComponent(state, componentName, true);
