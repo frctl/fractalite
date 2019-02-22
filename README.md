@@ -65,6 +65,9 @@ Preliminary documentation to help get across some of the key aspects of the Frac
   * [Scenarios](#scenarios)
   * [Configuration](#configuration)
   * [View templates](#view-templates)
+* [Previews]('#previews')
+  * [Adding CSS & JS to previews](#preview-css-js)
+  * [Customising preview markup](#preview-markup)
 * [Pages](#pages)
   * [Usage](#pages-usage)
   * [Reference tags](#pages-reference-tags)
@@ -258,7 +261,7 @@ Rendered component instances are wrapped in an HTML document for previewing.
 
 A typical project will need to be configured to inject the required styles and scripts into the preview to correctly display the component.
 
-### Adding CSS & JS to previews
+<h3 id="preview-css-js">Adding CSS & JS to previews</h3>
 
 > The [assets bundler plugin](#assets-bundler-plugin) automatically injects bundled assets into previews so this step may not be needed if using it in your project.
 
@@ -313,7 +316,7 @@ module.exports = {
 
 > It's also possible to add 'inline' JS/CSS code to the previews using the `preview.css` and `preview.js` config options. See the Nunjucks demo [button component config](demos/nunjucks/src/components/01-units/@button/button.config.js) for an annotated example of this in action.
 
-### Customising preview markup
+<h3 id="preview-markup">Customising preview markup</h3>
 
 As well as adding assets, Fractalite also exposes a number of ways to completely customise the preview markup and output:
 
