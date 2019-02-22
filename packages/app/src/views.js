@@ -54,10 +54,6 @@ module.exports = function(config = {}) {
     }
   };
 
-  njk.useCache = function(useCache) {
-    loader.noCache = !useCache;
-  };
-
   njk.mergeGlobal = function(name, val) {
     let current;
     try {
