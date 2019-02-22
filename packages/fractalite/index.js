@@ -24,19 +24,6 @@ module.exports = function({ components, adapter, mode, ...config }) {
 
   const renderer = createRenderer(compiler.getState(), adapter);
 
-  // TODO: kill app.props? Is it useful?
-  app.props({
-    config,
-    title: config.title || 'Styleguide',
-    meta: defaultsDeep(config.meta || {}, {
-      title: config.title || 'Styleguide',
-      lang: 'en',
-      dir: 'ltr',
-      charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1.0'
-    })
-  });
-
   app.addViewPath(resolve(__dirname, './views'));
 
   app.addStaticDir('app', resolve(__dirname, './dist'), '/app/assets');
@@ -77,6 +64,20 @@ module.exports = function({ components, adapter, mode, ...config }) {
    * Load all user-defined plugins
    */
   forEach(config.plugins, plugin => plugin(app, compiler, renderer));
+
+  /*
+   * Add global props
+   */
+  app.addViewGlobal('app', {
+    title: config.title || 'Fractalite',
+    meta: defaultsDeep(config.meta || {}, {
+      title: config.title || 'Fractalite',
+      lang: 'en',
+      dir: 'ltr',
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1.0'
+    })
+  });
 
   return app;
 };

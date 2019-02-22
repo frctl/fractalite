@@ -127,7 +127,6 @@ module.exports = function(compiler, opts = {}) {
     return next();
   });
 
-  views.addGlobal('app', app.props());
   views.addGlobal('url', (name, params) => app.url(name, params));
   views.addGlobal('resourceUrl', (name, path) => app.resourceUrl(name, path));
 

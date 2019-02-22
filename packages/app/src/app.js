@@ -16,7 +16,6 @@ const Views = require('./views');
 const getMode = require('./mode');
 
 module.exports = function(compiler, opts = {}) {
-  const props = {};
   const middleware = [];
   const initialisers = [];
   const ui = { js: [], scripts: [], css: [], stylesheets: [] };
@@ -88,30 +87,6 @@ module.exports = function(compiler, opts = {}) {
   Object.assign(app, { router, resources, views, emitter, utils, compiler });
 
   app.mode = mode.mode;
-
-  app.get = (key, fallback) => get(props, key, fallback);
-
-  app.set = (key, value) => {
-    set(props, key, value);
-    return app;
-  };
-
-  app.push = (key, value) => {
-    const current = app.get(key, []);
-    if (!Array.isArray(current)) {
-      throw new TypeError(`${key} is not an array`);
-    }
-    current.push(value);
-    return app.set(key, current);
-  };
-
-  app.props = obj => {
-    if (obj) {
-      assign(props, defaultsDeep(obj, props));
-      return app;
-    }
-    return props;
-  };
 
   app.addStaticDir = (name, path, mount) => {
     resources.add(name, path, mount);
