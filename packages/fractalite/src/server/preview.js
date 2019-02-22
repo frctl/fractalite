@@ -159,8 +159,8 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     const css = app.utils.prettify(previewAssets.css.concat(componentOpts.css).join('\n'), 'css');
     const js = app.utils.prettify(previewAssets.js.concat(componentOpts.js).join('\n'), 'js');
 
-    const componentStylesheets = componentOpts.stylesheets.map(path => resolveComponentAssetUrl(path, component));
-    const componentScripts = componentOpts.scripts.map(path => resolveComponentAssetUrl(path, component));
+    const componentStylesheets = componentOpts.stylesheets.map(path => resolveComponentAsset(path, component));
+    const componentScripts = componentOpts.scripts.map(path => resolveComponentAsset(path, component));
 
     const stylesheets = [...previewAssets.stylesheets, ...componentStylesheets];
     const scripts = [...previewAssets.scripts, ...componentScripts];
