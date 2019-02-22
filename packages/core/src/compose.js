@@ -23,7 +23,6 @@ module.exports = function compose(middleware) {
         });
         const result = Array.isArray(rawResult) ? await Promise.all(rawResult) : await Promise.resolve(rawResult);
         if (result) {
-          console.log(result);
           context = result;
         }
         if (!called) {
