@@ -45,7 +45,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     const page = find(pages, { url: path });
     if (page) {
       const content = await app.utils.renderPage(
-        page.raw,
+        await page.getContents(),
         { page },
         {
           markdown: page.markdown,
@@ -139,6 +139,11 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     page.template = isBoolean(page.template) ? page.template : file.ext === '.njk';
 
     page.raw = content;
+    page.isPage = true;
+
+    page.getContents = function() {
+      return Promise.resolve(page.raw);
+    };
     return page;
   }
 };
