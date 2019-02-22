@@ -17,6 +17,7 @@
     "lodash": "^4.17.10",
     "markdown-it": "^8.4.2",
     "mri": "^1.1.1",
+    "prettier": "^1.16.4",
     "signale": "^1.2.1",
     "socket.io-client": "^2.2.0"
   },

@@ -6,6 +6,7 @@ const { createCompiler, createRenderer } = require('@frctl/fractalite-core');
 const { htmlAdapter } = require('@frctl/fractalite-core');
 const highlight = require('./src/server/utils/highlight');
 const markdown = require('./src/server/utils/markdown');
+const prettify = require('./src/server/utils/prettify');
 const plugins = require('./src/server/plugins');
 
 const configDefaults = {
@@ -49,12 +50,15 @@ module.exports = function({ components, adapter, mode, ...config }) {
     return next();
   });
 
+  /*
+   * Add utilities
+   */
   app.utils.highlightCode = highlight(get(config, 'opts.highlight'));
-
   app.utils.renderMarkdown = markdown({
     highlight: app.utils.highlightCode,
     ...get(config, 'opts.markdown')
   });
+  app.utils.prettify = prettify(get(config, 'opts.prettify'));
 
   ['references', 'public', 'preview', 'pages', 'nav', 'inspector'].forEach(name => {
     require(`./src/server/${name}`)(app, compiler, renderer, get(config, name));
