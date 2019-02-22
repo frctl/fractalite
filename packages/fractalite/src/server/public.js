@@ -5,5 +5,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     };
   }
 
-  app.addStaticDir('public', opts.path, opts.mount);
+  if (opts.path) {
+    app.addStaticDir('public', opts.path, opts.mount);
+  }
 };
