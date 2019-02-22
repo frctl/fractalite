@@ -29,6 +29,8 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 
   opts = defaultsDeep(opts, defaultOpts);
 
+  let previewTpl = opts.template;
+
   app.extend({
     addPreviewStylesheet(url, path) {
       previewAssets.stylesheets.push(url);
@@ -173,9 +175,18 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     let preview = { js, css, meta, scripts, stylesheets, content: html };
     preview = await applyHooks('beforePreviewRender', preview, hookCtx);
 
-    const output = await app.views.renderAsync('preview', preview);
+    let output;
 
-    return applyHooks('beforePreviewRender', output, hookCtx);
+    if (previewTpl) {
+      output = await app.views.renderStringAsync(previewTpl, preview);
+    } else {
+      output = await app.views.renderAsync('preview', preview);
+    }
+
+    // apply final hook to allow tweaking of output HTML
+    output = await applyHooks('beforePreviewRender', output, hookCtx);
+
+    return app.utils.prettify(output, 'html');
   };
 
   // Replace relative URLs in preview props prior to rendering
