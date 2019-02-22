@@ -86,9 +86,12 @@ Preliminary documentation to help get across some of the key aspects of the Frac
   * [Structure of an adapter](#adapter-structure)
   * [Example adapter - Mustache](#adapter-example-mustache)
 * **API**
-  * [Compiler](#compiler)
-  * [Application](#application)
-  * [Renderer](#renderer)
+  * [Compiler](#api-compiler)
+  * [Application](#api-application)
+  * [Renderer](#api-renderer)
+  * [Component](#api-component)
+  * [Page](#api-page)
+  * [File](#api-file)
 
 ## Installation
 
@@ -779,7 +782,7 @@ module.exports = function(opts = {}) {
 
 ## API
 
-## Compiler
+<h2 id="api-compiler">Compiler</h2>
 
 #### `compiler.use(fn)`
 
@@ -836,7 +839,7 @@ state.files.forEach(component => {
 
 Re-parse the component directory and update the internal compiler state. Returns a Promise that resolves to a state object.
 
-## Application
+<h2 id="api-application">Application</h2>
 
 ### Properties
 
@@ -901,7 +904,63 @@ Re-parse the component directory and update the internal compiler state. Returns
 
 #### `app.extend(methods)`
 
-## Renderer
+<h2 id="api-renderer">Renderer</h2>
 
 #### `renderer.render(component, props)`
 #### `renderer.renderAll(component, arrayOfProps)`
+
+<h2 id="api-component">Component</h2>
+
+### Properties
+
+#### `component.name`
+#### `component.label`
+#### `component.config`
+#### `component.files`
+#### `component.scenarios`
+#### `component.isComponent`
+#### `component.root`
+#### `component.path`
+#### `component.relative`
+#### `component.url`
+#### `component.previewUrl`
+
+### Methods
+
+#### `component.matchFiles(matcher)`
+
+<h2 id="api-page">Page</h2>
+
+### Properties
+
+#### `page.label`
+#### `page.title`
+#### `page.position`
+#### `page.url`
+#### `page.isPage`
+
+### Methods
+
+#### `page.getContents()`
+
+<h2 id="api-file">File</h2>
+
+### Properties
+
+#### `file.name`
+#### `file.path`
+#### `file.relative`
+#### `file.basename`
+#### `file.dirname`
+#### `file.extname`
+#### `file.ext`
+#### `file.stem`
+#### `file.stats`
+#### `file.size`
+#### `file.url`
+#### `file.isFile`
+
+### Methods
+
+#### `file.setContents(str)`
+#### `file.getContents()`
