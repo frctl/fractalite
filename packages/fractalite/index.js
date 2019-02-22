@@ -56,7 +56,7 @@ module.exports = function({ components, adapter, mode, ...config }) {
     ...get(config, 'opts.markdown')
   });
 
-  ['references', 'preview', 'pages', 'nav', 'inspector'].forEach(name => {
+  ['references', 'public', 'preview', 'pages', 'nav', 'inspector'].forEach(name => {
     require(`./src/server/${name}`)(app, compiler, renderer, get(config, name));
   });
 
