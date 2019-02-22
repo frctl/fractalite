@@ -61,23 +61,27 @@ Preliminary documentation to help get across some of the key aspects of the Frac
 
 * [Installation](#installation)
 * [Project Configuration](#project-configuration)
-* [Components](#components)
+* **Components**
+  * [Overview](#components)
   * [Scenarios](#scenarios)
   * [Configuration](#configuration)
   * [View templates](#view-templates)
-* [Previews]('#previews')
+* **Previews**
+  * [Overview](#previews)
   * [Adding CSS & JS to previews](#preview-css-js)
   * [Customising preview markup](#preview-markup)
-* [Pages](#pages)
+* **Pages**
+  * [Overview](#pages)
   * [Usage](#pages-usage)
   * [Reference tags](#pages-reference-tags)
   * [Nunjucks templates](#pages-nunjucks-templates)
   * [Front Matter](#pages-frontmatter)
-* [Plugins](#plugins)
+* **Plugins**
+  * [Overview](#plugins)
   * [Example plugin - author info](#example-plugin-author-info)
   * [Assets bundler plugin](#assets-bundler-plugin)
   * [Notes plugin](#notes-plugin)
-* [API](#api)
+* **API**
   * [Compiler](#compiler)
   * [Application](#application)
   * [Renderer](#renderer)
@@ -157,9 +161,41 @@ For example, a common use for a `button` component might be as a 'next' control.
 }
 ```
 
+> `props` are similar to the `context` object in Fractal v1
+
 Scenarios are defined in the **component config file**. The Fractalite UI creates a component preview for each scenario defined for that component.
 
 Any relative paths to assets in the scenario `props` object are resolved to full URLs before rendering.
+
+#### Rendering multiple scenario instances per preview
+
+Sometimes you may want to render multiple instances of the same scenario in one preview window - say for example to test the `next` button scenario with labels of differing lengths:
+
+<img src="./assets/scenario-previews.png" alt="Multiple buttons in a preview" width="600">
+
+To support this, each scenario can define a `preview` property as an array of props. Each item in this array will be **merged with the default scenario props**, and the preview will render one instance for each set of merged props.
+
+```js
+{
+  name: 'next',
+  props: {
+    text: 'Go Next',
+    icon: './arrow-right.png'
+  },
+  preview: [
+    {
+      label: 'Next'
+    },
+    {
+      label: 'Next button with a long label that might wrap'
+    }
+  ]
+}
+```
+
+The preview for this scenario will have two buttons in it, one for each of the preview items defined.
+
+> See the [Previews](#previews) section for details on how to customise the preview markup.
 
 #### Adapter integration
 
