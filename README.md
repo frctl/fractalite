@@ -47,6 +47,7 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
   * [ ] Component search
   * [ ] Collapsible nav
   * [ ] Theme variables
+  * [ ] Landing page
 * [ ] Tests
 * [ ] Documentation
 * [ ] Additional template engine adapters
@@ -196,6 +197,7 @@ The text that should be used to refer to the component in the UI. [_Defaults to 
 An array of [scenario objects](#scenarios).
 
 ```js
+// button/button.config.js
 module.exports = {
   scenarios: [
     {
@@ -249,6 +251,131 @@ Referencing local component assets in view templates can be done via relative pa
 ```
 
 Any relative paths in [html attributes that expect a URL value](https://www.npmjs.com/package/html-url-attributes) will be dynamically rewritten to reference the asset correctly.
+
+## Previews
+
+Rendered component instances are wrapped in an HTML document for previewing.
+
+A typical project will need to be configured to inject the required styles and scripts into the preview to correctly display the component.
+
+### Adding CSS & JS to previews
+
+> The [assets bundler plugin](#assets-bundler-plugin) automatically injects bundled assets into previews so this step may not be needed if using it in your project.
+
+The `preview` option in the  project config file lets you specify scripts and stylesheets to be  injected into to all component previews.
+
+```js
+// fractal.config.js
+const { resolve } = require('path');
+
+module.exports = {
+  // ...
+  preview: {
+    /*
+     * Assets can be specified as either:
+     *
+     * 1) an absolute path to the file
+     * 2) an external URL
+     * 3) or an object with 'url' and 'path' keys
+     */
+    stylesheets: [
+      resolve(__dirname, './dist/styles.css'), // (1)
+      'http://example.com/external-styles.css', // (2)
+      {
+        url: '/custom/url/path.css',
+        path: resolve(__dirname, './dist/yet-more-styles.css')
+      } // (3)
+    ],
+    scripts: [
+      // scripts can be added in the same way as stylesheets
+    ]
+  }
+};
+```
+
+Individual components can also add **local CSS/JS** files from within their directory using relative paths:
+
+```
+@button
+├── preview.css
+└── view.njk
+```
+
+```js
+// @button/button.config.js
+module.exports = {
+  preview: [
+    stylesheets: ['./preview.css'],
+    scripts: [/* ... */],
+  ]
+}
+```
+
+> It's also possible to add 'inline' JS/CSS code to the previews using the `preview.css` and `preview.js` config options. See the Nunjucks demo [button component config](demos/nunjucks/src/components/01-units/@button/button.config.js) for an annotated example of this in action.
+
+### Customising preview markup
+
+As well as adding assets, Fractalite also exposes a number of ways to completely customise the preview markup and output:
+
+- Each individually rendered scenario instance can be wrapped in custom HTML using the `preview.wrapEach` option (available both **globally** and on a **component-by-component** basis)
+- Each _set_ of scenario instances can be wrapped in custom html using the `preview.wrap` option (available both **globally** and on a **component-by-component** basis)
+- The entire preview document template can also be completely overridden if required (only available as a global option)
+
+#### Component-level example
+
+```js
+// @button/button.config.js
+module.exports = {
+
+  preview: {
+
+    // add an in-preview title
+    wrap(html, ctx) {
+      return `
+        <h4>${ctx.component.label} / ${ctx.scenario.label}</h4>
+        ${html}`;
+    },
+
+    // wrap each item in the preview to space them out
+    wrapEach(html, ctx) {
+      return `<div style="margin-bottom: 20px">${html}</div>`;
+    }
+  }
+}
+```
+
+#### Custom preview template example
+
+> Note that preview templates are rendered using Nunjucks. The default preview template can be [found here](packages/fractalite/views/preview.njk) for reference.
+
+```js
+// fractal.config.js
+module.exports = {
+  // ...
+  preview: {
+    template: `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      {% for url in stylesheets %}<link rel="stylesheet" href="{{ url }}">{% endfor %}
+      {% if css %}<style>{{ css | safe }}</style>{% endif %}
+      <title>{{ meta.title | default('Preview') }}</title>
+    </head>
+    <body>
+      <div id="app">
+        <h1>A custom preview</h1>
+        <div class="wrapper">
+          {{ content | safe }}
+        </div>
+      </div>
+      {% for url in scripts %}<script src="{{ url }}"></script>{% endfor %}
+      {% if js %}<script>{{ js | safe }}</script>{% endif %}
+    </body>
+    </html>
+    `
+  }
+};
+```
 
 ## Pages
 
@@ -615,6 +742,7 @@ Re-parse the component directory and update the internal compiler state. Returns
 #### `app.afterScenarioRender(fn)`
 #### `app.beforePreviewRender(fn)`
 #### `app.afterPreviewRender(fn)`
+#### `app.addPreviewWrapper(fn, wrapEach)`
 
 ### Routing
 
