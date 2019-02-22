@@ -81,6 +81,10 @@ Preliminary documentation to help get across some of the key aspects of the Frac
   * [Example plugin - author info](#example-plugin-author-info)
   * [Assets bundler plugin](#assets-bundler-plugin)
   * [Notes plugin](#notes-plugin)
+* **Adapters**
+  * [Overview](#adapters)
+  * [Structure of an adapter](#adapter-structure)
+  * [Example adapter - Mustache](#adapter-example-mustache)
 * **API**
   * [Compiler](#compiler)
   * [Application](#application)
@@ -516,6 +520,19 @@ Whether or not to run the page contents through the Nunjucks renderer. _[Default
 
 Plugins the primary way that the Fractalite app can be customised, and can affect both the UI and the component parsing/compilation process.
 
+Plugins are added in the project config file:
+
+```js
+// fractal.config.js
+module.exports = {
+  plugins: [
+    require('./plugins/example')({
+      // customisation opts here
+    })
+  ]
+};
+```
+
 A plugin is a function that receives `app`, `compiler` and `renderer` instances as it's arguments.
 
 A useful pattern is to wrap the plugin function itself in a 'parent' function so that it can receive runtime options:
@@ -528,19 +545,6 @@ module.exports = function(opts = {}){
     // this is the plugin function itself
     console.log('This is an example plugin');
   }
-};
-```
-
-Plugins are added in the project config file:
-
-```js
-// fractal.config.js
-module.exports = {
-  plugins: [
-    require('./plugins/example')({
-      // customisation opts here
-    })
-  ]
 };
 ```
 
@@ -696,6 +700,81 @@ module.exports = {
     })
   ]
 };
+```
+
+## Adapters
+
+Adapters allow Fractalite to support many different template engines and frameworks.
+
+Fractalite currently supports a single adapter per project. Adapters are specified in the project configuration file:
+
+```js
+// fractal.config.js
+module.exports = {
+  adapter: require('./example-adapter.js')({
+    // customisation opts here
+  })
+};
+```
+
+All adapters **must** provide a `render` function which receives a component, a set of props, and a state object and returns a string representing the rendered component.
+
+Adapters also have access to both the `compiler` and the `app` instances so can also perform much more complicated integration with the application if required.
+
+<h3 id="adapter-structure">Structure of an adapter</h3>
+
+An adapter is a function that receives `app` and `compiler` instances as it's arguments, and must return a **render function** or an **adapter object that includes a render function amongst its properties**.
+
+As with [plugins](#plugins), a useful pattern is to wrap the adapter function itself in a 'parent' function so that it can receive runtime options:
+
+```js
+// example-adapter.js
+module.exports = function(opts = {}){
+  // any adapter initialiation here
+  return function(app, compiler){
+    // do anything with app/compiler here
+    return function render(component, props, state){
+      // do rendering here...
+      return html;
+    }
+  }
+};
+```
+
+Render functions can be asynchronous  - just return a `Promise` that resolves to the HTML string.
+
+<h3 id="adapter-example-mustache">Example adapter - Mustache</h3>
+
+The following example is for a basic adapter for Mustache templates. To keep it simple it does not include support for partials.
+
+```js
+const Mustache = require('mustache');
+
+module.exports = function(opts = {}) {
+  /*
+   * Allow users to override the default view name
+   */
+  const viewName = opts.viewName || 'view.mustache';
+
+  return function mustacheAdapter() {
+    /*
+     * Asynchronous render function.
+     *
+     * Looks for a matching view file in the list of component files,
+     * reads it's contents and then renders the string using the
+     * Mustache.render method.
+     */
+    return async function render(component, props) {
+      const tpl = component.files.find(file => file.basename === viewName);
+      if (!tpl) {
+        throw new Error(`Cannot render component - no view file found.`);
+      }
+      const tplContents = await tpl.getContents();
+      return Mustache.render(tplContents, props);
+    };
+  };
+};
+
 ```
 
 ## API
