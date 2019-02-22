@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "dependencies": {
     "cosmiconfig": "^5.0.6",
-    "eventemitter2": "^5.0.1",
     "html-url-attributes": "^1.0.0",
     "lodash": "^4.17.10",
     "slash": "^2.0.0",

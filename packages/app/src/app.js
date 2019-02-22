@@ -8,7 +8,7 @@ const send = require('koa-send');
 const cleanStack = require('clean-stacktrace');
 const { map } = require('asyncro');
 const relativePaths = require('clean-stacktrace-relative-paths');
-const Emitter = require('@frctl/fractalite-support/emitter');
+const { EventEmitter2 } = require('eventemitter2');
 const { permalinkify, defaultsDeep, processStack } = require('@frctl/fractalite-support/utils');
 const Router = require('./router');
 const Resources = require('./resources');
@@ -24,7 +24,7 @@ module.exports = function(compiler, opts = {}) {
   const router = new Router();
   const resources = new Resources();
   const views = new Views({ cache: mode.cache });
-  const emitter = new Emitter();
+  const emitter = new EventEmitter2({ wildcard: true });
   const utils = {};
 
   async function app() {
