@@ -99,7 +99,7 @@ module.exports = {
    */
   notes: `
     Some notes on the button component.
-    
+
     These were added inline in the [button config file]({file:button/button.config.js})
   `
 };

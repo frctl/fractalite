@@ -18,4 +18,4 @@ function debounce(func, wait, immediate) {
 
 const socket = io();
 const reload = debounce(state => window.location.reload(), 500, true);
-socket.on('updated', reload);
+socket.on('state.updated', reload);

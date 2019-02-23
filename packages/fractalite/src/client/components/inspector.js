@@ -8,7 +8,7 @@ export default {
   props: ['componentName', 'scenarioName'],
   components: { Preview },
   sockets: {
-    async updated() {
+    'state.updated': async function() {
       const previewSrc = this.preview;
       await this.load();
     },

@@ -64,9 +64,9 @@ const args = mri(process.argv.slice(2));
         }
       });
 
-      app.on('updated', () => interactiveLogger.success(`Compilation successful [${(new Date()).toUTCString()}]`));
+      app.on('state.updated', () => interactiveLogger.success(`Compilation successful [${(new Date()).toUTCString()}]`));
 
-      const server = await app();
+      const server = await app.run();
       const port = server.address().port;
 
       logger.success(`Fractalite server started`);
@@ -80,7 +80,7 @@ const args = mri(process.argv.slice(2));
       logger.log('')
 
       process.on('SIGINT', () => {
-        server.close();
+        app.stop(server);
         logger.success('Fractalite server stopped');
         process.exit(0);
       });
@@ -105,15 +105,13 @@ const args = mri(process.argv.slice(2));
         `);
 
         process.on('SIGINT', () => {
-          server.close();
+          app.stop(server);
           logger.success('Fractalite static build server stopped');
           process.exit(0);
         });
       });
 
-      await app();
-
-
+      await app.run();
 
     } else {
       throw new Error(`Command '${command}' not recognised`);

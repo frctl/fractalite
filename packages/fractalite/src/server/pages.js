@@ -80,7 +80,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
           try {
             pages = await getPages();
             state.pages = pages;
-            app.emit('updated');
+            app.emit('state.updated');
           } catch (err) {
             app.emit('error', err);
           }

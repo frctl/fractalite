@@ -1,12 +1,12 @@
 const { isAbsolute, relative } = require('path');
 const { assign, get, set, mapValues, isPlainObject } = require('lodash');
+const { map } = require('asyncro');
 const getPort = require('get-port');
 const Koa = require('koa');
 const compress = require('koa-compress');
 const IO = require('koa-socket-2');
 const send = require('koa-send');
 const cleanStack = require('clean-stacktrace');
-const { map } = require('asyncro');
 const relativePaths = require('clean-stacktrace-relative-paths');
 const { EventEmitter2 } = require('eventemitter2');
 const { permalinkify, defaultsDeep, processStack } = require('@frctl/fractalite-support/utils');
@@ -23,109 +23,29 @@ module.exports = function(compiler, opts = {}) {
   const builders = [];
   const builderCopyTasks = [];
   const ui = { js: [], scripts: [], css: [], stylesheets: [] };
+  const utils = {};
 
   const mode = getMode(opts);
   const router = new Router();
   const resources = new Resources();
   const views = new Views({ cache: mode.cache });
   const emitter = new EventEmitter2({ wildcard: true });
-  const utils = {};
+  const socket = new IO();
 
-  async function app() {
-    const koa = new Koa();
-    const socket = new IO();
-    socket.attach(koa);
-    app.socket = socket;
+  const app = { router, resources, views, emitter, utils, compiler, socket };
 
-    koa.silent = true;
-    koa.context.mode = mode;
-    koa.context.utils = utils;
-
-    const state = await compiler.run();
-
-    middleware.forEach(mw => koa.use(mw));
-
-    await map(initialisers, fn => fn(app, state));
-
-    koa.use(compress());
-    koa.use(resources.routes());
-    koa.use(router.routes());
-    koa.use(router.allowedMethods());
-
-    app.on('error', err =>
-      socket.broadcast('err', {
-        name: err.name,
-        message: err.message,
-        stack: cleanStack(err.stack, relativePaths()),
-        status: err.status
-      })
-    );
-    koa.on('error', err => app.emit('error', err));
-    app.on('updated', (...results) => socket.broadcast('updated', ...results));
-
-    app.emit('initialised', state);
-
-    const port = await getPort({ port: mode.port });
-    let server = await new Promise((resolve, reject) => {
-      const httpServer = koa.listen(port, err => (err ? reject(err) : resolve(httpServer)));
-    });
-
-    app.emit('started', server);
-
-    if (app.mode === 'build') {
-      const builder = createBuilder();
-
-      const staticFiles = await resources.list();
-
-      staticFiles.forEach(({ path, url }) =>
-        builder.addCopyTask({
-          from: path,
-          to: url
-        })
-      );
-
-      builderCopyTasks.forEach(builder.addCopyTask);
-
-      const copyTasks = [];
-      const requestTasks = [];
-      await map(builders, fn => fn(state, copyTasks, requestTasks));
-
-      copyTasks.forEach(builder.addCopyTask);
-      requestTasks.forEach(builder.addRequestTask);
-
-      app.emit('build.start');
-
-      const result = await builder.run(server, mode);
-
-      app.emit('build.end', result);
-
-      server.close();
-
-      if (mode.serve === true) {
-        server = await serveStatic(mode.dest, port);
-        app.emit('build.serving', server);
-      }
-
-      return server;
-    }
-
-    compiler.watch((err, ...results) => {
-      if (err) return app.emit('error', err);
-      app.emit('updated', ...results);
-    });
-
-    app.emit('watching');
-
-    return server;
-  }
-
-  Object.assign(app, { router, resources, views, emitter, utils, compiler });
-
-  app.mode = mode.mode;
+  app.mode = mode.name;
+  app.modeOpts = mode;
 
   app.addStaticDir = (name, path, mount) => {
     resources.add(name, path, mount);
     return app;
+  };
+
+  app.serveFile = (url, path) => {
+    path = isAbsolute(path) ? relative(process.cwd(), path) : path;
+    app.router.use(url, ctx => send(ctx, path, { root: process.cwd() }));
+    builderCopyTasks.push({ from: path, to: url });
   };
 
   app.addRoute = (name, url, handler, builder) => {
@@ -212,12 +132,6 @@ module.exports = function(compiler, opts = {}) {
     return app;
   };
 
-  app.serveFile = (url, path) => {
-    path = isAbsolute(path) ? relative(process.cwd(), path) : path;
-    app.router.use(url, ctx => send(ctx, path, { root: process.cwd() }));
-    builderCopyTasks.push({ from: path, to: url });
-  };
-
   // UI-related helpers -----------------------------------
 
   app.addJS = js => ui.push(js);
@@ -237,6 +151,92 @@ module.exports = function(compiler, opts = {}) {
   app.getJS = () => ui.js.join('\n');
   app.getScripts = () => ui.scripts.map(app.resourceUrl);
   app.getStylesheets = () => ui.stylesheets.map(app.resourceUrl);
+
+  app.run = async () => {
+    const koa = new Koa();
+    socket.attach(koa);
+
+    koa.silent = true;
+    koa.context.mode = mode;
+    koa.context.utils = utils;
+
+    const state = await compiler.run();
+
+    middleware.forEach(mw => koa.use(mw));
+
+    await map(initialisers, fn => fn(app, state));
+
+    koa.use(compress());
+    koa.use(resources.routes());
+    koa.use(router.routes());
+    koa.use(router.allowedMethods());
+
+    koa.on('error', err => app.emit('error', err));
+
+    app.emit('initialised', state);
+
+    const port = await getPort({ port: mode.port });
+    let server = await new Promise((resolve, reject) => {
+      const httpServer = koa.listen(port, err => (err ? reject(err) : resolve(httpServer)));
+    });
+
+    app.emit('server.started', server);
+
+    if (app.mode === 'build') {
+      const builder = createBuilder();
+
+      const staticFiles = await resources.list();
+
+      staticFiles.forEach(({ path, url }) =>
+        builder.addCopyTask({
+          from: path,
+          to: url
+        })
+      );
+
+      builderCopyTasks.forEach(builder.addCopyTask);
+
+      const copyTasks = [];
+      const requestTasks = [];
+      await map(builders, fn => fn(state, copyTasks, requestTasks));
+
+      copyTasks.forEach(builder.addCopyTask);
+      requestTasks.forEach(builder.addRequestTask);
+
+      app.emit('build.start');
+
+      const result = await builder.run(server, mode);
+
+      app.emit('build.end', result);
+
+      server.close();
+
+      if (mode.serve === true) {
+        server = await serveStatic(mode.dest, port);
+        app.emit('build.server.started', server);
+      }
+
+      return server;
+    }
+
+    compiler.watch((err, ...results) => {
+      if (err) return app.emit('error', err);
+      app.emit('state.updated', ...results);
+    });
+
+    app.emit('watching');
+
+    return server;
+  };
+
+  app.stop = server => {
+    if (!server) {
+      throw new Error(`You must provide the server instance to stop`);
+    }
+    server.close();
+    app.emit('server.stopped');
+    return app;
+  };
 
   return app;
 };

@@ -8,7 +8,7 @@ const App = require('./src/app');
 
 module.exports = function(compiler, opts = {}) {
   const app = new App(compiler, opts);
-  const { router, views } = app;
+  const { router, views, socket } = app;
 
   app.use(jsonErrors());
 
@@ -42,6 +42,17 @@ module.exports = function(compiler, opts = {}) {
       throw err;
     }
   });
+
+  app.on('error', err =>
+    socket.broadcast('err', {
+      name: err.name,
+      message: err.message,
+      stack: cleanStack(err.stack, relativePaths()),
+      status: err.status
+    })
+  );
+
+  app.on('state.updated', (...results) => socket.broadcast('state.updated', ...results));
 
   /*
    * View rendering middleware

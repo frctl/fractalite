@@ -24,7 +24,7 @@ module.exports = function(opts = {}) {
       // correctly recognise when files are added/removed,
       // only when changed. This is the equivalent of manually
       // stopping and restarting the watch task/hmr server.
-      app.on('updated', async (state, { event }) => {
+      app.on('state.updated', async (state, { event }) => {
         if (event === 'add' || event === 'unlink') {
           if (bundler) {
             try {
