@@ -2,7 +2,7 @@
 
 A prototype to help explore development ideas for future [Fractal](https://fractal.build) versions.
 
-[Demo](#demo) | [Features & Status](#features--status) | [Documentation](#documentation)
+[Demo](#demo) | [Features & Status](#features) | [Documentation](#documentation)
 
 ## 📺 Demo
 
@@ -40,7 +40,7 @@ Exported files can be found in the `demos/nunjucks/dist` directory after export.
 
 * [Vue demo](demos/vue) - Basic proof-of-concept, client-side rendered Vue integration. `npm run demo:vue`
 
-## 🚦 Features & status
+<h2 id="features">🚦 Features & status</h2>
 
 * Middleware-based components parser/compiler
 * Plugin system for compiler and UI customisation
