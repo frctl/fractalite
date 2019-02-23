@@ -1,18 +1,23 @@
 const { dirname } = require('path');
-const { isFunction, isPlainObject, flatMap, uniqBy, orderBy, compact } = require('lodash');
+const { merge, isFunction, isPlainObject, flatMap, uniqBy, orderBy, compact } = require('lodash');
 const { titlize } = require('@frctl/fractalite-support/utils');
 const { isComponent, isFile } = require('@frctl/fractalite-core/helpers');
 
 module.exports = function(app, compiler, renderer, opts = {}) {
+  const defaults = {
+    items: defaultGenerator,
+    scenarios: true
+  };
+
   if (Array.isArray(opts) || isFunction(opts)) {
     opts = { items: opts };
   }
-  const items = opts.items || defaultGenerator;
+
+  opts = merge(defaults, opts);
 
   app.addRoute('api.navigation', '/api/navigation.json', ctx => {
-    const { pages, components, assets } = ctx.state;
     ctx.body = {
-      items: buildNav(items, { pages, components, assets }, app)
+      items: buildNav(opts.items, ctx.state)
     };
   });
 
@@ -23,6 +28,61 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       component.position = component.config.position || 1000;
     });
   });
+
+  function buildNav(items, state) {
+    items = isFunction(items) ? items(state, toTree) : items;
+    return expandValues(items);
+  }
+
+  function expandValues(items) {
+    return flatMap(compact(items), item => {
+      if (Array.isArray(item)) {
+        return expandValues(item);
+      }
+
+      if (item.entity) {
+        item = item.entity;
+      }
+
+      if (isComponent(item)) {
+        if (opts.scenarios) {
+          return {
+            label: item.label,
+            children: item.scenarios.map(scenario => {
+              return {
+                label: scenario.label,
+                url: scenario.url
+              };
+            })
+          };
+        }
+        return {
+          label: item.label,
+          url: item.url
+        };
+      }
+
+      if (isFile(item)) {
+        return {
+          label: item.handle,
+          url: item.url
+        };
+      }
+
+      item = {
+        label: item.label || item.handle,
+        url: item.url,
+        children: item.children ? expandValues(item.children) : null
+      };
+
+      if (isPlainObject(item.url)) {
+        const { route, props } = item.url;
+        item.url = app.url(route, props);
+      }
+
+      return item;
+    });
+  }
 };
 
 function defaultGenerator({ components, pages }, toTree) {
@@ -35,55 +95,6 @@ function defaultGenerator({ components, pages }, toTree) {
         }
       : null
   ];
-}
-
-function buildNav(items, entities, app) {
-  items = isFunction(items) ? items(entities, toTree) : items;
-  return expandValues(items, app);
-}
-
-function expandValues(items, app) {
-  return flatMap(compact(items), item => {
-    if (Array.isArray(item)) {
-      return expandValues(item, app);
-    }
-
-    if (item.entity) {
-      item = item.entity;
-    }
-
-    if (isComponent(item)) {
-      return {
-        label: item.label,
-        children: item.scenarios.map(scenario => {
-          return {
-            label: scenario.label,
-            url: scenario.url
-          };
-        })
-      };
-    }
-
-    if (isFile(item)) {
-      return {
-        label: item.handle,
-        url: item.url
-      };
-    }
-
-    item = {
-      label: item.label || item.handle,
-      url: item.url,
-      children: item.children ? expandValues(item.children, app) : null
-    };
-
-    if (isPlainObject(item.url)) {
-      const { route, props } = item.url;
-      item.url = app.url(route, props);
-    }
-
-    return item;
-  });
 }
 
 function toTree(items, pathProp) {
