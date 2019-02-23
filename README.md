@@ -76,6 +76,9 @@ Preliminary documentation to help get across some of the key aspects of the Frac
   * [Reference tags](#pages-reference-tags)
   * [Nunjucks templates](#pages-nunjucks-templates)
   * [Front Matter](#pages-frontmatter)
+* **Application UI**
+  * [Overview](#application-ui)
+  * [Navigation](#navigation)
 * **Plugins**
   * [Overview](#plugins)
   * [Example plugin - author info](#example-plugin-author-info)
@@ -518,6 +521,98 @@ Whether or not to run the page contents through the markdown renderer. _[Default
 **`template`** [boolean]
 
 Whether or not to run the page contents through the Nunjucks renderer. _[Defaults to `true` for `.njk` pages, false for all others.]_
+
+## Application UI
+
+Many aspects of the Fractalite UI can be configured, customised or overridden.
+
+### Navigation
+
+The sidebar navigation contents can be customised in the project `fractal.config.js` config file using the `nav.items` property.
+
+The value of this property can either be an array of navigation items or a generator function that returns an array of items.
+
+Each item in the nav array should *either* be an object with the following properties:
+
+* `label`: Text to be displayed for the nav item
+* `url`: URL to link to (if `children` are not specified)
+* `children`: Array of child navigation items (if `url` is not specified)
+
+*Or* it an be a `Page`, `Component` or `File` instance. `Component` instances will automatically have their scenarios added as child items.
+
+If no value for the `nav.items` property is supplied then the default nav generator will be used which includes links to all pages and components.
+
+#### Hard-coding items
+
+Most projects will want to dynamically generate their navigation, however it may occasionally be useful to hard-code the nav for some use cases.
+
+```js
+// fractal.config.js
+module.exports = {
+  // ...
+  nav: {
+    items: [
+      {
+        label: 'Welcome',
+        url: '/'
+      },
+      {
+        label: 'Components',
+        children: [
+          {
+            label: 'Next Button',
+            url: '/inspect/button/next'
+          },
+          {
+            label: 'Call to Action',
+            url: '/inspect/cta/default'
+          }
+        ]
+      },
+      {
+        label: 'Github',
+        url: 'https://github.com/org/project'
+      },
+    ]
+  }
+};
+```
+
+#### Dynamically generating items
+
+A generator function can be supplied instead of hard-coding the items.
+
+The generator will receive the compiler `state` as its first argument and a `toTree` utility function as the second argument. The `toTree` utility can be used to generate a file-system based tree from a flat array of components or files.
+
+The generator function should return an array of navigation items in the same format as the hard-coded example above.
+
+The example below shows components can be filtered before generating the navigation:
+
+```js
+// fractal.config.js
+module.exports = {
+  // ...
+  nav: {
+    items(state, toTree){
+      // filter components by some custom property in the config
+      const components = state.components.filter(component => {
+        return component.config.customProp = true;
+      });
+      // return the navigation tree
+      return [
+        {
+          label: 'Components',
+          children: state.components // flat list of filtered components
+        },
+        {
+          label: 'Pages',
+          children: toTree(state.pages) // tree of pages
+        }
+      ];
+    }
+  }
+};
+```
 
 ## Plugins
 
