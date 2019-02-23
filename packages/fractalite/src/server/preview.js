@@ -214,7 +214,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
   app.addRoute('preview', `/preview/:component/:scenario`, async (ctx, next) => {
     const scenario = getScenario(ctx.component, ctx.params.scenario, true);
     ctx.body = await app.utils.renderPreview(ctx.component, scenario, {
-      reload: opts.reload === true
+      reload: app.mode === 'develop' && opts.reload === true
     });
   });
 
@@ -231,21 +231,30 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     const component = getComponent(state, componentName, true);
     const scenario = getScenarioOrDefault(component, scenarioName, true);
     return {
-      url: app.url('preview', { component, scenario: scenario.name })
+      url: scenario.previewUrl
     };
   });
 
   /*
    * Middleware to add preview urls to variants.
+   *
+   * Preview URLs are not handle client-side so they
+   * need to point to the statically export file
+   * in `build` mode - hence the use of `app.modeOpts.paths`
+   * as the final arg to the `app.url()` method.
    */
   compiler.use(async (components, next) => {
     await next();
     components.forEach(component => {
       component.scenarios.forEach(scenario => {
-        scenario.previewUrl = app.url('preview', {
-          component: component.name,
-          scenario: scenario.name
-        });
+        scenario.previewUrl = app.url(
+          'preview',
+          {
+            component: component.name,
+            scenario: scenario.name
+          },
+          app.modeOpts.paths
+        );
       });
     });
   });
