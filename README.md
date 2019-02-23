@@ -2,9 +2,9 @@
 
 A prototype to help explore development ideas for future [Fractal](https://fractal.build) versions.
 
-[Demo](#demo) | [Features & Status](#features--status) | [Usage](#usage)
+[Demo](#demo) | [Features & Status](#features--status) | [Documentation](#documentation)
 
-## Demo
+## 📺 Demo
 
 The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the [Nunjucks adapter](packages/adapter-nunjucks) alongside the [Asset Bundler](packages/plugin-assets-bundler) and [Notes](packages/plugin-notes) plugins.
 
@@ -19,14 +19,28 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 1. Download or clone this repo
 2. `npm install` - install top-level dependencies
 3. `npm run bootstrap`: bootstrap packages together (may take some time on first run!)
-4. `npm run demo` - Start the default demo server
-5. Point a browser at http://localhost:3030 to view the application UI.
+
+#### 🛠 Development mode
+
+1. `npm run demo` - Start the development server
+2. View the app: http://localhost:3030.
+
+Changes to the Nunjucks components will be instantly reflected in the UI.
+
+#### 📦 Static build mode
+
+1. `npm run demo:build` - Export flat-file version of the app & serve the `dist` directory
+2. View the static app: http://localhost:4040
+
+Exported files can be found in the `demos/nunjucks/dist` directory after export.
+
+> As the name suggests, the static build is **not** regenerated when component files are updated.
 
 #### Other demos
 
 * [Vue demo](demos/vue) - Basic proof-of-concept, client-side rendered Vue integration. `npm run demo:vue`
 
-## Features & status
+## 🚦 Features & status
 
 * Middleware-based components parser/compiler
 * Plugin system for compiler and UI customisation
@@ -36,11 +50,12 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 * Dynamic page builder
 * Zero-config asset bundling (via plugin)
 * Hybrid client/server side-rendered UI (using [Vue](https://vuejs.org))
+* Live-reloading development mode
+* Static build export
 
 #### Still missing/in progress...
 
 * [ ] Community feedback and input! :-)
-* [ ] Static export builder
 * [ ] Proper UI design & implementation
   * [ ] Responsive UI
   * [ ] Loading states
@@ -51,13 +66,19 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 * [ ] Tests
 * [ ] Documentation
 * [ ] Additional template engine adapters
+  * [ ] Handlebars
+  * [ ] Twig
+  * [ ] React
+  * [ ] Others...?
 * [ ] More UI customisation hooks?
 * [ ] More extensive feature demo
 * [ ] Any other suggestions...?
 
-## Usage
+## 📚 Documentation
 
 Preliminary documentation to help get across some of the key aspects of the Fractalite prototype.
+
+> This documentation assumes good knowledge of Fractal (v1) concepts and is not intended as a starter guide!
 
 * [Installation](#installation)
 * [Project Configuration](#project-configuration)
