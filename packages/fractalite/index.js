@@ -1,5 +1,5 @@
 const { resolve } = require('path');
-const { forEach, get, isFunction } = require('lodash');
+const { forEach, get, isFunction, isBoolean } = require('lodash');
 const { defaultsDeep } = require('@frctl/fractalite-support/utils');
 const createApp = require('@frctl/fractalite-app');
 const { createCompiler, createRenderer } = require('@frctl/fractalite-core');
@@ -13,8 +13,22 @@ const configDefaults = {
   plugins: []
 };
 
-module.exports = function({ components, adapter, mode, ...config }) {
+module.exports = function({ components, adapter, mode = {}, ...config }) {
   config = defaultsDeep(config, configDefaults);
+
+  /*
+   * App is (mostly) client side rendered app so need to make sure that
+   * the permalink URLs are generated in the right format in both develop
+   * and build modes.
+   */
+  mode.paths = mode.paths || {};
+  mode.permalinks = mode.permalinks || {};
+  mode.paths.ext = mode.paths.ext || '.html';
+  mode.paths.indexes = isBoolean(mode.paths.indexes) ? mode.paths.indexes : true;
+  mode.paths.prefix = false;
+  mode.permalinks.indexes = false;
+  mode.permalinks.ext = false;
+  mode.permalinks.prefix = false;
 
   const compiler = createCompiler(components);
   const app = createApp(compiler, mode);

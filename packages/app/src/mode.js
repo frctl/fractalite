@@ -4,21 +4,29 @@ module.exports = function(opts) {
   const modes = [
     {
       mode: 'develop',
-      ext: false,
       hostname: 'localhost',
       port: 3000,
-      cache: false
+      cache: false,
+      paths: {},
+      permalinks: {
+        prefix: null,
+        indexes: false,
+        ext: false
+      }
     },
     {
       mode: 'build',
-      prefix: null,
       dest: null,
-      indexes: true,
-      ext: '.html',
       clean: false,
       gitignore: false,
       hostname: 'localhost',
-      cache: true
+      cache: true,
+      paths: {},
+      permalinks: {
+        prefix: null,
+        indexes: true,
+        ext: '.html'
+      }
     }
   ];
 
@@ -27,9 +35,15 @@ module.exports = function(opts) {
   if (!mode) {
     throw new Error(`Invalid mode '${opts.mode}'`);
   }
-  return merge(mode, opts, {
+
+  const modeOpts = merge(mode, opts, {
     toString() {
       return this.mode;
     }
   });
+
+  mode.paths = merge({}, mode.permalinks, mode.paths);
+  mode.name = mode.mode;
+
+  return modeOpts;
 };

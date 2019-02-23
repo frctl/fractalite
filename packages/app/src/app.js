@@ -140,34 +140,35 @@ module.exports = function(compiler, opts = {}) {
     builders.push((state, copyTasks = [], requestTasks = []) => {
       const copy = (from, to) => {
         if (isPlainObject(to)) {
-          to = app.url(to.name, to.params || {}, false);
+          to = app.url(to.name, to.params || {}, mode.paths);
         }
         copyTasks.push({ from, to });
       };
       const request = url => {
         if (isPlainObject(url)) {
-          url = app.url(url.name, url.params || {}, false);
+          url = app.url(url.name, url.params || {});
         }
-        requestTasks.push({ from: url, to: app.permalink(url) });
+        requestTasks.push({ from: url, to: app.permalink(url, mode.paths) });
       };
       return builder(state, { copy, request });
     });
     return app;
   };
 
-  app.url = (name, params, permalink = true) => {
+  app.url = (name, params, opts) => {
     const stringParams = mapValues(params, value => String(value));
     const url = decodeURIComponent(router.url(name, stringParams));
-    return permalink ? permalinkify(url, mode) : url;
+    return app.permalink(url, opts);
   };
 
-  app.resourceUrl = path => {
+  app.resourceUrl = (path, opts) => {
     const url = decodeURIComponent(resources.url(path));
-    return permalinkify(url, mode);
+    return app.permalink(url, opts);
   };
 
-  app.permalink = url => {
-    return permalinkify(url, mode);
+  app.permalink = (url, opts) => {
+    if (opts === false) return url;
+    return permalinkify(url, opts || mode.permalinks);
   };
 
   app.on = (...args) => {
