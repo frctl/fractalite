@@ -30,7 +30,7 @@ module.exports = function(opts = {}) {
             try {
               await bundler.stop();
             } catch (err) {
-              logger.error(err);
+              app.emit(err);
             }
             await generateEntry(state);
             bundler = await createBundler();
@@ -73,16 +73,6 @@ module.exports = function(opts = {}) {
         const bundle = await bundler.bundle();
 
         if (initial) {
-          function addBundles(bundle, bundles = []) {
-            if (['js', 'css'].includes(bundle.type)) {
-              bundles.push(bundle);
-            }
-            for (const childBundle of bundle.childBundles) {
-              addBundles(childBundle, bundles);
-            }
-            return bundles;
-          }
-
           const bundles = addBundles(bundle);
 
           const assets = bundles.map(bundle => {
@@ -107,6 +97,16 @@ module.exports = function(opts = {}) {
         }
 
         return bundler;
+
+        function addBundles(bundle, bundles = []) {
+          if (['js', 'css'].includes(bundle.type)) {
+            bundles.push(bundle);
+          }
+          for (const childBundle of bundle.childBundles) {
+            addBundles(childBundle, bundles);
+          }
+          return bundles;
+        }
       }
     });
   };

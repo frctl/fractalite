@@ -1,22 +1,9 @@
-const { get, isFunction, isString, debounce, fromPairs } = require('lodash');
+const { isFunction, isString, debounce } = require('lodash');
 const { normalizeSrc } = require('@frctl/fractalite-support/utils');
 const { watch } = require('chokidar');
 const compose = require('./compose');
 const createState = require('./state');
 const readComponents = require('./read-components');
-
-// const entities = [
-//   {
-//     name: 'components',
-//     read: ,
-//     parseEvents: ['add', 'unlink', 'change', 'addDir', 'unlinkDir']
-//   },
-//   {
-//     name: 'assets',
-//     read: require('./read-assets'),
-//     parseEvents: ['add', 'change', 'unlink']
-//   }
-// ];
 
 module.exports = function(config = {}) {
   const middlewares = [];

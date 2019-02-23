@@ -13,9 +13,9 @@ module.exports = function(opts = {}) {
     env.state = state; // For use in extensions/filters etc
 
     /*
-       * Empty views array and then replace with
-       * updated set of view tempates.
-       */
+     * Empty views array and then replace with
+     * updated set of view tempates.
+     */
     views.length = 0;
     state.components.forEach(component => {
       // Lookup view by handle: {% include 'button' %}
@@ -43,9 +43,9 @@ module.exports = function(opts = {}) {
     });
 
     /*
-       * Get the source template string contents and
-       * render it asynchronously.
-       */
+     * Get the source template string contents and
+     * render it asynchronously.
+     */
     return new Promise((resolve, reject) => {
       env.renderString(str, props, (err, result) => {
         return err ? reject(err) : resolve(result);

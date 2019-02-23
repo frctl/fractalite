@@ -1,13 +1,10 @@
 /* eslint camelcase: "off" */
-const { defaultsDeep } = require('@frctl/fractalite-support/utils');
-const { map } = require('asyncro');
-const { html } = require('common-tags');
 
 module.exports = function(opts = {}) {
   return function inspectorHTMLPlugin(app, compiler, renderer) {
     if (opts === false) return;
 
-    const prettify = opts.prettify === false ? false : true;
+    const prettify = opts.prettify !== false;
 
     app.addInspectorPanel({
       name: 'html',

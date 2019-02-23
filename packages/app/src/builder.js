@@ -1,16 +1,15 @@
-const { join, isAbsolute } = require('path');
+const { join } = require('path');
+const https = require('https');
 const { outputFile } = require('fs-extra');
 const { map } = require('asyncro');
 const { normalizePath } = require('@frctl/fractalite-support/utils');
 const cpFile = require('cp-file');
-const https = require('https');
 const axios = require('axios');
 const del = require('del');
 
 module.exports = function() {
   const copyTasks = [];
   const requestTasks = [];
-
   const builder = {};
 
   builder.addCopyTask = task => {
@@ -31,7 +30,7 @@ module.exports = function() {
       await del(dest);
     }
 
-    const port = server.address().port;
+    const { port } = server.address();
     const protocol = server instanceof https.Server ? 'https' : 'http';
     const address = `${protocol}://${opts.hostname || '127.0.0.1'}:${port}`;
 

@@ -15,7 +15,7 @@ module.exports = {
       props: {
         text: 'Next',
         modifier: 'action',
-        icon: './arrow-right.svg', // component-relative file paths are automatically converted to URLs
+        icon: './arrow-right.svg', // Component-relative file paths are automatically converted to URLs
         iconPos: 'after'
       }
     },

@@ -1,5 +1,5 @@
 const JSON5 = require('json5');
-const { map, mapValues, isPlainObject, isString } = require('lodash');
+const { map, isPlainObject, isString } = require('lodash');
 
 module.exports = function(opts = {}) {
   return {

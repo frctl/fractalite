@@ -1,3 +1,5 @@
+/* global document */
+
 const buttons = document.querySelectorAll('.button');
 
 function clickLogger(event) {

@@ -1,10 +1,9 @@
-const { extname, isAbsolute, relative, basename } = require('path');
-const { isPlainObject, isFunction, isString, pick, mapValues, cloneDeep, get } = require('lodash');
+const { extname, basename } = require('path');
+const { isPlainObject, isFunction, isString, mapValues, cloneDeep } = require('lodash');
 const flatten = require('flat');
 const { rewriteUrls } = require('@frctl/fractalite-support/html');
 const { defaultsDeep, toArray, normalizePath } = require('@frctl/fractalite-support/utils');
 const { getScenario, getScenarioOrDefault, getComponent } = require('@frctl/fractalite-core/helpers');
-const { createRenderer } = require('@frctl/fractalite-core');
 const { map } = require('asyncro');
 
 const defaultOpts = {
@@ -29,7 +28,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 
   opts = defaultsDeep(opts, defaultOpts);
 
-  let previewTpl = opts.template;
+  const previewTpl = opts.template;
 
   app.extend({
     addPreviewStylesheet(url, path) {
@@ -109,13 +108,13 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     const state = compiler.getState();
     const hookCtx = { ...state, component, scenario };
 
-    // allow hooks to manipulate the props array before rendering
-    previewProps = await applyHooks('beforeScenarioRender', cloneDeep(scenario.preview.props), hookCtx);
+    // Allow hooks to manipulate the props array before rendering
+    const previewProps = await applyHooks('beforeScenarioRender', cloneDeep(scenario.preview.props), hookCtx);
 
     // Render the component once for each set of preview props
     let items = await renderer.renderAll(component, previewProps);
 
-    // allow hooks to manipulate the rendered output
+    // Allow hooks to manipulate the rendered output
     items = await applyHooks('afterScenarioRender', items, hookCtx);
 
     const componentOpts = component.preview;
@@ -169,7 +168,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       scripts.push(app.resourceUrl('app:reload.js'));
     }
 
-    // allow hooks to manipulate the preview object
+    // Allow hooks to manipulate the preview object
     html = renderer.getPreviewString(html);
 
     let preview = { js, css, meta, scripts, stylesheets, content: html };
@@ -183,7 +182,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       output = await app.views.renderAsync('preview', preview);
     }
 
-    // apply final hook to allow tweaking of output HTML
+    // Apply final hook to allow tweaking of output HTML
     output = await applyHooks('beforePreviewRender', output, hookCtx);
 
     return app.utils.prettify(output, 'html');
@@ -198,7 +197,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
   });
 
   // Rewrite links to other components in the templates
-  app.afterPreviewRender((html, { component }) => {
+  app.afterPreviewRender((html, state) => {
     return rewriteUrls(html, path => {
       if (path.startsWith('@') && !extname(path)) {
         const [componentName, scenarioName] = path.replace('@', '').split('/');
@@ -321,21 +320,22 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 
   async function applyHooks(name, target, ctx) {
     for (const hook of hooks[name]) {
-      target = await hook(target, ctx); // TODO: validate return target
+      target = await hook(target, ctx); // eslint-disable-line no-await-in-loop
     }
     return target;
   }
 
   function resolveAsset(asset) {
-    let path, url;
+    let path;
+    let url;
     if (isString(asset)) {
       if (asset.startsWith('//') || asset.includes('://')) {
-        url = asset; // full URL, use as-is
+        url = asset; // Full URL, use as-is
       } else if (asset.includes(':')) {
-        // reference a file in a static directory
+        // Reference a file in a static directory
         url = app.resourceUrl(asset);
       } else {
-        // assume it's a path
+        // Assume it's a path
         path = asset;
       }
     } else if (isPlainObject(asset)) {
@@ -362,9 +362,11 @@ module.exports = function(app, compiler, renderer, opts = {}) {
           throw new Error(`Preview asset '${path}' not found`);
         }
         return file.url;
-      } else if (path.startsWith('//') || path.includes('://')) {
+      }
+      if (path.startsWith('//') || path.includes('://')) {
         return path;
-      } else if (path.includes(':')) {
+      }
+      if (path.includes(':')) {
         return app.resourceUrl(path);
       }
     }

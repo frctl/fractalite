@@ -51,7 +51,7 @@ window.app = new Vue({
       }
       this.error = err;
     },
-    'state.updated': function() {
+    'state.updated'() {
       this.error = null;
     }
   },

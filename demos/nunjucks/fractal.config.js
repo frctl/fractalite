@@ -14,7 +14,7 @@ module.exports = {
    * and UI preview rendering steps if required.
    */
   adapter: require('@frctl/fractalite-adapter-nunjucks')({
-    // adapter options here...
+    // Adapter options here...
   }),
 
   /*

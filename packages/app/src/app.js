@@ -1,20 +1,17 @@
 const { isAbsolute, relative } = require('path');
-const { assign, get, set, mapValues, isPlainObject } = require('lodash');
+const { mapValues, isPlainObject } = require('lodash');
 const { map } = require('asyncro');
 const getPort = require('get-port');
 const Koa = require('koa');
 const compress = require('koa-compress');
 const IO = require('koa-socket-2');
 const send = require('koa-send');
-const cleanStack = require('clean-stacktrace');
-const relativePaths = require('clean-stacktrace-relative-paths');
 const { EventEmitter2 } = require('eventemitter2');
-const { permalinkify, defaultsDeep, processStack } = require('@frctl/fractalite-support/utils');
+const { permalinkify } = require('@frctl/fractalite-support/utils');
 const Router = require('./router');
 const Resources = require('./resources');
 const Views = require('./views');
 const createBuilder = require('./builder');
-const serveStatic = require('./serve');
 const getMode = require('./mode');
 
 module.exports = function(compiler, opts = {}) {

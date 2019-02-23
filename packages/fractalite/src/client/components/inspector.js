@@ -1,5 +1,3 @@
-/* global document */
-
 import axios from 'axios';
 import Preview from './preview';
 
@@ -8,8 +6,7 @@ export default {
   props: ['componentName', 'scenarioName'],
   components: { Preview },
   sockets: {
-    'state.updated': async function() {
-      const previewSrc = this.preview;
+    async 'state.updated'() {
       await this.load();
     },
     refresh() {

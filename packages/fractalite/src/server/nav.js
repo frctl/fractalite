@@ -101,12 +101,12 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 function defaultGenerator({ components, pages }, toTree) {
   return [
     toTree(pages),
-    components.length
-      ? {
+    components.length === 0
+      ? null
+      : {
           label: 'Components',
           children: toTree(components)
         }
-      : null
   ];
 }
 

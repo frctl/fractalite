@@ -11,7 +11,7 @@ export default {
   },
   props: ['path'],
   sockets: {
-    'state.updated': async function() {
+    async 'state.updated'() {
       await this.load();
     }
   },
