@@ -94,7 +94,7 @@ const args = mri(process.argv.slice(2));
         logger.success(`Fractalite static build complete. ${results.length} files generated.`);
       });
 
-      app.on('build.serving', server => {
+      app.on('build.server.started', server => {
         logger.success(`Servering static build`);
         const port = server.address().port;
         logger.log(stripIndent`
