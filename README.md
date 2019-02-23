@@ -78,7 +78,7 @@ Preliminary documentation to help get across some of the key aspects of the Frac
   * [Front Matter](#pages-frontmatter)
 * **Application UI**
   * [Overview](#application-ui)
-  * [Navigtion](#navigation)
+  * [Navigation](#navigation)
 * **Plugins**
   * [Overview](#plugins)
   * [Example plugin - author info](#example-plugin-author-info)
