@@ -176,7 +176,7 @@ module.exports = function(compiler, opts = {}) {
     app.emit('initialised', state);
 
     const port = await getPort({ port: mode.port });
-    let server = await new Promise((resolve, reject) => {
+    const server = await new Promise((resolve, reject) => {
       const httpServer = koa.listen(port, err => (err ? reject(err) : resolve(httpServer)));
     });
 
@@ -211,11 +211,6 @@ module.exports = function(compiler, opts = {}) {
 
       server.close();
 
-      if (mode.serve === true) {
-        server = await serveStatic(mode.dest, port);
-        app.emit('build.server.started', server);
-      }
-
       return server;
     }
 
@@ -227,15 +222,6 @@ module.exports = function(compiler, opts = {}) {
     app.emit('watching');
 
     return server;
-  };
-
-  app.stop = server => {
-    if (!server) {
-      throw new Error(`You must provide the server instance to stop`);
-    }
-    server.close();
-    app.emit('server.stopped');
-    return app;
   };
 
   return app;

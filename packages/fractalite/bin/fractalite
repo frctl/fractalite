@@ -6,6 +6,7 @@ const { cyan, dim, red } = require('kleur');
 const { Signale } = require('signale');
 const { stripIndent, source } = require('common-tags');
 const { loadConfig } = require('@frctl/fractalite-support');
+const { serveStatic } = require('@frctl/fractalite-app');
 const ip = require('ip');
 const fractalite = require('../.');
 const { assign } = Object;
@@ -69,20 +70,10 @@ const args = mri(process.argv.slice(2));
       const server = await app.run();
       const port = server.address().port;
 
-      logger.success(`Fractalite server started`);
-      logger.log('')
-      logger.log(stripIndent`
-        ---
-        Local:   ${cyan(`http://localhost:${port}`)}
-        Network: ${cyan(`http://${ip.address()}:${port}`)}
-        ---
-      `);
-      logger.log('')
-
-      process.on('SIGINT', () => {
-        app.stop(server);
-        logger.success('Fractalite server stopped');
-        process.exit(0);
+      serverStarted({
+        server,
+        startedMessage: `Fractalite server started`,
+        stoppedMessage: `Fractalite server stopped`
       });
 
     } else if (command === 'build') {
@@ -90,28 +81,33 @@ const args = mri(process.argv.slice(2));
       const mode = assign({ mode: 'build' }, config.build || {}, args);
       const app = fractalite({ mode, ...config });
 
-      app.on('build.end', results => {
-        logger.success(`Fractalite static build complete. ${results.length} files generated.`);
+      const interactiveLogger = new Signale({interactive: true});
+
+      app.on('build.start', () => {
+        interactiveLogger.await(`Building static export...`);
       });
 
-      app.on('build.server.started', server => {
-        logger.success(`Servering static build`);
-        const port = server.address().port;
-        logger.log(stripIndent`
-          ---
-          Local:   ${cyan(`http://localhost:${port}`)}
-          Network: ${cyan(`http://${ip.address()}:${port}`)}
-          ---
-        `);
-
-        process.on('SIGINT', () => {
-          app.stop(server);
-          logger.success('Fractalite static build server stopped');
-          process.exit(0);
-        });
+      app.on('build.end', results => {
+        interactiveLogger.success(`Fractalite static build complete. ${results.length} files generated.`);
       });
 
       await app.run();
+
+      if (mode.serve) {
+        const server = await serveStatic(mode.dest, mode.port);
+        serverStarted({
+          server,
+          startedMessage: `Serving static build`,
+          stoppedMessage: `Fractalite static build server stopped`
+        });
+      }
+
+    } else if (command === 'serve') {
+
+      const opts = assign(config.build || {}, args);
+      const server = await serveStatic(opts.dest, opts.port);
+
+      serverStarted({ server });
 
     } else {
       throw new Error(`Command '${command}' not recognised`);
@@ -121,4 +117,27 @@ const args = mri(process.argv.slice(2));
     logger.error(err);
     process.exit(1);
   }
+
+  function serverStarted({ server, startedMessage, stoppedMessage }){
+    const port = server.address().port;
+
+    logger.success(startedMessage || 'Server started');
+    logger.log('');
+    logger.log(stripIndent`
+      ---
+      Local:   ${cyan(`http://localhost:${port}`)}
+      Network: ${cyan(`http://${ip.address()}:${port}`)}
+      ---
+      ${dim(`Use ^C to stop`)}
+    `);
+    logger.log('');
+
+    process.on('SIGINT', () => {
+      server.close();
+      logger.log('');
+      logger.success(stoppedMessage || 'Server stopped');
+      process.exit(0);
+    });
+  }
+
 })();

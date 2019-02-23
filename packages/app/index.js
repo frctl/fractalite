@@ -4,6 +4,7 @@ const prettier = require('prettier');
 const cleanStack = require('clean-stacktrace');
 const relativePaths = require('clean-stacktrace-relative-paths');
 const { getComponent, isFile } = require('@frctl/fractalite-core/helpers');
+const serveStatic = require('./src/serve');
 const App = require('./src/app');
 
 module.exports = function(compiler, opts = {}) {
@@ -190,3 +191,4 @@ module.exports = function(compiler, opts = {}) {
 };
 
 module.exports.App = App;
+module.exports.serveStatic = serveStatic;
