@@ -21,6 +21,10 @@
 {% endblock %}
 
 {% block preScripts %}
+<script>
+  window.frctl = window.frctl || {};
+  window.frctl.mode = {{ mode | dump | safe }};
+</script>
 {% for template in ['navigation', 'preview', 'inspector', 'page', 'error'] %}
 <script type="text/x-template" id="{{ template }}">
 {% includeraw "components/" + template + '.vue' %}
