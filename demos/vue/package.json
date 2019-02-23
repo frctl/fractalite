@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "start": "fractalite start --port 3031",
-    "build": "fractalite build"
+    "build": "fractalite build --dest ./build --serve --port 4041",
+    "serve-static": "fractalite serve --dest ./build --port 4041"
   },
   "devDependencies": {
     "@frctl/fractalite": "^0.0.0",
