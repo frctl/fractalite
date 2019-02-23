@@ -5,6 +5,7 @@ const { isComponent, isFile } = require('@frctl/fractalite-core/helpers');
 
 module.exports = function(app, compiler, renderer, opts = {}) {
   const defaults = {
+    label: str => str,
     items: defaultGenerator,
     scenarios: true
   };
@@ -29,6 +30,10 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     });
   });
 
+  function generateLabel(str, target) {
+    return isFunction(opts.label) ? opts.label(str, target) : str;
+  }
+
   function buildNav(items, state) {
     items = isFunction(items) ? items(state, toTree) : items;
     return expandValues(items);
@@ -45,32 +50,38 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       }
 
       if (isComponent(item)) {
-        if (opts.scenarios) {
-          return {
-            label: item.label,
-            children: item.scenarios.map(scenario => {
-              return {
-                label: scenario.label,
-                url: scenario.url
-              };
-            })
-          };
-        }
-        return {
-          label: item.label,
-          url: item.url
+        const entry = {
+          type: 'component',
+          target: item
         };
+        if (opts.scenarios) {
+          entry.children = item.scenarios.map(scenario => {
+            const entry = {
+              type: 'scenario',
+              target: scenario,
+              url: scenario.url
+            };
+            entry.label = generateLabel(scenario.label, entry);
+            return entry;
+          });
+        } else {
+          entry.url = item.url;
+        }
+        entry.label = generateLabel(item.label, entry);
+        return entry;
       }
 
       if (isFile(item)) {
-        return {
-          label: item.handle,
-          url: item.url
+        const entry = {
+          type: 'file',
+          url: entry.url
         };
+        entry.label = generateLabel(item.handle, item);
+        return entry;
       }
 
-      item = {
-        label: item.label || item.handle,
+      const entry = {
+        target: item,
         url: item.url,
         children: item.children ? expandValues(item.children) : null
       };
@@ -80,7 +91,9 @@ module.exports = function(app, compiler, renderer, opts = {}) {
         item.url = app.url(route, props);
       }
 
-      return item;
+      entry.label = generateLabel(item.label || item.handle, entry);
+
+      return entry;
     });
   }
 };
