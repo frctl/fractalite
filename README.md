@@ -2,9 +2,9 @@
 
 A prototype to help explore development ideas for future [Fractal](https://fractal.build) versions.
 
-[Demo](#demo) | [Features & Status](#features) | [Documentation](#documentation)
+[Demo](#demo) | [Features & Status](#features) | [Documentation](#docs)
 
-## 📺 Demo
+<h2 id="demo">📺 Demo</h2>
 
 The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the [Nunjucks adapter](packages/adapter-nunjucks) alongside the [Asset Bundler](packages/plugin-assets-bundler) and [Notes](packages/plugin-notes) plugins.
 
@@ -74,7 +74,7 @@ Exported files can be found in the `demos/nunjucks/dist` directory after export.
 * [ ] More extensive feature demo
 * [ ] Any other suggestions...?
 
-## 📚 Documentation
+<h2 id="docs">📚 Documentation</h2>
 
 Preliminary documentation to help get across some of the key aspects of the Fractalite prototype.
 
