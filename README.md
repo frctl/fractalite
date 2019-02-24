@@ -85,7 +85,7 @@ Changes to the Nunjucks components will be instantly reflected in the UI.
 1. `npm run demo:build` - Export flat-file version of the app & serve the `dist` directory
 2. View the static app: http://localhost:4040
 
-Exported files can be found in the `demos/nunjucks/dist` directory after export.
+Exported files can be found in the `demos/nunjucks/build` directory after export.
 
 > As the name suggests, the static build is **not** regenerated when component files are updated.
 
