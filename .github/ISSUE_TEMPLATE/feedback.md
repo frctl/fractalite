@@ -31,17 +31,17 @@ below to try and help standardise responses, but feel free to skip/delete/amend 
 
 #### Which template engines/frameworks would you most like to see integration with? (2 - 3 max)
 
-[ ] DustJS
-[ ] HAML
-[ ] Handlebars
-[ ] Marko
-[ ] Mustache
-[ ] Nunjucks
-[ ] Pug
-[ ] React
-[ ] Twig
-[ ] Vue
-[ ] Other - please specify below
+- [ ] DustJS
+- [ ] HAML
+- [ ] Handlebars
+- [ ] Marko
+- [ ] Mustache
+- [ ] Nunjucks
+- [ ] Pug
+- [ ] React
+- [ ] Twig
+- [ ] Vue
+- [ ] Other - please specify below
 
 ## For developers...
 
