@@ -4,33 +4,32 @@ about: 'Provide feedback on the Fractalite prototype '
 title: 'Feedback '
 labels: Feedback
 assignees: allmarkedup
-
 ---
 
-> Thanks for taking the time to submit feedback! We've supplied some questions 
-below to try and help standardise responses, but feel free to skip/delete/amend as you see fit.
+(Thanks for taking the time to submit feedback! We've supplied some questions
+below to try and help standardise responses, but feel free to skip/delete/amend as you see fit.)
 
 ## Initial thoughts
 
-#### Did you have any difficulties getting the prototype demo up and running? 
+#### Did you have any difficulties getting the prototype demo up and running?
 
-#### Were your initial gut feelings about the prototype direction positive or negative? 
+#### Were your initial gut feelings about the prototype direction positive or negative?
 
 ## Components
 
-#### Did you like the `@name` folder name convention for components? 
+#### Did you like the `@name` folder name convention for components?
 
 #### v1-style 'single file components' are no longer supported. Does that pose any difficulties for you?
 
 #### Do you have any thoughts on the naming of configuration properties?
 
-> For example, v1 'variants' and 'context data' config properties have been renamed to 'scenarios' and 'props' respectively. Are those names better/worse/the same?
+(For example, v1 'variants' and 'context data' config properties have been renamed to 'scenarios' and 'props' respectively. Are those names better/worse/the same?)
 
 ## Adapters
 
 #### Which template engines/frameworks would you most like to see integration with? (2 - 3 max)
 
-[ ] DustJS 
+[ ] DustJS
 [ ] HAML
 [ ] Handlebars
 [ ] Marko
@@ -52,6 +51,6 @@ below to try and help standardise responses, but feel free to skip/delete/amend 
 
 ## Other
 
-#### Is there anything missing from v1 that you think should be part of the core of any future versions (i.e. not implemented as a plugin)?
+#### Is there anything missing from the prototype that currently exists in v1 and that you think should be part of the core of any future versions (i.e. not implemented as a plugin)?
 
 #### Any other comments/suggestions/ideas?
