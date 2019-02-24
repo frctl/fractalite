@@ -1,8 +1,61 @@
 # Fractalite
 
-A prototype to help explore development ideas for future [Fractal](https://fractal.build) versions.
+> A prototype to help explore development ideas for the next version of [Fractal](https://fractal.build).
 
-[Demo](#demo) | [Features & Status](#features) | [Documentation](#docs)
+[Features & Status](#features) | [Demo](#demo)  | [Documentation](#docs)
+
+Development work on a potential Fractal v2 release was halted a while ago after it became clear that it incorporated too many conceptual changes from v1 and the codebase had become too large and unwieldy.
+
+This prototype has been create to explore a middle ground, (hopefully) incorporating many of the v2 improvements into a package that is conceptually much closer to the current fractal v1.x release.
+
+### 📣 We need your feedback! 📣
+
+The aim of this prototype is to provide the ground work for the next version of Fractal. It's very much a work in progress and we'd love to get **as much input from the community as possible** to help shape that process.
+
+Please let us know your thoughts on this prototype by [opening a new issue using the 'Feedback' issue template](https://github.com/frctl/fractalite/issues/new?assignees=allmarkedup&labels=Feedback&template=feedback.md&title=Feedback+) or by jumping into the [Fractal slack channel](http://slack.fractal.build) to discuss. Feel free to message `@mark` with any questions you might have!
+
+---
+
+<h2 id="features">🚦 Features & status</h2>
+
+This prototype is in the very early 'developer preview' stages and is currently focussed on development direction alongside plugin and adapter APIs.
+
+Feedback, comments and/or pull requests on **all** aspects of the prototype are however always welcome!
+
+#### Currently implemented
+
+* Middleware-based components parser/compiler
+* [Plugin system](#plugins) for compiler and UI customisation
+* [Adapter-based](#adapters) component rendering
+* Completely customisable [nav generation](#navigaion)
+* Easy asset referencing within components
+* Dynamic page builder
+* Zero-config [asset bundling](#assets-bundler-plugin) (via plugin)
+* Hybrid client/server side-rendered UI (using [Vue](https://vuejs.org))
+* Live-reloading development mode
+* Static build export
+
+#### Still missing/in progress
+
+* [ ] Community feedback and input! :-)
+* [ ] Proper UI design & implementation
+  * [ ] Responsive UI
+  * [ ] Loading states
+  * [ ] Component search
+  * [ ] Collapsible nav
+  * [ ] Variables for theming
+  * [ ] Landing page
+* [ ] Tests
+* [ ] Documentation
+* [ ] Additional template engine adapters
+  * [ ] Handlebars
+  * [ ] Twig
+  * [ ] React
+  * [ ] Others...?
+* [ ] More UI customisation hooks?
+* [ ] More extensive feature demo
+* [ ] Any other suggestions...?
+
 
 <h2 id="demo">📺 Demo</h2>
 
@@ -40,43 +93,9 @@ Exported files can be found in the `demos/nunjucks/dist` directory after export.
 
 * [Vue demo](demos/vue) - Basic proof-of-concept, client-side rendered Vue integration. `npm run demo:vue`
 
-<h2 id="features">🚦 Features & status</h2>
-
-* Middleware-based components parser/compiler
-* Plugin system for compiler and UI customisation
-* Adapter-based component rendering
-* Completely customisable nav generation
-* Easy asset referencing within components
-* Dynamic page builder
-* Zero-config asset bundling (via plugin)
-* Hybrid client/server side-rendered UI (using [Vue](https://vuejs.org))
-* Live-reloading development mode
-* Static build export
-
-#### Still missing/in progress...
-
-* [ ] Community feedback and input! :-)
-* [ ] Proper UI design & implementation
-  * [ ] Responsive UI
-  * [ ] Loading states
-  * [ ] Component search
-  * [ ] Collapsible nav
-  * [ ] Theme variables
-  * [ ] Landing page
-* [ ] Tests
-* [ ] Documentation
-* [ ] Additional template engine adapters
-  * [ ] Handlebars
-  * [ ] Twig
-  * [ ] React
-  * [ ] Others...?
-* [ ] More UI customisation hooks?
-* [ ] More extensive feature demo
-* [ ] Any other suggestions...?
-
 <h2 id="docs">📚 Documentation</h2>
 
-Preliminary documentation to help get across some of the key aspects of the Fractalite prototype.
+Below is some preliminary documentation to help get across some of the key aspects of the Fractalite prototype.
 
 > This documentation assumes good knowledge of Fractal (v1) concepts and is not intended as a starter guide!
 

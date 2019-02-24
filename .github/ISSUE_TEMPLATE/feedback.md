@@ -15,6 +15,8 @@ below to try and help standardise responses, but feel free to skip/delete/amend 
 
 #### Were your initial gut feelings about the prototype direction positive or negative?
 
+#### Do you think this prototype represents a good development direction for the next version of Fractal?
+
 ## Components
 
 #### Did you like the `@name` folder name convention for components?
@@ -41,13 +43,15 @@ below to try and help standardise responses, but feel free to skip/delete/amend 
 [ ] Vue
 [ ] Other - please specify below
 
-## Extending Fractalite (for developers)
+## For developers...
 
 #### Does the plugin model make sense to you? Any questions/queries about it?
 
 #### Are there customisations that you'd like to make that you think might not be possible in the current plugin system implementation?
 
 #### Does the Adapter system implementation make sense you you?
+
+#### Do you think the monorepo approach is a good route future Fractal development?
 
 ## Other
 
