@@ -1,9 +1,9 @@
 const { get } = require('lodash');
-const Compiler = require('./src/compiler');
+const createCompiler = require('./src/compiler');
 const coreMiddleware = require('./src/middleware');
 
 function init(config) {
-  const compiler = new Compiler(config);
+  const compiler = createCompiler(config);
 
   coreMiddleware.forEach(({ key, handler }) => {
     const opts = get(config, key, {});

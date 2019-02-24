@@ -101,7 +101,6 @@ const utils = {
         descriptors[key] = Object.getOwnPropertyDescriptor(source, key);
         return descriptors;
       }, {});
-      // By default, Object.assign copies enumerable Symbols too
       Object.getOwnPropertySymbols(source).forEach(sym => {
         const descriptor = Object.getOwnPropertyDescriptor(source, sym);
         if (descriptor.enumerable) {
@@ -146,31 +145,6 @@ const utils = {
     src = utils.defaultsDeep(src, defaults, { opts: {} });
     src.paths = utils.normalizePaths(src.paths);
     return src;
-  },
-
-  processStack(...args) {
-    const mapper = _.isFunction(args[args.length - 1]) ? args.pop() : null;
-    const values = _.compact(_.flatten(args));
-    let result = [];
-    let final = [];
-    for (const value of values) {
-      if (!value) {
-        continue;
-      }
-      if (Array.isArray(value) || _.isString(value)) {
-        result = result.concat(value);
-      } else if (_.isPlainObject(value)) {
-        const replace = [].concat(_.get(value, 'replace', result));
-        const prepend = [].concat(_.get(value, 'prepend', []));
-        const append = [].concat(_.get(value, 'append', []));
-        if (value.final) {
-          final = final.concat(value.final);
-        }
-        result = prepend.concat(replace).concat(append);
-      }
-    }
-    result = [...result, ...final];
-    return mapper ? result.map(mapper) : result;
   }
 };
 
