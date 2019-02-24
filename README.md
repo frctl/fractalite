@@ -1,18 +1,18 @@
 # Fractalite
 
-> A prototype to help explore development ideas for the next version of [Fractal](https://fractal.build).
+A prototype to help explore development ideas for the next version of [Fractal](https://fractal.build).
 
 [Features & Status](#features) | [Demo](#demo)  | [Documentation](#docs)
 
-Development work on a potential Fractal v2 release was halted a while ago after it became clear that it incorporated too many conceptual changes from v1 and the codebase had become too large and unwieldy.
-
-This prototype has been create to explore a middle ground, (hopefully) incorporating many of the v2 improvements into a package that is conceptually much closer to the current fractal v1.x release.
+> Development work on a potential Fractal v2 release was halted a while ago after it became clear that it incorporated too many conceptual changes from v1 and the codebase had become too large and unwieldy.
+>
+> This prototype has been create to explore a middle ground, (hopefully) incorporating many of the v2 improvements into a package that is conceptually much closer to the current fractal v1.x release.
 
 ### 📣 We need your feedback! 📣
 
 The aim of this prototype is to provide the ground work for the next version of Fractal. It's very much a work in progress and we'd love to get **as much input from the community as possible** to help shape that process.
 
-Please let us know your thoughts on this prototype by [opening a new issue using the 'Feedback' issue template](https://github.com/frctl/fractalite/issues/new?assignees=allmarkedup&labels=Feedback&template=feedback.md&title=Feedback+) or by jumping into the [Fractal slack channel](http://slack.fractal.build) to discuss. Feel free to message `@mark` with any questions you might have!
+**Please let us know your thoughts** by [opening a new issue using the 'Feedback' issue template](https://github.com/frctl/fractalite/issues/new?assignees=allmarkedup&labels=Feedback&template=feedback.md&title=Feedback+) or by jumping into the `#fractalite` channel in the [Fractal community Slack](http://slack.fractal.build) to discuss. Feel free to message `@mark` with any questions you might have!
 
 ---
 
@@ -28,7 +28,7 @@ Feedback, comments and/or pull requests on **all** aspects of the prototype are 
 * [Plugin system](#plugins) for compiler and UI customisation
 * [Adapter-based](#adapters) component rendering
 * Completely customisable [nav generation](#navigaion)
-* Easy asset referencing within components
+* Easy [asset referencing](#view-template-assets) within components
 * Dynamic page builder
 * Zero-config [asset bundling](#assets-bundler-plugin) (via plugin)
 * Hybrid client/server side-rendered UI (using [Vue](https://vuejs.org))
@@ -324,7 +324,7 @@ However, in the case of 'simple' template engines such as Nunjucks or Handlebars
 
 More complex frameworks such as Vue or React may have different requirements and feature support will be determined by the adapter used.
 
-#### Linking to assets in view templates
+<h4 id="view-template-assets">Linking to assets in view templates</h4>
 
 Referencing local component assets in view templates can be done via relative paths:
 
