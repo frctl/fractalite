@@ -1,7 +1,9 @@
 const { flatMap } = require('lodash');
 
-module.exports = function({ components = [] } = {}) {
-  const state = { components };
+module.exports = function(initial = {}) {
+  const state = {
+    components: []
+  };
 
   Object.defineProperty(state, 'files', {
     get() {
@@ -14,6 +16,8 @@ module.exports = function({ components = [] } = {}) {
     Object.assign(state, props);
     return state;
   };
+
+  state.update(initial);
 
   return state;
 };
