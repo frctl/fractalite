@@ -4,7 +4,7 @@ module.exports = {
   /*
    * Project title used in the UI
    */
-  title: 'Nunjucks Demo',
+  title: 'QMUL',
 
   /*
    * Template engine adapter

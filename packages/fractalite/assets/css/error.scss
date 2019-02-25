@@ -5,6 +5,11 @@
   overflow: auto;
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 
   &__title {
     font-size: 24px;
@@ -24,15 +29,7 @@
     word-break: break-all;
   }
 
-  &--full {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-  }
-
-  &--full &__content {
+  &__content {
     max-width: 600px;
   }
 

@@ -1,3 +1,4 @@
+
 *,
 *:before,
 *:after {
@@ -5,28 +6,19 @@
 }
 
 html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue';
+  font-family: var(--font-family);
   width: 100vw;
   height: 100vh;
-  color: #333;
+  color: var(--text-color);
   line-height: 1.4;
-  font-size: 18px;
+  font-size: var(--font-size);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-}
-
-#app {
-  height: 100vh;
-  width: 100vw;
-  padding: 0;
-}
-
 a {
-  color: #0074d9;
+  color: var(--link-color);
+  text-decoration: var(--link-decoration);
 }
 
 h1,
@@ -47,4 +39,8 @@ ol {
 
 pre {
   margin: 0;
+}
+
+pre, code {
+  font-family: var(--font-family);
 }

@@ -1,0 +1,10 @@
+@import 'highlight.js/styles/github.css';
+
+.hljs {
+  font-family: var(--font-family--code) !important;
+  font-size: var(--font-size--code);
+
+  &--wrap {
+    white-space: pre-wrap;
+  }
+}

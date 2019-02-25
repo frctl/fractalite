@@ -1,7 +1,7 @@
 {% extends "layout" %}
 
 {% block body %}
-<div class="fr-error fr-error--full">
+<div class="fr-error">
   <div class="fr-error__content">
     <h1 class="fr-error__title">{{ error.title | default('An error occured') }}</h1>
     <p class="fr-error__message">{{ error.message }}</p>

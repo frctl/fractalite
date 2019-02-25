@@ -1,0 +1,15 @@
+.fr-json-explorer {
+  padding: 12px;
+  line-height: 1.3;
+
+  &__tree {
+    font-family: var(--font-family--code);
+    font-size: var(--font-size--code);
+  }
+
+  & &__tree .vjs__value__string {
+    color: rgb(170, 17, 17);
+  }
+
+  // TODO: use variables for other value types
+}

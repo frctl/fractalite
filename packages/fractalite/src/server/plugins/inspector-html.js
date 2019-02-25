@@ -9,10 +9,9 @@ module.exports = function(opts = {}) {
     app.addInspectorPanel({
       name: 'html',
       label: opts.label || 'HTML',
-      renderServer: false,
       renderClient: true,
       template: `
-        <codemirror :value="panel.props.html.join('\\n\\n')" :options="{ mode: 'htmlmixed' }" />
+        <source-code :value="panel.props.html.join('\\n\\n')" :options="{ mode: 'htmlmixed' }" />
       `,
       async props(state) {
         const { scenario, component } = state;

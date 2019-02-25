@@ -1,10 +1,11 @@
+@import 'inter-ui/inter.css';
+@import 'source-code-pro/source-code-pro.css';
 @import 'normalize.css/normalize.css';
-@import 'highlight.js/styles/github.css';
-@import 'codemirror/lib/codemirror.css';
+
+@import './css/theme';
 @import './css/base';
+@import './css/app';
 @import './css/prose';
-@import './css/layout';
-@import './css/sidebar';
 @import './css/brand';
 @import './css/nav';
 @import './css/inspector';
@@ -13,6 +14,7 @@
 @import './css/tabs';
 @import './css/panels';
 @import './css/error';
-@import './css/code';
-@import './css/icon';
+@import './css/highlight';
+@import './css/json-explorer';
+@import './css/source-code';
 @import './css/proptable';

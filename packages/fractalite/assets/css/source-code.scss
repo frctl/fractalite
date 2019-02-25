@@ -1,0 +1,18 @@
+@import 'codemirror/lib/codemirror.css';
+
+.fr-source-code {
+  font-family: var(--font-family--code) !important;
+  font-size: var(--font-size--code);
+
+  .vue-codemirror {
+    height: 100%;
+  }
+
+  .CodeMirror {
+    height: 100%;
+  }
+
+  .CodeMirror-scroll {
+    margin-bottom: 0 !important;
+  }
+}

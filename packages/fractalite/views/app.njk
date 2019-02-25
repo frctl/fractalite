@@ -1,17 +1,17 @@
 {% extends "layout" %}
 
 {% block body %}
-<error v-if="error" :error="error" class="fr-error--overlay"></error>
-<div class="fr-layout">
-  <div class="fr-layout__sidebar fr-sidebar">
+<error v-if="error" :error="error"></error>
+<div class="fr-app__container">
+  <div class="fr-app__sidebar">
     <header class="fr-branding">
       <div class="fr-brand">
-        <router-link to="/" class="fr-brand__title">{{ app.title }}</router-link>
+        <a href="/" class="fr-brand__title">{{ app.title }}</a>
       </div>
     </header>
     <navigation></navigation>
   </div>
-  <main class="fr-layout__main fr-main">
+  <main class="fr-app__main">
     <!-- <div v-if="loading" class="loader">
       <svg width="44" height="44" xmlns="http://www.w3.org/2000/svg" stroke="#303841"><g fill="none" fill-rule="evenodd" stroke-width="2"><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle></g></svg>
     </div> -->

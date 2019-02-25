@@ -4,35 +4,20 @@
 import Vue from 'vue/dist/vue';
 import VueSocketio from 'vue-socket.io-extended';
 import io from 'socket.io-client';
-import VueCodemirror from 'vue-codemirror';
-import VueJsonPretty from 'vue-json-pretty';
 import VueSplit from 'vue-splitjs';
-
-import 'codemirror/mode/css/css';
-import 'codemirror/mode/sass/sass';
-import 'codemirror/mode/yaml/yaml';
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/htmlmixed/htmlmixed';
-import 'codemirror/addon/display/autorefresh';
-
 import Navigation from './components/navigation';
 import Error from './components/error';
+import JSONExplorer from './components/json-explorer';
+import SourceCode from './components/source-code';
 import AppLink from './components/app-link';
 import router from './router';
 
 Vue.use(VueSocketio, io());
-Vue.use(VueCodemirror, {
-  options: {
-    lineNumbers: true,
-    readOnly: true,
-    lineWrapping: true,
-    autoRefresh: true
-  }
-});
+
 Vue.component('split-pane', VueSplit);
-Vue.component('vue-json-pretty', VueJsonPretty);
 Vue.component('app-link', AppLink);
-Vue.component('error', Error);
+Vue.component('json-explorer', JSONExplorer);
+Vue.component('source-code', SourceCode);
 
 window.app = new Vue({
   el: '#app',
@@ -41,7 +26,8 @@ window.app = new Vue({
     loading: false
   },
   components: {
-    navigation: Navigation
+    Error,
+    Navigation,
   },
   router,
   sockets: {
