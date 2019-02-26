@@ -1,16 +1,39 @@
 :root {
-  --font-size: 18px;
-  --font-size--code: 14px;
-  --font-family: Inter, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue';
+  --font-size: 16px;
+  --font-size--small: 14px;
+  --font-size--large: 20px;
+  --font-size--xlarge: 24px;
+
+  --font-size--code: var(--font-size--small);
+
+  --font-family: Inter, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue';
   --font-family--code: 'Source Code Pro', monospace;
 
   --text-color: #333;
   --link-color: #0074d9;
-  --link-decoration: none;
+  --link-decoration: underline;
 
-  --sidebar-bg-color: #303841;
+  --bg-color-light: #fff;
+  --bg-color-light-shade: #f8f8f8;
+  --bg-color-dark: #303841;
+
+  --divider-color: #ddd;
+
+  --sidebar-bg-color: var(--bg-color-dark);
   --sidebar-text-color: #fff;
   --sidebar-link-color: rgba(#fff, 0.7);
 
+  --page-bg-color: #fff;
+  --panel-bg-color: var(--bg-color-light);
+
+  --error-bg-color: #9a0000;
+  --error-bg-color--overlay: rgba(#9a0000, 0.95);
+  --error-text-color: #fff;
+
+  --tabs-bg-color: var(--bg-color-light-shade);
+  --tabs-color-highlight: #333;
+  --tabs-color-hover: #ccc;
+
+  --resizer-width: 10px;
+  --resizer-bg-color: #eee;
 }

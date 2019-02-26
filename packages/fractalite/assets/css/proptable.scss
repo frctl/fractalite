@@ -1,5 +1,5 @@
 .fr-proptable {
-  background-color: #fff;
+  background-color: var(--bg-color-light);
   display: table;
   font-size: 15px;
   border-collapse: collapse;
@@ -10,8 +10,8 @@
 
   &__cell {
     display: table-cell;
-    border: 1px solid #e6e6e6;
-    padding: 2px 5px;
+    border: 1px solid var(--divider-color);
+    padding: 3px 5px;
   }
 
   &__cell--fit {

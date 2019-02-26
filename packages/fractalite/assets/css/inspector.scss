@@ -1,7 +1,7 @@
 .fr-inspector {
   width: 100%;
   height: 100vh;
-  background: #e8ebee;
+  background: var(--bg-color-light-shade);
   overflow: hidden;
 
   &__preview {
@@ -10,7 +10,7 @@
   }
 
   &__info {
-    border-top: 1px solid rgba(70, 81, 94, 0.25);
+    border-top: 1px solid var(--divider-color);
     flex: 1;
     background-color: #fff;
     overflow: hidden;

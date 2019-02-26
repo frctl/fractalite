@@ -1,15 +1,35 @@
 .fr-json-explorer {
   padding: 12px;
-  line-height: 1.3;
+  height: 100%;
+  background-color: var(--bg-color-light);
 
-  &__tree {
+  .vjs__tree {
+    line-height: 1.3;
     font-family: var(--font-family--code);
     font-size: var(--font-size--code);
-  }
+    color: var(--text-color);
 
-  & &__tree .vjs__value__string {
-    color: rgb(170, 17, 17);
-  }
+    .vjs__tree__content {
+      border-left: 1px dotted var(--divider-color);
+    }
 
-  // TODO: use variables for other value types
+    .vjs__tree__node {
+      &:hover {
+        color: #20a0ff;
+      }
+    }
+
+    .vjs__value__null {
+      color: #ff4949;
+    }
+
+    .vjs__value__number,
+    .vjs__value__boolean {
+      color: #1d8ce0;
+    }
+
+    .vjs__value__string {
+      color: rgb(170, 17, 17);
+    }
+  }
 }

@@ -44,3 +44,7 @@ pre {
 pre, code {
   font-family: var(--font-family);
 }
+
+.split-container .gutter {
+  background-color: var(--resizer-bg-color);
+}

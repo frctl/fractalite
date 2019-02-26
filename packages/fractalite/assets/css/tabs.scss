@@ -1,7 +1,8 @@
 .fr-tabs {
+  background-color: var(--tabs-bg-color);
   display: flex;
   width: 100%;
-  border-bottom: 1px solid rgba(70, 81, 94, 0.25);
+  border-bottom: 1px solid var(--divider-color);
   align-items: stretch;
 
   &__tab {
@@ -9,7 +10,7 @@
   }
 
   &__tab a {
-    color: #222;
+    color: var(--text-color);
     display: block;
     font-size: 14px;
     padding: 10px 0;
@@ -18,11 +19,11 @@
   }
 
   &__tab:hover a {
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--tabs-color-hover);
   }
 
   &__tab.is-current a {
     font-weight: bold;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--tabs-color-highlight);
   }
 }

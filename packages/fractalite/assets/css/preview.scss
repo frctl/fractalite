@@ -1,7 +1,6 @@
-$preview-resizer-width: 10px;
-
 .fr-preview {
   display: flex;
+  background-color: var(--bg-color-light);
 
   &__wrapper {
     height: 100%;
@@ -9,7 +8,7 @@ $preview-resizer-width: 10px;
   }
 
   &__spacer {
-    background: #f7f8f9;
+    background: var(--bg-color-light-shade);
   }
 
   &__window {
