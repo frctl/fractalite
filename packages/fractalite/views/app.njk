@@ -4,12 +4,13 @@
 <error v-if="error" :error="error"></error>
 <div class="fr-app__container">
   <div class="fr-app__sidebar">
-    <header class="fr-branding">
-      <div class="fr-brand">
-        <a href="/" class="fr-brand__title">{{ app.title }}</a>
-      </div>
+    <header class="fr-app__brand fr-brand">
+      <a href="/" class="fr-brand__title">{{ app.title }}</a>
     </header>
-    <navigation></navigation>
+    <div class="fr-app__navigation">
+      <navigation></navigation>
+    </div>
+    <footer class="fr-app__controls fr-controls"></footer>
   </div>
   <main class="fr-app__main">
     <!-- <div v-if="loading" class="loader">

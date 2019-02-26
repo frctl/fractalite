@@ -19,11 +19,19 @@
 
   --divider-color: #ddd;
 
+  --sidebar-width: 260px;
   --sidebar-bg-color: var(--bg-color-dark);
   --sidebar-text-color: #fff;
   --sidebar-link-color: rgba(#fff, 0.7);
 
-  --page-bg-color: #fff;
+  --nav-text-color: var(--sidebar-text-color);
+  --nav-link-color: var(--sidebar-link-color);
+  --nav-link-color--hover: var(--nav-link-color);
+  --nav-link-bg--hover: rgba(#46515e, 0.8);
+  --nav-link-color--active: var(--sidebar-link-color);
+  --nav-link-bg--active: #46515e;
+
+  --page-bg-color: var(--bg-color-light);
   --panel-bg-color: var(--bg-color-light);
 
   --error-bg-color: #9a0000;
@@ -34,6 +42,6 @@
   --tabs-color-highlight: #333;
   --tabs-color-hover: #ccc;
 
-  --resizer-width: 10px;
-  --resizer-bg-color: #eee;
+  --preview-bg-color: var(--bg-color-light);
+  --preview-resizer-bg-color: #eee;
 }

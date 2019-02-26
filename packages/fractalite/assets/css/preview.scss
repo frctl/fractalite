@@ -1,6 +1,6 @@
 .fr-preview {
   display: flex;
-  background-color: var(--bg-color-light);
+  background-color: var(--preview-bg-color);
 
   &__wrapper {
     height: 100%;
@@ -20,5 +20,9 @@
     left: 0;
     right: 0;
     bottom: 0;
+  }
+
+  .gutter.gutter-horizontal {
+    background-color: var(--preview-resizer-bg-color);
   }
 }

@@ -3,10 +3,11 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    font-size: 14px;
+    font-size: var(--font-size--small);
   }
 
-  &__label {
+  &__link,
+  &__toggle {
     display: block;
     padding: 6px 16px;
     text-decoration: none;
@@ -14,24 +15,32 @@
     position: relative;
   }
 
+  &__toggle {
+    color: var(--nav-text-color);
+  }
+
+  &__link {
+    color: var(--nav-link-color);
+  }
+
   &__link:hover {
-    background-color: rgba(#46515e, 0.8);
-    color: #fff;
+    background-color: var(--nav-link-bg--hover);
+    color: var(--nav-link-color--hover);
+  }
+
+  &__link.router-link-exact-active {
+    background-color: var(--nav-link-bg--active);
+    color: var(--nav-link-color--active);
   }
 
   @for $i from 1 through 6 {
-    [data-level='#{$i}'] &__label {
+    [data-level='#{$i}'] &__toggle,
+    [data-level='#{$i}'] &__link {
       padding-left: 16px * $i;
     }
   }
 
   [data-level='1'] > li > &__toggle {
     font-weight: bold;
-  }
-
-  &__link.router-link-exact-active {
-    background-color: #46515e;
-    color: #fff;
-    // font-weight: bold;
   }
 }

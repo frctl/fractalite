@@ -10,7 +10,6 @@
   }
 
   &__info {
-    border-top: 1px solid var(--divider-color);
     flex: 1;
     background-color: #fff;
     overflow: hidden;
@@ -26,7 +25,14 @@
     flex: 1;
   }
 
-  .fr-source-code {
+  .gutter.gutter-vertical {
+    border-top: 1px solid var(--divider-color);
+    background-color: var(--tabs-bg-color);
+    background-image: none;
+  }
+
+  .fr-source-code,
+  .fr-json-explorer {
     height: 100%;
   }
 }
