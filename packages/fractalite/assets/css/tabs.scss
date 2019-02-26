@@ -4,6 +4,7 @@
   width: 100%;
   border-bottom: 1px solid var(--divider-color);
   align-items: stretch;
+  user-select: none;
 
   &__tab {
     flex: 1;

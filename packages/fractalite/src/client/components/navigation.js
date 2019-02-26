@@ -18,7 +18,8 @@ export default {
   },
   data() {
     return {
-      items: []
+      items: [],
+      open: []
     };
   },
   async mounted() {
@@ -36,6 +37,12 @@ export default {
       } catch (err) {
         this.$parent.$emit('error', err);
       }
+    },
+    toggleChildren(id) {
+      this.$store.commit('toggleNavOpenId', id);
+    },
+    isOpen(id) {
+      return this.$store.getters.hasNavOpenId(id);
     }
   },
   watch: {

@@ -44,6 +44,9 @@
     height: 100%;
     background: var(--error-bg-color--overlay);
     z-index: 10000;
+    justify-content: start;
+    align-items: start;
+    text-align: left;
   }
 
   &--overlay.is-active {

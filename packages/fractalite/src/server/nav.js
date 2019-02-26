@@ -1,6 +1,6 @@
 const { dirname } = require('path');
 const { merge, isFunction, isPlainObject, flatMap, uniqBy, orderBy, compact } = require('lodash');
-const { titlize } = require('@frctl/fractalite-support/utils');
+const { titlize, slugify } = require('@frctl/fractalite-support/utils');
 const { isComponent, isFile } = require('@frctl/fractalite-core/helpers');
 
 module.exports = function(app, compiler, renderer, opts = {}) {
@@ -39,7 +39,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     return expandValues(items);
   }
 
-  function expandValues(items) {
+  function expandValues(items, level = 0) {
     return flatMap(compact(items), item => {
       if (Array.isArray(item)) {
         return expandValues(item);
@@ -51,12 +51,14 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 
       if (isComponent(item)) {
         const entry = {
+          id: `component-${item.name}`,
           type: 'component',
           target: item
         };
         if (opts.scenarios) {
           entry.children = item.scenarios.map(scenario => {
             const entry = {
+              id: `scenario-${item.name}-${scenario.name}`,
               type: 'scenario',
               target: scenario,
               url: scenario.url
@@ -73,6 +75,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 
       if (isFile(item)) {
         const entry = {
+          id: item.handle,
           type: 'file',
           url: entry.url
         };
@@ -83,7 +86,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       const entry = {
         target: item,
         url: item.url,
-        children: item.children ? expandValues(item.children) : null
+        children: item.children ? expandValues(item.children, level + 1) : null
       };
 
       if (isPlainObject(item.url)) {
@@ -91,8 +94,12 @@ module.exports = function(app, compiler, renderer, opts = {}) {
         item.url = app.url(route, props);
       }
 
+      entry.id = item.id || item.url || item.path || `level-${level}-${item.label}`;
       entry.label = generateLabel(item.label || item.handle, entry);
 
+      return entry;
+    }).map(entry => {
+      entry.id = slugify(entry.id);
       return entry;
     });
   }

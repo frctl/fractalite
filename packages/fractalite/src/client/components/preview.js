@@ -1,6 +1,14 @@
+import resize from 'vue-resize-directive';
+
 export default {
   template: '#preview',
   props: ['src', 'srcdoc'],
+  data() {
+    return {
+      previewWidth: 0,
+      previewHeight: 0
+    };
+  },
   methods: {
     reload: debounce(
       function() {
@@ -9,6 +17,17 @@ export default {
       500,
       true
     )
+  },
+  directives: { resize },
+  methods: {
+    onPreviewResize(el) {
+      this.previewWidth = el.clientWidth;
+      this.previewHeight = el.clientHeight;
+    }
+  },
+  mounted() {
+    this.previewWidth = this.$refs['preview-wrapper'].clientWidth;
+    this.previewHeight = this.$refs['preview-wrapper'].clientHeight;
   }
 };
 

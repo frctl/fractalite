@@ -27,15 +27,15 @@
   --nav-text-color: var(--sidebar-text-color);
   --nav-link-color: var(--sidebar-link-color);
   --nav-link-color--hover: var(--nav-link-color);
-  --nav-link-bg--hover: rgba(#46515e, 0.8);
+  --nav-link-bg--hover: rgba(70, 81, 94, 0.8);
   --nav-link-color--active: var(--sidebar-link-color);
-  --nav-link-bg--active: #46515e;
+  --nav-link-bg--active: rgba(70, 81, 94, 1);
 
   --page-bg-color: var(--bg-color-light);
   --panel-bg-color: var(--bg-color-light);
 
-  --error-bg-color: #9a0000;
-  --error-bg-color--overlay: rgba(#9a0000, 0.95);
+  --error-bg-color: rgba(154, 0, 0, 1);
+  --error-bg-color--overlay: rgba(154, 0, 0, 0.95);
   --error-text-color: #fff;
 
   --tabs-bg-color: var(--bg-color-light-shade);

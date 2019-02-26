@@ -6,8 +6,17 @@
     font-size: var(--font-size--small);
   }
 
+  &__item > &__items {
+    display: none;
+  }
+
+  &__item.is-open > &__items {
+    display: block;
+  }
+
   &__link,
   &__toggle {
+    user-select: none;
     display: block;
     padding: 6px 16px;
     text-decoration: none;
@@ -17,6 +26,27 @@
 
   &__toggle {
     color: var(--nav-text-color);
+    position: relative;
+    &:before {
+      display: inline-block;
+      content: '›';
+      font-weight: bold;
+      position: relative;
+      left: -8px;
+      opacity: 0.5;
+    }
+  }
+
+  &__item.is-open > &__toggle:before {
+    transform: rotate(90deg);
+  }
+
+  &__toggle:hover {
+    // background-color: #2b323a;
+    cursor: pointer;
+    &:before {
+      opacity: 1;
+    }
   }
 
   &__link {

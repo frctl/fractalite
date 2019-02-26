@@ -11,6 +11,7 @@ import JSONExplorer from './components/json-explorer';
 import SourceCode from './components/source-code';
 import AppLink from './components/app-link';
 import router from './router';
+import store from './store';
 
 Vue.use(VueSocketio, io());
 
@@ -27,9 +28,10 @@ window.app = new Vue({
   },
   components: {
     Error,
-    Navigation,
+    Navigation
   },
   router,
+  store,
   sockets: {
     err(err) {
       if (err.status === 404) {

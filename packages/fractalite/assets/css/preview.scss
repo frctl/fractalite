@@ -7,6 +7,17 @@
     position: relative;
   }
 
+  &__stats {
+    background: var(--bg-color-light-shade);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: inline-block;
+    font-family: var(--font-family--code);
+    font-size: 14px;
+    padding: 3px 4px;
+  }
+
   &__spacer {
     background: var(--bg-color-light-shade);
   }
