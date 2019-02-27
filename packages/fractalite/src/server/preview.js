@@ -239,8 +239,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
    *
    * Preview URLs are not handle client-side so they
    * need to point to the statically export file
-   * in `build` mode - hence the use of `app.modeOpts.paths`
-   * as the final arg to the `app.url()` method.
+   * in `build` mode
    */
   compiler.use(async (components, next) => {
     await next();
@@ -252,7 +251,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
             component: component.name,
             scenario: scenario.name
           },
-          app.modeOpts.paths
+          app.mode === 'build' ? app.modeOpts.paths : undefined
         );
       });
     });
