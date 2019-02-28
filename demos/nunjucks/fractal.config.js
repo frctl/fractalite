@@ -4,7 +4,7 @@ module.exports = {
   /*
    * Project title used in the UI
    */
-  title: 'QMUL',
+  title: 'Nunjucks Demo',
 
   /*
    * Template engine adapter
@@ -61,10 +61,12 @@ module.exports = {
         toTree(pages),
         {
           label: 'Components',
-          children: toTree(components)
+          children: toTree(components),
+          expanded: true // open by default
         },
         {
           label: 'External links',
+          expanded: true,
           children: [
             {
               label: 'Github repo &rarr;',
