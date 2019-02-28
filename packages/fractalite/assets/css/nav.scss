@@ -27,13 +27,14 @@
   &__toggle {
     color: var(--nav-text-color);
     position: relative;
-    &:before {
+    &.is-collapsable:before {
       display: inline-block;
       content: '›';
       font-weight: bold;
       position: relative;
-      left: -8px;
+      margin-left: -10px;
       opacity: 0.5;
+      margin-right: 5px;
     }
   }
 
@@ -42,7 +43,6 @@
   }
 
   &__toggle:hover {
-    // background-color: #2b323a;
     cursor: pointer;
     &:before {
       opacity: 1;
@@ -50,6 +50,7 @@
   }
 
   &__link {
+    font-weight: bold;
     color: var(--nav-link-color);
   }
 
@@ -71,6 +72,6 @@
   }
 
   [data-level='1'] > li > &__toggle {
-    font-weight: bold;
+    // font-weight: bold;
   }
 }

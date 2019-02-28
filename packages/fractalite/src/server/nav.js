@@ -1,5 +1,5 @@
 const { dirname } = require('path');
-const { merge, isFunction, isPlainObject, flatMap, uniqBy, orderBy, compact } = require('lodash');
+const { merge, isBoolean, isFunction, isPlainObject, flatMap, uniqBy, orderBy, compact } = require('lodash');
 const { titlize, slugify } = require('@frctl/fractalite-support/utils');
 const { isComponent, isFile } = require('@frctl/fractalite-core/helpers');
 
@@ -18,6 +18,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 
   app.addRoute('api.navigation', '/api/navigation.json', ctx => {
     ctx.body = {
+      opts,
       items: buildNav(opts.items, ctx.state)
     };
   });
@@ -42,64 +43,59 @@ module.exports = function(app, compiler, renderer, opts = {}) {
   function expandValues(items, level = 0) {
     return flatMap(compact(items), item => {
       if (Array.isArray(item)) {
-        return expandValues(item);
+        return expandValues(item, level);
       }
 
       if (item.entity) {
         item = item.entity;
       }
 
+      const entry = {};
+
       if (isComponent(item)) {
-        const entry = {
+        Object.assign(entry, {
           id: `component-${item.name}`,
           type: 'component',
-          target: item
-        };
+          label: item.label
+        });
         if (opts.scenarios) {
           entry.children = item.scenarios.map(scenario => {
             const entry = {
               id: `scenario-${item.name}-${scenario.name}`,
               type: 'scenario',
-              target: scenario,
               url: scenario.url
             };
-            entry.label = generateLabel(scenario.label, entry);
+            entry.label = generateLabel(scenario.label, entry, scenario);
             return entry;
           });
         } else {
-          entry.url = item.url;
+          entry.url = item.scenarios[0].url;
         }
-        entry.label = generateLabel(item.label, entry);
-        return entry;
-      }
-
-      if (isFile(item)) {
-        const entry = {
+      } else if (isFile(item)) {
+        Object.assign(entry, {
           id: item.handle,
           type: 'file',
-          url: entry.url
-        };
-        entry.label = generateLabel(item.handle, item);
-        return entry;
+          url: entry.url,
+          label: item.handle
+        });
+      } else {
+        Object.assign(entry, {
+          url: item.url,
+          children: item.children ? expandValues(item.children, level + 1) : null,
+          label: item.label || item.handle
+        });
       }
-
-      const entry = {
-        target: item,
-        url: item.url,
-        children: item.children ? expandValues(item.children, level + 1) : null
-      };
 
       if (isPlainObject(item.url)) {
         const { route, props } = item.url;
-        item.url = app.url(route, props);
+        entry.url = app.url(route, props);
       }
 
-      entry.id = item.id || item.url || item.path || `level-${level}-${item.label}`;
-      entry.label = generateLabel(item.label || item.handle, entry);
+      entry.label = generateLabel(entry.label, entry, item);
+      entry.id = slugify(entry.id || item.id || item.url || item.path || `level-${level}-${entry.label}`);
+      entry.collapsable = isBoolean(item.collapsable) ? item.collapsable : true;
+      entry.expanded = isBoolean(item.expanded) ? item.expanded : false;
 
-      return entry;
-    }).map(entry => {
-      entry.id = slugify(entry.id);
       return entry;
     });
   }
@@ -117,7 +113,7 @@ function defaultGenerator({ components, pages }, toTree) {
   ];
 }
 
-function toTree(items, pathProp) {
+function toTree(items, props = {}, pathProp) {
   let nodes = flatMap(items, item => {
     const path = item.treePath || item[pathProp] || '';
     const nodes = makeNodes(path.trim('/'));

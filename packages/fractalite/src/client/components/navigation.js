@@ -18,6 +18,7 @@ export default {
   },
   data() {
     return {
+      opts: {},
       items: [],
       open: []
     };
@@ -25,6 +26,17 @@ export default {
   async mounted() {
     if (this.depth === 1) {
       await this.update();
+      const expandItems = items => {
+        items.forEach(item => {
+          if (item.expanded === true) {
+            this.toggleChildren(item);
+          }
+          if (item.children) {
+            expandItems(item.children);
+          }
+        });
+      };
+      expandItems(this.items);
     } else {
       this.items = this.pages;
     }
@@ -34,15 +46,21 @@ export default {
       try {
         const response = await axios.get('/api/navigation.json');
         this.items = response.data.items;
+        this.opts = response.data.opts;
       } catch (err) {
         this.$parent.$emit('error', err);
       }
     },
-    toggleChildren(id) {
-      this.$store.commit('toggleNavOpenId', id);
+    toggleChildren(item) {
+      if (item.collapsable) {
+        this.$store.commit('toggleNavOpenId', item.id);
+      }
     },
-    isOpen(id) {
-      return this.$store.getters.hasNavOpenId(id);
+    isOpen(item) {
+      if (item.collapsable) {
+        return this.$store.getters.hasNavOpenId(item.id);
+      }
+      return true;
     }
   },
   watch: {
