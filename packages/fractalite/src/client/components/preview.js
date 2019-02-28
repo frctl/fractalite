@@ -9,6 +9,7 @@ export default {
       previewHeight: 0
     };
   },
+  directives: { resize },
   methods: {
     reload: debounce(
       function() {
@@ -16,10 +17,7 @@ export default {
       },
       500,
       true
-    )
-  },
-  directives: { resize },
-  methods: {
+    ),
     onPreviewResize(el) {
       this.previewWidth = el.clientWidth;
       this.previewHeight = el.clientHeight;
