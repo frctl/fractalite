@@ -1,4 +1,5 @@
 const { dirname, basename, relative } = require('path');
+const slash = require('slash');
 const Bundler = require('parcel-bundler');
 const prettier = require('prettier');
 const { outputFile } = require('fs-extra');
@@ -77,7 +78,7 @@ module.exports = function(opts = {}) {
 
           const assets = bundles.map(bundle => {
             return {
-              url: `${publicUrl}/${relative(outDir, bundle.name)}`,
+              url: `${publicUrl}/${slash(relative(outDir, bundle.name))}`,
               type: bundle.type
             };
           });
