@@ -1,5 +1,4 @@
 /* global window */
-/* eslint import/no-unassigned-import: "off" */
 
 import Vue from 'vue/dist/vue';
 import VueSocketio from 'vue-socket.io-extended';

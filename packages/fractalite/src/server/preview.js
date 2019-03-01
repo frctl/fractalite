@@ -1,8 +1,8 @@
-const { extname, basename } = require('path');
-const { isPlainObject, isFunction, isString, mapValues, cloneDeep } = require('lodash');
+const { extname } = require('path');
+const { isFunction, isString, mapValues, cloneDeep } = require('lodash');
 const flatten = require('flat');
 const { rewriteUrls } = require('@frctl/fractalite-support/html');
-const { defaultsDeep, toArray, normalizePath } = require('@frctl/fractalite-support/utils');
+const { defaultsDeep, toArray } = require('@frctl/fractalite-support/utils');
 const { getScenario, getScenarioOrDefault, getComponent } = require('@frctl/fractalite-core/helpers');
 const { map } = require('asyncro');
 

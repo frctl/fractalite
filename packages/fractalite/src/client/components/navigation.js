@@ -21,7 +21,6 @@ export default {
       opts: {},
       items: [],
       open: []
-      // hasActiveItem: false
     };
   },
   async mounted() {

@@ -2,7 +2,7 @@ const { isString, isFunction, isPlainObject, forEach } = require('lodash');
 
 module.exports = function(app, compiler, renderer, opts = {}) {
   if (isFunction(opts)) {
-    opts = theme(app) || {};
+    opts = opts(app) || {};
   }
 
   if (isString(opts.css)) {

@@ -1,3 +1,5 @@
+/* eslint import/no-unassigned-import: "off" */
+
 import { codemirror } from 'vue-codemirror';
 
 import 'codemirror/mode/css/css';
@@ -23,7 +25,7 @@ export default {
   props: ['options', 'value'],
   computed: {
     opts() {
-      return {  ...defaultOpts, ...this.options }
+      return { ...defaultOpts, ...this.options };
     }
   },
   components: { codemirror }
