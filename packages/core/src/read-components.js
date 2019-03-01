@@ -14,7 +14,11 @@ module.exports = async function(src, opts = {}) {
 
   const components = dirs.map(dir => {
     const rootPath = addTrailingSeparator(dir.path);
+    console.log('---');
+    console.log(rootPath);
     const children = unusedFiles.filter(f => f.path.startsWith(rootPath));
+
+    console.log(children.map(child => child.path));
 
     if (!matcher(dir, children)) {
       return null;
