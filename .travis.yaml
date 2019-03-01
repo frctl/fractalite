@@ -1,0 +1,9 @@
+os:
+  - windows
+  - linux
+  - osx
+language: node_js
+node_js:
+  - lts/dubnium
+  - 11
+sudo: false
