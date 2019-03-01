@@ -11,7 +11,7 @@
   {{ css | safe }}
   </style>
   {% endif %}
-  <title>{% block title %}{{ meta.title | default('Preview') }}{% endblock %}</title>
+  <title>{% block title %}{{ meta.title | default(component.label + ' Preview') }}{% endblock %}</title>
 </head>
 <body>
   {% block content %}
