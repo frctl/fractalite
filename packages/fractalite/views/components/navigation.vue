@@ -1,5 +1,10 @@
 <ul class="fr-nav__items" :data-level="depth">
-  <li class="fr-nav__item" v-for="item in items" :id="item.id" :class="{'is-open': isOpen(item)}">
+  <li class="fr-nav__item"
+    v-for="item in items"
+    :id="item.id"
+    ref="items"
+    :class="{'is-open': isOpen(item)}"
+  >
     <app-link :to="item.url" v-if="item.url" class="fr-nav__link">
       <span class="fr-nav__label" v-html="item.label"></span>
     </app-link>

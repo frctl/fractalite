@@ -21,6 +21,7 @@ export default {
       opts: {},
       items: [],
       open: []
+      // hasActiveItem: false
     };
   },
   async mounted() {
@@ -39,6 +40,25 @@ export default {
       expandItems(this.items);
     } else {
       this.items = this.pages;
+    }
+    this.$on('child-item-active', activeItem => {
+      for (const item of this.items) {
+        if (Array.isArray(item.children) && item.children.includes(activeItem)) {
+          if (!this.isOpen(item)) {
+            this.toggleChildren(item);
+          }
+          if (this.depth > 1) {
+            this.$parent.$emit('child-item-active', item);
+          }
+          break;
+        }
+      }
+    });
+    for (const item of this.items) {
+      if (item.url === this.$route.path) {
+        this.$parent.$emit('child-item-active', item);
+        break;
+      }
     }
   },
   methods: {
@@ -66,6 +86,14 @@ export default {
   watch: {
     pages(pages) {
       this.items = pages;
+    },
+    $route(route) {
+      for (const item of this.items) {
+        if (item.url === route.path) {
+          this.$parent.$emit('child-item-active', item);
+          break;
+        }
+      }
     }
   }
 };
