@@ -45,13 +45,14 @@ Feedback, comments and/or pull requests on **all** aspects of the prototype are 
   * [ ] Collapsible nav
   * [ ] Variables for theming
   * [ ] Landing page
-* [ ] Tests
+* [ ] More tests
 * [ ] Documentation
 * [ ] Additional template engine adapters
   * [ ] Handlebars
   * [ ] Twig
   * [ ] React
   * [ ] Others...?
+* [ ] SSR for static exported files
 * [ ] More UI customisation hooks?
 * [ ] More extensive feature demo
 * [ ] Any other suggestions...?
