@@ -176,9 +176,16 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 
     let output;
 
+    // custom preview template handling
     if (previewTpl) {
-      output = await app.views.renderStringAsync(previewTpl, preview);
+      if (isFunction(previewTpl)) {
+        output = await previewTpl(preview); // completely bespoke preview renderer
+      } else if (isString(previewTpl)) {
+        // custom Nunjucks preview template
+        output = await app.views.renderStringAsync(previewTpl, preview);
+      }
     } else {
+      // standard Nunjucks preview template
       output = await app.views.renderAsync('preview', preview);
     }
 
