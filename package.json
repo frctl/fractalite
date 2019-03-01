@@ -10,6 +10,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "lint:fix": "xo --fix",
+    "ci": "jest",
     "test": "xo && jest --coverage",
     "test:watch": "xo && jest --watch",
     "fractalite:build": "cd packages/fractalite && npm run build",

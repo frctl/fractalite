@@ -7,3 +7,7 @@ node_js:
   - lts/dubnium
   - 11
 sudo: false
+before_script:
+  - npm run bootstrap
+script:
+  - npm run ci
