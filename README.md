@@ -413,7 +413,7 @@ As well as adding assets, Fractalite also exposes a number of ways to completely
 - Each _set_ of scenario instances can be wrapped in custom html using the `preview.wrap` option (available both **globally** and on a **component-by-component** basis)
 - The entire preview document template can also be completely overridden if required (only available as a global option)
 
-#### Component-level example
+#### Component-level customisation
 
 ```js
 // @button/button.config.js
@@ -436,7 +436,9 @@ module.exports = {
 }
 ```
 
-#### Custom preview template example
+#### Bespoke preview templates
+
+Custom preview template markup can be provided by using the `preview.template` config option.
 
 > Note that preview templates are rendered using Nunjucks. The default preview template can be [found here](packages/fractalite/views/preview.njk) for reference.
 
@@ -465,6 +467,37 @@ module.exports = {
     </body>
     </html>
     `
+  }
+};
+```
+
+For even more control over the preview rendering process it is also possible to provide a function instead of a string as the `preview.template` value.
+
+This allows you to use any template engine you like for the preview rendering (or none at all!).
+
+```js
+// fractal.config.js
+module.exports = {
+  // ...
+  preview: {
+    template: function(content, opts){
+      /*
+       * The return value of the function should be the
+       * fully rendered preview template string.
+       *
+       * Any stylesheets, scripts etc that have been
+       * added in global or component config are available
+       * in the `opts` object.
+       */
+      return `
+      <html>
+        <head>
+          <!-- add stylesheets, meta etc -->
+        </head>
+        <body>${content}</body>
+        <!-- add scripts etc -->
+      </html>`;
+    }
   }
 };
 ```

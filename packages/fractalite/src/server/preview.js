@@ -171,14 +171,21 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     // Allow hooks to manipulate the preview object
     html = renderer.getPreviewString(html);
 
-    let preview = { js, css, meta, scripts, stylesheets, content: html };
+    let preview = { js, css, meta, scripts, stylesheets, content: html, component, scenario };
     preview = await applyHooks('beforePreviewRender', preview, hookCtx);
 
     let output;
 
+    // Custom preview template handling
     if (previewTpl) {
-      output = await app.views.renderStringAsync(previewTpl, preview);
+      if (isFunction(previewTpl)) {
+        output = await previewTpl(preview.content, preview); // Completely bespoke preview renderer
+      } else if (isString(previewTpl)) {
+        // Custom Nunjucks preview template
+        output = await app.views.renderStringAsync(previewTpl, preview);
+      }
     } else {
+      // Standard Nunjucks preview template
       output = await app.views.renderAsync('preview', preview);
     }
 
