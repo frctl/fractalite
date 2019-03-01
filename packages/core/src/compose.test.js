@@ -1,7 +1,3 @@
-'use strict';
-
-/* eslint-env jest */
-
 const compose = require('./compose');
 const assert = require('assert');
 

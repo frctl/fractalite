@@ -24,9 +24,6 @@ module.exports = function compose(middleware) {
           return trigger();
         });
         const result = Array.isArray(rawResult) ? await Promise.all(rawResult) : await Promise.resolve(rawResult);
-        // if (result) {
-        //   context = result;
-        // }
         if (!called) {
           await trigger();
         }
