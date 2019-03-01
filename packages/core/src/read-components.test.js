@@ -17,6 +17,14 @@ it('Retuns an array of Component instances', async () => {
   }
 });
 
+it('Supports supplying custom matchers', async () => {
+  const matcher = (dir, children) => {
+    return dir.stem.startsWith('component-') && children.length > 0;
+  };
+  const components = await readComponents(resolve(__dirname, '../test/fixtures/custom-matcher'), { matcher });
+  expect(components.length).toEqual(1);
+});
+
 function recursiveReadDirs(path) {
   let list = [];
   const files = readdirSync(path);
