@@ -17,14 +17,16 @@
     padding: 2px 0 10px 0;
     text-align: center;
     text-decoration: none;
+    margin-bottom: -1px;
+    position: relative;
   }
 
   &__tab:hover a {
-    border-bottom: 1px solid var(--tabs-color-hover);
+    border-bottom: 2px solid var(--tabs-highlight-color--hover);
   }
 
   &__tab.is-current a {
     font-weight: bold;
-    border-bottom: 1px solid var(--tabs-color-highlight);
+    border-bottom: 2px solid var(--tabs-highlight-color--active);
   }
 }

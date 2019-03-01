@@ -7,6 +7,7 @@ const { htmlAdapter } = require('@frctl/fractalite-core');
 const highlight = require('./src/server/utils/highlight');
 const markdown = require('./src/server/utils/markdown');
 const prettify = require('./src/server/utils/prettify');
+const createAssetResolver = require('./src/server/utils/resolve-asset');
 const plugins = require('./src/server/plugins');
 
 const configDefaults = {
@@ -66,8 +67,9 @@ module.exports = function({ components, adapter, mode = {}, ...config }) {
     ...get(config, 'opts.markdown')
   });
   app.utils.prettify = prettify(get(config, 'opts.prettify'));
+  app.utils.resolveAsset = createAssetResolver(app);
 
-  ['references', 'public', 'preview', 'pages', 'nav', 'inspector'].forEach(name => {
+  ['references', 'public', 'preview', 'pages', 'nav', 'inspector', 'theme'].forEach(name => {
     require(`./src/server/${name}`)(app, compiler, renderer, get(config, name));
   });
 

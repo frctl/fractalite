@@ -18,6 +18,17 @@ module.exports = {
   }),
 
   /*
+   * Basic theme tweaks can be done via config here.
+   * The `vars` object is a set of CSS variable overrides
+   * that will be applied to the UI.
+   */
+  theme: {
+    vars: {
+      'link-color': '#0074d9'
+    }
+  },
+
+  /*
    * Absolute path to the components directory.
    *
    * This can also be an array of directory paths and

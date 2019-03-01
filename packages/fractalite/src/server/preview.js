@@ -83,11 +83,11 @@ module.exports = function(app, compiler, renderer, opts = {}) {
    * - an object with `path` and `url` properties: { path: `./assets/styles.css`, url: '/my-app/styles.css' }
    */
   opts.stylesheets.forEach(stylesheet => {
-    const { path, url } = resolveAsset(stylesheet);
+    const { path, url } = app.utils.resolveAsset(stylesheet);
     app.addPreviewStylesheet(url, path);
   });
   opts.scripts.forEach(script => {
-    const { path, url } = resolveAsset(script);
+    const { path, url } = app.utils.resolveAsset(script);
     app.addPreviewScript(url, path);
   });
 
@@ -322,35 +322,6 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       target = await hook(target, ctx); // eslint-disable-line no-await-in-loop
     }
     return target;
-  }
-
-  function resolveAsset(asset) {
-    let path;
-    let url;
-    if (isString(asset)) {
-      if (asset.startsWith('//') || asset.includes('://')) {
-        url = asset; // Full URL, use as-is
-      } else if (asset.includes(':')) {
-        // Reference a file in a static directory
-        url = app.resourceUrl(asset);
-      } else {
-        // Assume it's a path
-        path = asset;
-      }
-    } else if (isPlainObject(asset)) {
-      path = asset.path;
-      url = asset.url;
-      if (!path && !url) {
-        throw new Error(`Cannot add asset - either a .url or a .path property must be defined`);
-      }
-    } else {
-      throw new Error(`Cannot add asset - either a string or an object description is required`);
-    }
-    path = path ? normalizePath(path) : path;
-    if (!url) {
-      url = `/${basename(path)}`;
-    }
-    return { path, url };
   }
 
   function resolveComponentAsset(path, component) {
