@@ -1,3 +1,5 @@
+// Adapted from Koa Compose: https://github.com/koajs/compose
+
 module.exports = function compose(middleware) {
   if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!');
   for (const fn of middleware) {
@@ -22,13 +24,10 @@ module.exports = function compose(middleware) {
           return trigger();
         });
         const result = Array.isArray(rawResult) ? await Promise.all(rawResult) : await Promise.resolve(rawResult);
-        if (result) {
-          context = result;
-        }
         if (!called) {
           await trigger();
         }
-        return context;
+        return result;
       } catch (err) {
         return Promise.reject(err);
       }

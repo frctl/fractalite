@@ -31,9 +31,8 @@ module.exports = function(config = {}) {
     const applyPlugins = compose(middlewares);
     const { paths, opts } = normalizeSrc(config.src);
     const components = await readComponents(paths, opts);
-    return state.update({
-      components: await applyPlugins(components)
-    });
+    await applyPlugins(components);
+    return state.update({ components });
   };
 
   compiler.watch = function(callback) {

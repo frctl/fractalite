@@ -1,5 +1,4 @@
 const { orderBy, difference, compact, clone } = require('lodash');
-const { addTrailingSeparator } = require('@frctl/fractalite-support/utils');
 const read = require('./read');
 const Component = require('./entities/component');
 
@@ -10,15 +9,12 @@ module.exports = async function(src, opts = {}) {
   const dirs = files.filter(f => f.stats.isDirectory());
   let unusedFiles = files.filter(f => f.stats.isFile());
 
+  const matcher = opts.matcher || defaultComponentMatcher;
+
   const components = dirs.map(dir => {
-    if (dir.stem[0] !== '@') {
-      return undefined; // Not a component
-    }
+    const children = unusedFiles.filter(f => f.path.startsWith(`${dir.path}/`));
 
-    const rootPath = addTrailingSeparator(dir.path);
-    const children = unusedFiles.filter(f => f.path.startsWith(rootPath));
-
-    if (children.length === 0) {
+    if (!matcher(dir, children)) {
       return null;
     }
 
@@ -36,3 +32,7 @@ module.exports = async function(src, opts = {}) {
 
   return compact(components);
 };
+
+function defaultComponentMatcher(dir, children) {
+  return dir.stem[0] === '@' && children.length > 0;
+}

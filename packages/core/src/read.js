@@ -23,9 +23,9 @@ module.exports = async function(src = [], opts = {}) {
 };
 
 async function toFile(path, root) {
-  path = slash(path);
   const { ext, base, name } = parse(path);
   const stats = await stat(path);
+  path = slash(path);
   return new File({
     root,
     relative: relative(root, path),

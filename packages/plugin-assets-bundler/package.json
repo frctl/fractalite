@@ -4,6 +4,7 @@
   "dependencies": {
     "fs-extra": "^7.0.1",
     "parcel-bundler": "^1.11.0",
-    "prettier": "^1.16.4"
+    "prettier": "^1.16.4",
+    "slash": "^2.0.0"
   }
 }
