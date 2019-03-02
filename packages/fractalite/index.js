@@ -69,7 +69,7 @@ module.exports = function({ components, adapter, mode = {}, ...config }) {
   app.utils.prettify = prettify(get(config, 'opts.prettify'));
   app.utils.resolveAsset = createAssetResolver(app);
 
-  ['references', 'public', 'preview', 'pages', 'nav', 'inspector', 'theme'].forEach(name => {
+  ['references', 'public', 'preview', 'pages', 'nav', 'inspector', 'theme', 'search'].forEach(name => {
     require(`./src/server/${name}`)(app, compiler, renderer, get(config, name));
   });
 
