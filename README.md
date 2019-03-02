@@ -42,8 +42,7 @@ Feedback, comments and/or pull requests on **all** aspects of the prototype are 
   * [ ] Responsive UI
   * [ ] Loading states
   * [ ] Component search
-  * [ ] Collapsible nav
-  * [ ] Variables for theming
+  * [ ] More variables for theming
   * [ ] Landing page
 * [ ] More tests
 * [ ] Documentation
@@ -122,6 +121,7 @@ Below is some preliminary documentation to help get across some of the key aspec
 * **Application UI**
   * [Overview](#application-ui)
   * [Navigation](#navigation)
+  * [Theming](#theming)
 * **Plugins**
   * [Overview](#plugins)
   * [Example plugin - author info](#example-plugin-author-info)
@@ -687,6 +687,103 @@ module.exports = {
       ];
     }
   }
+};
+```
+
+### Theming
+
+Fractalite offers a number of options for customising the look and feel of the UI.
+
+#### Theme variables
+
+Basic colour and style changes can be made by customising the available theme variables in the global config file:
+
+```js
+// fractal.config.js
+module.exports = {
+  // ...
+  theme: {
+    vars: {
+      'sidebar-bg-color': 'red'
+    }
+  }
+};
+```
+
+#### Custom CSS & JS
+
+More complex needs can be met by adding custom `stylesheets`, `scripts` or 'inline' CSS/JS to override the default theme:
+
+```js
+// fractal.config.js
+module.exports = {
+  // ...
+  theme: {
+    stylesheets: [
+      {
+        url: '/custom/url/path.css',
+        path: resolve(__dirname, './dist/styles.css')
+      }
+    ],
+    scripts: [/* ... */],
+    css:`
+      body {
+        background: pink;
+      }
+    `,
+    js: `
+      console.log(window.location);
+    `
+  }
+};
+```
+
+#### Template overrides
+
+It is also possible to override some or all of the templates used in generating the UI by specifiying a custom views directory:
+
+```js
+// fractal.config.js
+const { resolve } = require('path');
+
+module.exports = {
+  // ...
+  theme: {
+    views: resolve(__dirname, './custom-theme-views') // path to views directory
+  }
+};
+```
+
+Any files placed within this custom views directory will override their equivalents in the [application views directory](packages/fractalite/views).
+
+```
+custom-theme-views
+└── partials
+    └── brand.njk // override sidebar branding template
+```
+
+#### Theme modules
+
+Themes can also be provided as modules. In this case the module will receive the `app` instance and should return a set of theme config values:
+
+```js
+// ./custom-theme.js
+module.exports = function(app){
+  // Can customise app instance here...
+  return {
+    // ...and return any theme config opts here
+    vars: {
+      'tabs-highlight-color--active': 'pink'
+    }
+  }
+}
+```
+
+```js
+// fractal.config.js
+module.exports = {
+  // ...
+  theme: require('./custom-theme.js')
 };
 ```
 
