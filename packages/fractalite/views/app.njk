@@ -4,8 +4,8 @@
 <error v-if="error" :error="error"></error>
 <div class="fr-app__container">
   <div class="fr-app__sidebar">
-    <header class="fr-app__brand fr-brand">
-      <a href="/" class="fr-brand__title">{{ app.title }}</a>
+    <header class="fr-app__brand">
+      {% include "partials/brand" %}
     </header>
     <div class="fr-app__navigation">
       <navigation></navigation>
