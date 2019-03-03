@@ -62,7 +62,14 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 
   app.addRoute('api.inspect', '/api/inspect/:component/:scenario.json', async (ctx, next) => {
     const { component } = ctx;
-    const scenario = getScenario(component, ctx.params.scenario, true);
+    let scenario;
+
+    try {
+      scenario = getScenario(component, ctx.params.scenario, true);
+    } catch (err) {
+      err.status = 404;
+      throw err;
+    }
 
     const panels = await map(app.getInspectorPanels(), panel => {
       return mapValuesAsync(panel, value => resolveValue(value, { ...ctx.state, scenario, component }));
