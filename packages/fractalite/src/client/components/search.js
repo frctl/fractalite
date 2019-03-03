@@ -40,11 +40,26 @@ export default {
                 }
               })
               .filter(scenario => scenario);
-            const matches = fuzzysearch(this.term, component.label.toLowerCase());
-            if (matches || scenarios.length) {
+
+            const labelMatches = fuzzysearch(this.term, component.label.toLowerCase());
+
+            let aliasMatches = [];
+            if (component.aliases.length) {
+              aliasMatches = component.aliases
+                .map(alias => {
+                  const matches = fuzzysearch(this.term, alias);
+                  if (matches) {
+                    return highlight(alias, matches);
+                  }
+                })
+                .filter(alias => alias);
+            }
+
+            if (labelMatches || aliasMatches.length || scenarios.length) {
               return {
                 scenarios: scenarios.length ? scenarios : component.scenarios,
-                label: matches ? highlight(component.label, matches) : component.label
+                label: labelMatches ? highlight(component.label, labelMatches) : component.label,
+                aliases: aliasMatches.join(', ')
               };
             }
           })
@@ -78,19 +93,13 @@ function fuzzysearch(needle, haystack) {
   }
   if (nlen === hlen) {
     if (needle === haystack) {
-      for (var i = 0; i < needle.length; i++) {
-        indexes.push(i);
-      }
-      return indexes;
+      return Array.from({ length: needle.length }, (_, k) => k);
     }
     return false;
   }
   const pos = haystack.indexOf(needle);
   if (pos > -1) {
-    for (var i = 0; i < needle.length; i++) {
-      indexes.push(i + pos);
-    }
-    return indexes;
+    return Array.from({ length: needle.length }, (_, k) => k + pos);
   }
   outer: for (var i = 0, j = 0; i < nlen; i++) {
     var nch = needle.charCodeAt(i);

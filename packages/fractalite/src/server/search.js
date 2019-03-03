@@ -1,18 +1,16 @@
 const { flatMap } = require('lodash');
-const isArray = Array.isArray;
-
-const defaultOpts = {
-  keys: ['label']
-};
 
 module.exports = function(app, compiler, renderer, opts = {}) {
-  opts = { ...defaultOpts, ...opts };
-
   app.addRoute('api.search', '/api/search.json', ctx => {
     const components = flatMap(ctx.components, component => {
+      const searchOpts = component.config.search || {};
+      if (searchOpts.hidden) {
+        return;
+      }
       return {
         label: component.label,
         url: component.url,
+        aliases: searchOpts.aliases || [],
         scenarios: component.scenarios.map(scenario => {
           return {
             label: scenario.label,
@@ -20,7 +18,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
           };
         })
       };
-    });
+    }).filter(component => component);
     ctx.body = { opts, components };
   });
 };

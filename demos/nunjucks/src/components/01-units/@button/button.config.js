@@ -45,6 +45,17 @@ module.exports = {
   ],
 
   /*
+   * Configure the component's search behaviour.
+   *
+   * The `aliases` array is a list of extra strings to match against.
+   * `hidden: true` can be used to prevent the component from
+   * being matched in the search results.
+   */
+  search: {
+    aliases: ['clicker']
+  },
+
+  /*
    * The component preview option lets users customise
    *  previews on a per-component basis.
    */
