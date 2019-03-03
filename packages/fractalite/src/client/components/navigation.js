@@ -10,7 +10,7 @@ export default {
     }
   },
   sockets: {
-    async 'state.updated'(state) {
+    async 'state.updated'() {
       if (this.depth === 1) {
         await this.update();
       }

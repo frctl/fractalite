@@ -213,7 +213,7 @@ module.exports = function(compiler, opts = {}) {
 
     compiler.watch((err, ...results) => {
       if (err) return app.emit('error', err);
-      app.emit('state.updated', ...results);
+      app.emit('state.updated');
     });
 
     app.emit('watching');

@@ -7,9 +7,15 @@
     <header class="fr-app__brand">
       {% include "partials/brand" %}
     </header>
-    <div class="fr-app__navigation">
-      <navigation></navigation>
+    <div class="fr-app__search" id="app-search">
+      <search></search>
     </div>
+    {# <split-pane :elements="['#app-navigation', '#app-search']" direction="vertical" :min-size="0" :gutter-size="5"> #}
+      <div class="fr-app__navigation" id="app-navigation">
+        <navigation></navigation>
+      </div>
+
+    {# </split-pane> #}
     <footer class="fr-app__controls fr-controls"></footer>
   </div>
   <main class="fr-app__main">
@@ -26,7 +32,7 @@
   window.frctl = window.frctl || {};
   window.frctl.mode = {{ mode | dump | safe }};
 </script>
-{% for template in ['navigation', 'preview', 'inspector', 'page', 'error'] %}
+{% for template in ['navigation', 'preview', 'inspector', 'page', 'error', 'search'] %}
 <script type="text/x-template" id="{{ template }}">
 {% includeraw "components/" + template + '.vue' %}
 </script>

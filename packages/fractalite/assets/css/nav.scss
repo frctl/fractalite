@@ -27,6 +27,7 @@
   &__toggle {
     color: var(--nav-text-color);
     position: relative;
+    opacity: 0.7;
     &.is-collapsable:before {
       display: inline-block;
       content: '›';
@@ -50,7 +51,7 @@
   }
 
   &__link {
-    font-weight: bold;
+    // font-weight: bold;
     color: var(--nav-link-color);
   }
 

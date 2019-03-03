@@ -94,7 +94,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
   compiler.use(async (components, next) => {
     await next();
     components.forEach(component => {
-      component.url = app.url('inspect', { component: component.name });
+      component.url = app.url('inspect', { component: component.name, scenario: component.scenarios[0].name });
       component.scenarios.forEach(scenario => {
         scenario.url = app.url('inspect', { component: component.name, scenario: scenario.name });
       });

@@ -5,6 +5,7 @@ import VueSocketio from 'vue-socket.io-extended';
 import io from 'socket.io-client';
 import VueSplit from 'vue-splitjs';
 import Navigation from './components/navigation';
+import Search from './components/search';
 import Error from './components/error';
 import JSONExplorer from './components/json-explorer';
 import SourceCode from './components/source-code';
@@ -23,11 +24,13 @@ window.app = new Vue({
   el: '#app',
   data: {
     error: null,
-    loading: false
+    loading: false,
+    mode: 'browse'
   },
   components: {
     Error,
-    Navigation
+    Navigation,
+    Search
   },
   router,
   store,
@@ -50,6 +53,7 @@ window.app = new Vue({
       if (err.response) return;
       this.error = err;
     });
+
     /*
      * Capture clicks in outside of Vue code and determine
      * whether to re-route them via vue-router.
