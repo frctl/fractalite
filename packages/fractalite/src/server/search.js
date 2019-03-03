@@ -3,14 +3,14 @@ const { flatMap } = require('lodash');
 module.exports = function(app, compiler, renderer, opts = {}) {
   app.addRoute('api.search', '/api/search.json', ctx => {
     const components = flatMap(ctx.components, component => {
-      const searchOpts = component.config.search || {};
-      if (searchOpts.hidden) {
+      const { search } = component;
+      if (search.hidden) {
         return;
       }
       return {
         label: component.label,
         url: component.url,
-        aliases: searchOpts.aliases || [],
+        aliases: search.aliases || [],
         scenarios: component.scenarios.map(scenario => {
           return {
             label: scenario.label,
@@ -20,6 +20,17 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       };
     }).filter(component => component);
     ctx.body = { opts, components };
+  });
+
+  compiler.use(components => {
+    const defaults = {
+      hidden: false,
+      aliases: []
+    };
+    components.forEach(component => {
+      const searchOpts = component.config.search || {};
+      component.search = { ...defaults, ...searchOpts };
+    });
   });
 
   app.addBuilder((state, { request }) => request({ name: 'api.search' }));
