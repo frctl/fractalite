@@ -21,4 +21,6 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     }).filter(component => component);
     ctx.body = { opts, components };
   });
+
+  app.addBuilder((state, { request }) => request({ name: 'api.search' }));
 };
