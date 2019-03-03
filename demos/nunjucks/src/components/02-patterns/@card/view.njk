@@ -17,6 +17,7 @@
  #}
 <div class="card">
   <h2 class="card__title">{{ title }}</h2>
+  {% if image %}{% component 'figure/image', image %}{% endif %}
   <div class="card__content">
     {{ content | safe }}
   </div>

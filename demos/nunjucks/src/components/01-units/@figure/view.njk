@@ -1,0 +1,10 @@
+<figure class="figure figure--{{ type }}">
+  <div class="figure__container">
+    {% if type == 'image' %}
+    <img src="{{ src }}" alt="{{ alt }}" class="figure__image">
+    {% elseif type == 'video' %}
+    <iframe src="{{ src }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="figure__video"></iframe>
+    {% endif %}
+  </div>
+  {% if caption %}<figcaption class="figure__caption">{{ caption }}</figcaption>{% endif %}
+</figure>

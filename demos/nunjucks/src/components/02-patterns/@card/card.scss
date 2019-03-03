@@ -1,6 +1,7 @@
 .card {
   border: 1px solid #ddd;
-  padding: 20px;
+  padding: 15px;
+  max-width: 600px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 
   &__title {
@@ -9,6 +10,14 @@
   }
 
   &__content + .button {
+    margin-top: 20px;
+  }
+
+  &__image {
+    width: 100%;
+  }
+
+  .figure + &__content {
     margin-top: 20px;
   }
 }

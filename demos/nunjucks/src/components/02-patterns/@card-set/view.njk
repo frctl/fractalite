@@ -1,0 +1,9 @@
+<div class="card-set">
+  <ul class="card-set__cards">
+    {% for card in cards %}
+    <li class="card-set__card">
+      {% component cardType, card %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
