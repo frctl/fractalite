@@ -1,4 +1,4 @@
-<div class="fr-search" v-on:keyup.escape="resetSearch()">
+<div class="fr-search">
   <div class="fr-search__input-wrapper">
     <input type="text" class="fr-search__input" v-model="searchTerm" placeholder="Search components..." v-on:keyup.escape="resetSearch()">
     <span class="fr-search__cancel" v-if="isActive" @click="resetSearch()">×</span>

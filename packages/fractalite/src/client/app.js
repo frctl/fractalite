@@ -45,6 +45,11 @@ window.app = new Vue({
       this.error = null;
     }
   },
+  methods: {
+    resetSearch() {
+      this.$refs.search.resetSearch();
+    }
+  },
   mounted() {
     this.$on('loading', isLoading => {
       this.loading = isLoading;

@@ -3,19 +3,18 @@
 {% block body %}
 <error v-if="error" :error="error"></error>
 <div class="fr-app__container">
-  <div class="fr-app__sidebar">
+  <div class="fr-app__sidebar" v-on:keyup.escape="resetSearch()">
     <header class="fr-app__brand">
       {% include "partials/brand" %}
     </header>
-    <div class="fr-app__search" id="app-search">
-      <search></search>
-    </div>
-    {# <split-pane :elements="['#app-navigation', '#app-search']" direction="vertical" :min-size="0" :gutter-size="5"> #}
+    <div class="fr-app__sidebar-main">
+      <div class="fr-app__search" id="app-search">
+        <search ref="search"></search>
+      </div>
       <div class="fr-app__navigation" id="app-navigation">
         <navigation></navigation>
       </div>
-
-    {# </split-pane> #}
+    </div>
     <footer class="fr-app__controls fr-controls"></footer>
   </div>
   <main class="fr-app__main">

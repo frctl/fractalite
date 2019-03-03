@@ -20,32 +20,25 @@
     a {
       color: var(--sidebar-link-color);
     }
-
-    .gutter {
-      background: none !important;
-      // background-image: none;
-    }
   }
 
   &__brand {
     flex: none;
   }
 
-  &__navigation {
+  &__sidebar-main {
     flex: 1 1 50%;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
+  }
+
+  &__navigation {
     padding-top: 10px;
     padding-bottom: 10px;
   }
 
   &__search {
     flex: 0 0 auto;
-    // max-height: 50%;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    // padding-top: 10px;
-    padding-bottom: 10px;
   }
 
   &__controls {

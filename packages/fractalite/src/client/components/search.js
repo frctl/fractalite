@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       opts: {},
-      items: [],
+      components: [],
       searchTerm: ''
     };
   },
@@ -65,8 +65,7 @@ export default {
     resetSearch() {
       this.searchTerm = '';
     }
-  },
-  watch: {}
+  }
 };
 
 // Adapted from https://github.com/bevacqua/fuzzysearch/blob/master/index.js
