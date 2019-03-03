@@ -53,7 +53,7 @@ module.exports = function(compiler, opts = {}) {
     })
   );
 
-  app.on('state.updated', (...results) => socket.broadcast('state.updated', ...results));
+  app.on('state.updated', (...results) => socket.broadcast('state.updated'));
 
   /*
    * View rendering middleware
