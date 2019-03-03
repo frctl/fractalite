@@ -62,6 +62,7 @@ export default {
                 aliases: aliasMatches.join(', ')
               };
             }
+            return;
           })
           .filter(component => component);
       }
@@ -118,10 +119,10 @@ function fuzzysearch(needle, haystack) {
 function highlight(target, indexes, hOpen, hClose) {
   if (hOpen === undefined) hOpen = '<span class="highlight">';
   if (hClose === undefined) hClose = '</span>';
-  var highlighted = '';
-  var matchesIndex = 0;
-  var opened = false;
-  var targetLen = target.length;
+  let highlighted = '';
+  let matchesIndex = 0;
+  let opened = false;
+  const targetLen = target.length;
   for (var i = 0; i < targetLen; ++i) {
     var char = target[i];
     if (indexes[matchesIndex] === i) {
