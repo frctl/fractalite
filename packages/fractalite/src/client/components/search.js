@@ -1,3 +1,4 @@
+/* eslint array-callback-return:"off", no-labels: "off" */
 import axios from 'axios';
 
 export default {
@@ -44,7 +45,7 @@ export default {
             const labelMatches = fuzzysearch(this.term, component.label.toLowerCase());
 
             let aliasMatches = [];
-            if (component.aliases.length) {
+            if (component.aliases.length > 0) {
               aliasMatches = component.aliases
                 .map(alias => {
                   const matches = fuzzysearch(this.term, alias);
@@ -55,14 +56,13 @@ export default {
                 .filter(alias => alias);
             }
 
-            if (labelMatches || aliasMatches.length || scenarios.length) {
+            if (labelMatches || aliasMatches.length > 0 || scenarios.length > 0) {
               return {
-                scenarios: scenarios.length ? scenarios : component.scenarios,
+                scenarios: scenarios.length > 0 ? scenarios : component.scenarios,
                 label: labelMatches ? highlight(component.label, labelMatches) : component.label,
                 aliases: aliasMatches.join(', ')
               };
             }
-            return;
           })
           .filter(component => component);
       }
@@ -102,8 +102,8 @@ function fuzzysearch(needle, haystack) {
   if (pos > -1) {
     return Array.from({ length: needle.length }, (_, k) => k + pos);
   }
-  outer: for (var i = 0, j = 0; i < nlen; i++) {
-    var nch = needle.charCodeAt(i);
+  outer: for (let i = 0, j = 0; i < nlen; i++) {
+    const nch = needle.charCodeAt(i);
     while (j < hlen) {
       if (haystack.charCodeAt(j++) === nch) {
         indexes.push(j - 1);
@@ -123,8 +123,8 @@ function highlight(target, indexes, hOpen, hClose) {
   let matchesIndex = 0;
   let opened = false;
   const targetLen = target.length;
-  for (var i = 0; i < targetLen; ++i) {
-    var char = target[i];
+  for (let i = 0; i < targetLen; ++i) {
+    const char = target[i];
     if (indexes[matchesIndex] === i) {
       ++matchesIndex;
       if (!opened) {
@@ -135,11 +135,9 @@ function highlight(target, indexes, hOpen, hClose) {
         highlighted += char + hClose + target.substr(i + 1);
         break;
       }
-    } else {
-      if (opened) {
-        opened = false;
-        highlighted += hClose;
-      }
+    } else if (opened) {
+      opened = false;
+      highlighted += hClose;
     }
     highlighted += char;
   }
