@@ -28,6 +28,7 @@ Feedback, comments and/or pull requests on **all** aspects of the prototype are 
 * [Plugin system](#plugins) for compiler and UI customisation
 * [Adapter-based](#adapters) component rendering
 * Completely customisable [nav generation](#navigaion)
+* Component and scenario search
 * Easy [asset referencing](#view-template-assets) within components
 * Dynamic page builder
 * Zero-config [asset bundling](#assets-bundler-plugin) (via plugin)
@@ -41,7 +42,6 @@ Feedback, comments and/or pull requests on **all** aspects of the prototype are 
 * [ ] Proper UI design & implementation
   * [ ] Responsive UI
   * [ ] Loading states
-  * [ ] Component search
   * [ ] More variables for theming
   * [ ] Landing page
 * [ ] More tests
@@ -89,7 +89,7 @@ Exported files can be found in the `demos/nunjucks/build` directory after export
 
 > As the name suggests, the static build is **not** regenerated when component files are updated.
 
-_A hosted version of the static build [can be found here](https://build-ckzcnjurbt.now.sh/)_
+_A hosted version of the static build [can be found here](https://build-hkiwxrozzx.now.sh)_
 
 #### Other demos
 
