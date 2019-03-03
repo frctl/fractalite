@@ -22,7 +22,7 @@ module.exports = {
     },
     {
       name: 'image',
-      label: 'Image card',
+      label: 'With image',
       props: {
         title: 'A kitten',
         content: '<p>Because every example needs a kitten in there somewhere.</p>',
