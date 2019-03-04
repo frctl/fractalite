@@ -12,6 +12,7 @@
     "flat": "^4.1.0",
     "gray-matter": "^4.0.1",
     "highlight.js": "^9.14.2",
+    "ip": "^1.1.5",
     "kleur": "^2.0.2",
     "lodash": "^4.17.10",
     "markdown-it": "^8.4.2",

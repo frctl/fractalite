@@ -1,3 +1,5 @@
+/* eslint camelcase:"off" */
+
 import Vue from 'vue/dist/vue';
 import Vuex from 'vuex';
 import axios from 'axios';

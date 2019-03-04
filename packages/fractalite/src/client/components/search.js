@@ -1,5 +1,4 @@
 /* eslint array-callback-return:"off", no-labels: "off" */
-import axios from 'axios';
 
 export default {
   name: 'search',

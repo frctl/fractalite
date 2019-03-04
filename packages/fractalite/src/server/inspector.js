@@ -1,6 +1,6 @@
 const { orderBy, merge, isString } = require('lodash');
 const { titlize, resolveValue, mapValuesAsync } = require('@frctl/fractalite-support/utils');
-const { getScenarioOrDefault, getComponent } = require('@frctl/fractalite-core/helpers');
+const { getScenarioOrDefault, getScenario, getComponent } = require('@frctl/fractalite-core/helpers');
 const { map } = require('asyncro');
 
 module.exports = function(app, compiler, renderer, opts = {}) {

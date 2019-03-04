@@ -1,4 +1,3 @@
-import axios from 'axios';
 import Preview from './preview';
 
 export default {
