@@ -10,7 +10,7 @@
     display: none;
   }
 
-  &__item.is-open > &__items {
+  &__item.is-expanded > &__items {
     display: block;
   }
 

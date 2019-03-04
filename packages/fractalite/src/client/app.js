@@ -13,7 +13,7 @@ import AppLink from './components/app-link';
 import router from './router';
 import store from './store';
 
-Vue.use(VueSocketio, io());
+Vue.use(VueSocketio, io(), { store });
 
 Vue.component('split-pane', VueSplit);
 Vue.component('app-link', AppLink);
@@ -22,11 +22,6 @@ Vue.component('source-code', SourceCode);
 
 window.app = new Vue({
   el: '#app',
-  data: {
-    error: null,
-    loading: false,
-    mode: 'browse'
-  },
   components: {
     Error,
     Navigation,
@@ -34,30 +29,21 @@ window.app = new Vue({
   },
   router,
   store,
-  sockets: {
-    err(err) {
-      if (err.status === 404) {
-        return;
-      }
-      this.error = err;
-    },
-    'state.updated'() {
-      this.error = null;
-    }
-  },
   methods: {
     resetSearch() {
       this.$refs.search.resetSearch();
     }
   },
-  mounted() {
-    this.$on('loading', isLoading => {
-      this.loading = isLoading;
-    });
-    this.$on('error', err => {
-      if (err.response) return;
-      this.error = err;
-    });
+  computed: {
+    navItems() {
+      return this.$store.state.nav.items;
+    },
+    searchTargets() {
+      return this.$store.state.search.targets;
+    }
+  },
+  async mounted() {
+    await this.$store.dispatch('updateState');
 
     /*
      * Capture clicks in outside of Vue code and determine

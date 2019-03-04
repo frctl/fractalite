@@ -52,7 +52,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
           refs: page.refs
         }
       );
-      ctx.body = { page, content };
+      ctx.body = { path: ctx.params.path, page, content };
     }
     return next();
   });

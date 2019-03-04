@@ -10,24 +10,17 @@ export default {
     };
   },
   props: ['path'],
-  sockets: {
-    async 'state.updated'() {
-      await this.load();
-    }
-  },
   methods: {
     async load() {
       if (this.path) {
         try {
-          this.$parent.$emit('loading', true);
-          const response = await axios.get(`/api/pages/${this.path}.json`);
-          this.page = response.data.page;
-          this.content = response.data.content;
+          const { page, content } = await this.$store.dispatch('fetchPage', this.path);
+          this.page = page;
+          this.content = content;
           this.loaded = true;
         } catch (err) {
-          this.$parent.$emit('error', err);
+          this.$store.commit('setError', err);
         }
-        this.$parent.$emit('loading', false);
       }
     }
   },

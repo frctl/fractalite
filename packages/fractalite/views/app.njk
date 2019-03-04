@@ -1,26 +1,24 @@
 {% extends "layout" %}
 
 {% block body %}
-<error v-if="error" :error="error"></error>
-<div class="fr-app__container">
+<error v-if="$store.state.error" :error="$store.state.error"></error>
+{# <loader v-if="loading"></loader> #}
+<div class="fr-app__container" v-if="$store.state.initialised" :class="{ 'is-ready': $store.state.initialised }">
   <div class="fr-app__sidebar" v-on:keyup.escape="resetSearch()">
     <header class="fr-app__brand">
       {% include "partials/brand" %}
     </header>
     <div class="fr-app__sidebar-main">
       <div class="fr-app__search" id="app-search">
-        <search ref="search"></search>
+        <search ref="search" :components="searchTargets"></search>
       </div>
       <div class="fr-app__navigation" id="app-navigation">
-        <navigation></navigation>
+        <navigation ref="navigation" :items="navItems"></navigation>
       </div>
     </div>
     <footer class="fr-app__controls fr-controls"></footer>
   </div>
   <main class="fr-app__main">
-    <!-- <div v-if="loading" class="loader">
-      <svg width="44" height="44" xmlns="http://www.w3.org/2000/svg" stroke="#303841"><g fill="none" fill-rule="evenodd" stroke-width="2"><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle></g></svg>
-    </div> -->
     <router-view></router-view>
   </main>
 </div>
@@ -31,7 +29,7 @@
   window.frctl = window.frctl || {};
   window.frctl.mode = {{ mode | dump | safe }};
 </script>
-{% for template in ['navigation', 'preview', 'inspector', 'page', 'error', 'search'] %}
+{% for template in ['navigation', 'preview', 'inspector', 'page', 'error', 'search', 'loader'] %}
 <script type="text/x-template" id="{{ template }}">
 {% includeraw "components/" + template + '.vue' %}
 </script>

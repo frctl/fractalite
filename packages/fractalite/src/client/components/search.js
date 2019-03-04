@@ -4,20 +4,11 @@ import axios from 'axios';
 export default {
   name: 'search',
   template: '#search',
-  sockets: {
-    async 'state.updated'() {
-      this.update();
-    }
-  },
+  props: ['components'],
   data() {
     return {
-      opts: {},
-      components: [],
       searchTerm: ''
     };
-  },
-  async mounted() {
-    this.update();
   },
   computed: {
     isActive() {
@@ -70,14 +61,6 @@ export default {
     }
   },
   methods: {
-    async update() {
-      try {
-        const response = await axios.get('/api/search.json');
-        this.components = response.data.components;
-      } catch (err) {
-        this.$parent.$emit('error', err);
-      }
-    },
     resetSearch() {
       this.searchTerm = '';
     }

@@ -26,13 +26,12 @@ export default {
   methods: {
     async load() {
       if (this.componentName) {
-        this.$parent.$emit('loading', true);
         try {
-          const [component, inspector] = await Promise.all([
-            await axios.get(`/api/components/${this.componentName}.json`),
-            await axios.get(`/api/inspect/${this.componentName}/${this.scenarioName}.json`)
-          ]);
-          this.component = component.data;
+          this.component = await this.$store.dispatch('fetchComponent', this.componentName);
+          const inspector = await this.$store.dispatch('fetchInspectorData', {
+            component: this.componentName,
+            scenario: this.scenarioName
+          });
           const scenario = this.component.scenarios.find(scenario => scenario.name === this.scenarioName);
           if (!scenario) {
             const scenario = this.component.scenarios[0];
@@ -40,14 +39,12 @@ export default {
             return;
           }
           this.scenario = scenario;
-          this.panels = inspector.data.panels;
-          this.preview = inspector.data.preview;
+          this.panels = inspector.panels;
+          this.preview = inspector.preview;
           this.loaded = true;
-          this.error = null;
         } catch (err) {
-          this.$parent.$emit('error', err);
+          this.$store.commit('setError', err);
         }
-        this.$parent.$emit('loading', false);
       }
     },
     selectTab(i) {
