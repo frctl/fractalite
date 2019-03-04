@@ -6,6 +6,7 @@ const { normalizePath } = require('@frctl/fractalite-support/utils');
 const cpFile = require('cp-file');
 const axios = require('axios');
 const del = require('del');
+const throttle = require('p-throttle');
 
 module.exports = function() {
   const copyTasks = [];
@@ -40,18 +41,24 @@ module.exports = function() {
       return { ...task, to };
     });
 
-    const requests = map(requestTasks, async task => {
-      try {
-        const to = join(dest, task.to);
-        const { data } = await axios.get(`${address}${task.from}`);
-        const contents = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
-        await outputFile(to, contents);
-        return { ...task, to };
-      } catch (err) {
-        // TODO: throw more descriptive error with URL
-        throw err;
-      }
-    });
+    const throttledRequest = throttle(
+      async task => {
+        try {
+          const to = join(dest, task.to);
+          const { data } = await axios.get(`${address}${task.from}`);
+          const contents = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+          await outputFile(to, contents);
+          return { ...task, to };
+        } catch (err) {
+          // TODO: throw more descriptive error with URL
+          throw err;
+        }
+      },
+      opts.requestLimit || 1000,
+      1000
+    );
+
+    const requests = map(requestTasks, throttledRequest);
 
     const [copyResults, requestResults] = await Promise.all([copies, requests]);
 
