@@ -2,6 +2,9 @@
   "private": true,
   "devDependencies": {
     "@frctl/eslint-config-frctl": "^0.1.3",
+    "asyncro": "^3.0.0",
+    "common-tags": "^1.8.0",
+    "fs-extra": "^7.0.1",
     "jest": "^24.1.0",
     "lerna": "^3.4.0",
     "xo": "^0.23.0"
@@ -10,9 +13,10 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "lint:fix": "xo --fix",
-    "ci": "jest",
     "test": "xo && jest --coverage",
     "test:watch": "xo && jest --watch",
+    "test:ci": "jest",
+    "test:generate:components": "node ./test/helpers/generate-components",
     "fractalite:build": "cd packages/fractalite && npm run build",
     "fractalite:dev": "cd packages/fractalite && npm run dev",
     "demo:vue": "npm run bootstrap && cd demos/vue && npm run start",

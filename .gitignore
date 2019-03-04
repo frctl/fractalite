@@ -14,8 +14,8 @@ node_modules/
 .yarn-integrity
 .env
 .wip*
-/fractal.config.js
 /dist
 .cache
 .wip-packages
 .demo-*
+test/fixtures/generated

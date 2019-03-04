@@ -10,7 +10,7 @@ sudo: false
 before_script:
   - npm run bootstrap
 script:
-  - npm run ci
+  - 'npm run test:ci'
 cache:
   directories:
     - node_modules
