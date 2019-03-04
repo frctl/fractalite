@@ -211,6 +211,10 @@ module.exports = function(compiler, opts = {}) {
       return server;
     }
 
+    compiler.on('start', () => {
+      app.emit('state.pending');
+    });
+
     compiler.watch((err, ...results) => {
       if (err) return app.emit('error', err);
       app.emit('state.updated', ...results);
@@ -220,6 +224,17 @@ module.exports = function(compiler, opts = {}) {
 
     return server;
   };
+
+  // let stateTimer = null;
+  // app.on('state.pending', (...results) => {
+  //   socket.broadcast('state.pending');
+  //
+  // });
+  // compiler.on('start', () => {
+  //   app.emit('state.pending');
+  //   app.emit('compiler.start');
+  // });
+  // compiler.on('finish', (...args) => app.emit('compiler.finish', ...args));
 
   return app;
 };

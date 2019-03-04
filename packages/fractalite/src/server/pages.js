@@ -76,11 +76,13 @@ module.exports = function(app, compiler, renderer, opts = {}) {
       if (app.mode === 'develop') {
         pages = await getPages();
         state.pages = pages;
-        watch(opts.src.paths, { ignoreInitial: true }).on('all', async () => {
+        watch(opts.src.paths, { ignoreInitial: true }).on('all', async (event, path) => {
+          const hrStart = process.hrtime();
           try {
             pages = await getPages();
             state.pages = pages;
-            app.emit('state.updated');
+            const time = process.hrtime(hrStart);
+            app.emit('state.updated', state, { event, path, time });
           } catch (err) {
             app.emit('error', err);
           }

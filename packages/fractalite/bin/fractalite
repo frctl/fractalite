@@ -65,7 +65,10 @@ const args = mri(process.argv.slice(2));
         }
       });
 
-      app.on('state.updated', () => interactiveLogger.success(`Compilation successful [${(new Date()).toUTCString()}]`));
+      app.on('state.pending', () => interactiveLogger.await(`Updating state`));
+      app.on('state.updated', (state, info) => {
+        interactiveLogger.complete(`Updated in %d.%ds`, info.time[0], Math.round(info.time[1] / 1000000))
+      });
 
       const server = await app.run();
       const port = server.address().port;
@@ -135,7 +138,7 @@ const args = mri(process.argv.slice(2));
     process.on('SIGINT', () => {
       server.close();
       logger.log('');
-      logger.success(stoppedMessage || 'Server stopped');
+      logger.info(stoppedMessage || 'Server stopped');
       process.exit(0);
     });
   }

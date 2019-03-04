@@ -1,3 +1,4 @@
+const EventEmitter = require('events');
 const { isFunction, isString, debounce } = require('lodash');
 const { normalizeSrc } = require('@frctl/fractalite-support/utils');
 const { watch } = require('chokidar');
@@ -6,6 +7,7 @@ const createState = require('./state');
 const readComponents = require('./read-components');
 
 module.exports = function(config = {}) {
+  const emitter = new EventEmitter();
   const middlewares = [];
   const compiler = {};
   const watchCallbacks = [];
@@ -27,12 +29,21 @@ module.exports = function(config = {}) {
     return state;
   };
 
+  compiler.on = (event, listener) => {
+    emitter.on(event, listener);
+    return compiler;
+  };
+
   compiler.run = async function() {
+    const hrStart = process.hrtime();
+    emitter.emit('start');
     const applyPlugins = compose(middlewares);
     const { paths, opts } = normalizeSrc(config.src);
     const components = await readComponents(paths, opts);
     await applyPlugins(components);
-    return state.update({ components });
+    state.update({ components });
+    emitter.emit('finish', state, process.hrtime(hrStart));
+    return state;
   };
 
   compiler.watch = function(callback) {
@@ -61,10 +72,12 @@ module.exports = function(config = {}) {
   function watchHandler(parseEvents) {
     let lastResult = null;
     return debounce(async (event, path) => {
+      const hrStart = process.hrtime();
       try {
         // Only re-parse for 'primary' events, otherwise just notify of changes
         lastResult = parseEvents.includes(event) ? await compiler.run() : lastResult;
-        watchCallbacks.forEach(cb => cb(null, lastResult, { path, event }));
+        const time = process.hrtime(hrStart);
+        watchCallbacks.forEach(cb => cb(null, lastResult, { path, event, time }));
       } catch (err) {
         watchCallbacks.forEach(cb => cb(err));
       }
