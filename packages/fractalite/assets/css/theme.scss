@@ -6,9 +6,8 @@
 
   --font-size--code: var(--font-size--small);
 
-  --font-family: Inter, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue';
-  --font-family--code: 'Source Code Pro', monospace;
-  --font-family--system: 'system-ui', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --font-family: 'system-ui', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-family--code: monospace;
 
   --text-color: #333;
   --link-color: #0074d9;
