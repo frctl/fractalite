@@ -28,17 +28,20 @@ export default {
       if (this.componentName) {
         this.$parent.$emit('loading', true);
         try {
-          if (!this.scenarioName) {
-            const response = await axios.get(`/api/components/${this.componentName}.json`);
-            const component = response.data;
-            const scenario = component.scenarios[0];
-            this.$router.push(`/inspect/${component.name}/${scenario.name}`);
+          const [component, inspector] = await Promise.all([
+            await axios.get(`/api/components/${this.componentName}.json`),
+            await axios.get(`/api/inspect/${this.componentName}/${this.scenarioName}.json`)
+          ]);
+          this.component = component.data;
+          const scenario = this.component.scenarios.find(scenario => scenario.name === this.scenarioName);
+          if (!scenario) {
+            const scenario = this.component.scenarios[0];
+            this.$router.push(`/inspect/${this.component.name}/${scenario.name}`);
             return;
           }
-          const response = await axios.get(`/api/inspect/${this.componentName}/${this.scenarioName}.json`);
-          Object.keys(response.data).forEach(key => {
-            this[key] = response.data[key];
-          });
+          this.scenario = scenario;
+          this.panels = inspector.data.panels;
+          this.preview = inspector.data.preview;
           this.loaded = true;
           this.error = null;
         } catch (err) {

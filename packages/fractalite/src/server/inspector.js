@@ -1,6 +1,6 @@
 const { orderBy, merge, isString } = require('lodash');
 const { titlize, resolveValue, mapValuesAsync } = require('@frctl/fractalite-support/utils');
-const { getScenario, getComponent } = require('@frctl/fractalite-core/helpers');
+const { getScenarioOrDefault, getComponent } = require('@frctl/fractalite-core/helpers');
 const { map } = require('asyncro');
 
 module.exports = function(app, compiler, renderer, opts = {}) {
@@ -65,7 +65,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     let scenario;
 
     try {
-      scenario = getScenario(component, ctx.params.scenario, true);
+      scenario = getScenarioOrDefault(component, ctx.params.scenario);
     } catch (err) {
       err.status = 404;
       throw err;
@@ -76,8 +76,6 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     });
 
     ctx.body = {
-      component,
-      scenario,
       preview: await app.utils.renderPreview(component, scenario),
       panels: panels.filter(panel => panel.template)
     };
