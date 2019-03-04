@@ -54,7 +54,7 @@ module.exports = function() {
           throw err;
         }
       },
-      opts.requestLimit || 1000,
+      opts.requestLimit || 100,
       1000
     );
 
