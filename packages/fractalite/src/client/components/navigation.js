@@ -12,7 +12,7 @@ export default {
       const expandItems = items => {
         items.forEach(item => {
           if (item.expanded === true) {
-            this.toggleExpanded(item);
+            this.expand(item);
           }
           if (item.children) {
             expandItems(item.children);
@@ -42,6 +42,11 @@ export default {
     }
   },
   methods: {
+    expand(item) {
+      if (!this.isExpanded(item)) {
+        this.$store.commit('toggleExpanded', item);
+      }
+    },
     toggleExpanded(item) {
       if (item.collapsable) {
         this.$store.commit('toggleExpanded', item);

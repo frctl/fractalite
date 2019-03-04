@@ -27,11 +27,14 @@ export default {
     async load() {
       if (this.componentName) {
         try {
-          this.component = await this.$store.dispatch('fetchComponent', this.componentName);
-          const inspector = await this.$store.dispatch('fetchInspectorData', {
-            component: this.componentName,
-            scenario: this.scenarioName
-          });
+          const [component, inspectorData] = await Promise.all([
+            await this.$store.dispatch('fetchComponent', this.componentName),
+            await this.$store.dispatch('fetchInspectorData', {
+              component: this.componentName,
+              scenario: this.scenarioName
+            })
+          ]);
+          this.component = component;
           const scenario = this.component.scenarios.find(scenario => scenario.name === this.scenarioName);
           if (!scenario) {
             const scenario = this.component.scenarios[0];
@@ -39,8 +42,8 @@ export default {
             return;
           }
           this.scenario = scenario;
-          this.panels = inspector.panels;
-          this.preview = inspector.preview;
+          this.panels = inspectorData.panels;
+          this.preview = inspectorData.preview;
           this.loaded = true;
         } catch (err) {
           this.$store.commit('setError', err);

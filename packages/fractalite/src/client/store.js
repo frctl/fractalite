@@ -1,10 +1,13 @@
 import Vue from 'vue/dist/vue';
 import Vuex from 'vuex';
 import axios from 'axios';
+import VuexPersistence from 'vuex-persist';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  plugins: [new VuexPersistence().plugin],
+
   state: {
     components: [],
     pages: [],
@@ -90,12 +93,12 @@ export default new Vuex.Store({
 
     async updateState({ commit }) {
       try {
-        const [navigation, search] = await Promise.all([await axios.get('/api/navigation.json'), await axios.get('/api/search.json')]);
-        commit('setNavigationItems', navigation.data.items);
-        commit('setSearchTargets', search.data.components);
         commit('clearComponentCache');
         commit('clearPageCache');
         commit('clearInspectorDataCache');
+        const [navigation, search] = await Promise.all([await axios.get('/api/navigation.json'), await axios.get('/api/search.json')]);
+        commit('setNavigationItems', navigation.data.items);
+        commit('setSearchTargets', search.data.components);
         commit('clearError');
         commit('initialised', true);
       } catch (err) {

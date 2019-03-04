@@ -18,18 +18,17 @@
     "mri": "^1.1.1",
     "prettier": "^1.16.4",
     "signale": "^1.2.1",
-    "socket.io-client": "^2.2.0"
+    "socket.io-client": "^2.2.0",
+    "vuex-persist": "^2.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "codemirror": "^5.43.0",
-    "inter-ui": "^3.3.4",
     "normalize.css": "^8.0.0",
     "parcel-bundler": "^1.10.1",
     "sass": "^1.14.1",
-    "source-code-pro": "git://github.com/adobe-fonts/source-code-pro.git#release",
-    "vue": "^2.6.2",
+    "vue": "^2.6.8",
     "vue-awesome": "^3.3.1",
     "vue-codemirror": "^4.0.6",
     "vue-hot-reload-api": "^2.3.1",
