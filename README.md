@@ -65,8 +65,6 @@ The most full-featured demo is the [Nunjucks demo](demos/nunjucks). It uses the 
 
 <img src="./assets/nunjucks-demo.png" alt="Screenshot of the Nunjucks demo" width="100%">
 
-<small><em>Demo colour scheme shamelessly ripped off from the excellent [Kanbasu](https://kanbasu.liip.ch/2/) component library :-)</em></small>
-
 ### Running the demo
 
 1. Download or clone this repo
