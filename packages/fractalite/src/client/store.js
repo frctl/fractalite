@@ -113,6 +113,7 @@ export default new Vuex.Store({
         commit('initialised', true);
       } catch (err) {
         commit('setError', err);
+        throw err;
       }
     },
 
@@ -128,6 +129,7 @@ export default new Vuex.Store({
         return component;
       } catch (err) {
         commit('setError', err);
+        throw err;
       }
     },
 
@@ -143,6 +145,7 @@ export default new Vuex.Store({
         return page;
       } catch (err) {
         commit('setError', err);
+        throw err;
       }
     },
 
@@ -161,6 +164,7 @@ export default new Vuex.Store({
         return data;
       } catch (err) {
         commit('setError', err);
+        throw err;
       }
     }
   },
