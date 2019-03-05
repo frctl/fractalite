@@ -14,7 +14,7 @@
 
   <title>{% block title %}{% if page.title %}{{ page.title }} | {% endif %}{{ app.meta.title }}{% endblock %}</title>
 </head>
-<body>
+<body{% if loading %} class="loading"{% endif %} data-mode="{{ mode.name }}">
 
 <div id="app" class="fr-app">
 {%- block preBody %}{% endblock %}

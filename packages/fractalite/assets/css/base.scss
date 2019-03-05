@@ -15,6 +15,11 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+  width: 100vw;
+  height: 100vh;
+}
+
 a {
   color: var(--link-color);
   text-decoration: var(--link-decoration);
@@ -43,4 +48,12 @@ pre {
 pre,
 code {
   font-family: var(--font-family);
+}
+
+[data-mode='build'].loading,
+[data-mode='build'] .loading {
+  background-color: var(--bg-color-light);
+  background-image: var(--bg-icon-loader);
+  background-position: center;
+  background-repeat: no-repeat;
 }

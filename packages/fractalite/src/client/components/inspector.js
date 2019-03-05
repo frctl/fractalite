@@ -1,4 +1,5 @@
 import Preview from './preview';
+import eventBus from '../events';
 
 export default {
   template: '#inspector',
@@ -15,8 +16,8 @@ export default {
   data() {
     return {
       component: null,
-      scenario: null,
-      preview: null,
+      scenario: {},
+      preview: '',
       panels: [],
       currentTab: 0,
       loaded: false
@@ -24,6 +25,9 @@ export default {
   },
   methods: {
     async load() {
+      this.loaded = false;
+      this.preview = '';
+      this.scenario = {};
       if (this.componentName) {
         try {
           const [component, inspectorData] = await Promise.all([
@@ -44,6 +48,7 @@ export default {
           this.panels = inspectorData.panels;
           this.preview = inspectorData.preview;
           this.loaded = true;
+          eventBus.$emit('loading.stop');
         } catch (err) {
           this.$store.commit('setError', err);
         }
@@ -57,11 +62,11 @@ export default {
     await this.load();
   },
   watch: {
-    async componentName() {
-      await this.load();
+    componentName() {
+      return this.load();
     },
-    async scenarioName() {
-      await this.load();
+    scenarioName() {
+      return this.load();
     }
   }
 };

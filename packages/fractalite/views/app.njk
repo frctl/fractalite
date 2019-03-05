@@ -1,9 +1,9 @@
 {% extends "layout" %}
+{% set loading = true %}
 
 {% block body %}
 <error v-if="$store.state.error" :error="$store.state.error"></error>
-{# <loader v-if="loading"></loader> #}
-<div class="fr-app__container" v-if="$store.state.initialised" :class="{ 'is-ready': $store.state.initialised }">
+<div class="fr-app__container" :class="{ 'is-ready': $store.state.initialised }" v-if="$store.state.initialised">
   <div class="fr-app__sidebar" v-on:keyup.escape="resetSearch()">
     <header class="fr-app__brand">
       {% include "partials/brand" %}
@@ -18,7 +18,7 @@
     </div>
     <footer class="fr-app__controls fr-controls"></footer>
   </div>
-  <main class="fr-app__main">
+  <main class="fr-app__main" :class="{ 'loading': loading }">
     <router-view></router-view>
   </main>
 </div>
@@ -29,9 +29,9 @@
   window.frctl = window.frctl || {};
   window.frctl.mode = {{ mode | dump | safe }};
 </script>
-{% for template in ['navigation', 'preview', 'inspector', 'page', 'error', 'search', 'loader'] %}
+{% for template in ['navigation', 'preview', 'inspector', 'page', 'error', 'search'] %}
 <script type="text/x-template" id="{{ template }}">
-{% includeraw "components/" + template + '.vue' %}
+{% includeraw "vue/" + template + '.html' %}
 </script>
 {% endfor %}
 {% endblock %}

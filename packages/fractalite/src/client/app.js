@@ -12,6 +12,7 @@ import SourceCode from './components/source-code';
 import AppLink from './components/app-link';
 import router from './router';
 import store from './store';
+import eventBus from './events';
 
 Vue.use(VueSocketio, io(), { store });
 
@@ -22,6 +23,9 @@ Vue.component('source-code', SourceCode);
 
 window.app = new Vue({
   el: '#app',
+  props: {
+    loading: false
+  },
   components: {
     Error,
     Navigation,
@@ -43,6 +47,16 @@ window.app = new Vue({
     }
   },
   async mounted() {
+    document.querySelector('body').classList.remove('loading');
+
+    eventBus.$on('loading.start', () => {
+      this.loading = true;
+    });
+
+    eventBus.$on('loading.stop', () => {
+      this.loading = false;
+    });
+
     await this.$store.dispatch('updateState');
 
     /*

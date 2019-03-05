@@ -1,3 +1,5 @@
+import eventBus from '../events';
+
 export default {
   template: '#page',
   data() {
@@ -16,6 +18,7 @@ export default {
           this.page = page;
           this.content = content;
           this.loaded = true;
+          eventBus.$emit('loading.stop');
         } catch (err) {
           this.$store.commit('setError', err);
         }
@@ -27,6 +30,7 @@ export default {
   },
   watch: {
     async path() {
+      this.loaded = false;
       await this.load();
     }
   }

@@ -2,10 +2,11 @@ import Vue from 'vue/dist/vue';
 import VueRouter from 'vue-router';
 import Inspector from './components/inspector';
 import Page from './components/page';
+import eventBus from './events';
 
 Vue.use(VueRouter);
 
-export default new VueRouter({
+const router = new VueRouter({
   mode: 'history',
   routes: [
     {
@@ -28,3 +29,10 @@ export default new VueRouter({
     }
   ]
 });
+
+router.beforeEach((to, from, next) => {
+  eventBus.$emit('loading.start');
+  next();
+});
+
+export default router;

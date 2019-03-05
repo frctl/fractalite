@@ -5,6 +5,7 @@ export default {
   props: ['src', 'srcdoc'],
   data() {
     return {
+      loaded: false,
       previewWidth: 0,
       previewHeight: 0
     };
@@ -13,6 +14,7 @@ export default {
   methods: {
     reload: debounce(
       function() {
+        this.loaded = false;
         this.$refs.window.contentWindow.location.reload();
       },
       500,
@@ -24,8 +26,22 @@ export default {
     }
   },
   mounted() {
+    this.loaded = false;
     this.previewWidth = this.$refs['preview-wrapper'].clientWidth;
     this.previewHeight = this.$refs['preview-wrapper'].clientHeight;
+    this.$refs.window.onload = () => {
+      if (this.srcdoc) {
+        this.loaded = true;
+      }
+    };
+  },
+  watch: {
+    srcdoc() {
+      this.loaded = false;
+    },
+    src() {
+      this.loaded = false;
+    }
   }
 };
 
