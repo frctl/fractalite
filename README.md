@@ -51,7 +51,7 @@ Feedback, comments and/or pull requests on **all** aspects of the prototype are 
   * [ ] Twig
   * [ ] React
   * [ ] Others...?
-* [ ] SSR for static exported files
+* [ ] SSR for static exported files?
 * [ ] More UI customisation hooks?
 * [ ] More extensive feature demo
 * [ ] Any other suggestions...?
