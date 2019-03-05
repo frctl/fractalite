@@ -43,9 +43,7 @@ window.app = new Vue({
     }
   },
   async mounted() {
-    if (!this.$store.state.initialised) {
-      await this.$store.dispatch('updateState');
-    }
+    await this.$store.dispatch('updateState');
 
     /*
      * Capture clicks in outside of Vue code and determine

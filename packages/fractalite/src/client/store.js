@@ -7,8 +7,16 @@ import VuexPersistence from 'vuex-persist';
 
 Vue.use(Vuex);
 
+const persist = new VuexPersistence({
+  reducer: state => ({
+    nav: {
+      expandedIds: state.nav.expandedIds
+    }
+  })
+});
+
 export default new Vuex.Store({
-  plugins: [new VuexPersistence().plugin],
+  plugins: [persist.plugin],
 
   state: {
     components: [],
