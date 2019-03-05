@@ -1,12 +1,26 @@
-const { get } = require('lodash');
+const { get, isString } = require('lodash');
+const { normalizeSrc } = require('@frctl/fractalite-support/utils');
 const createCompiler = require('./src/compiler');
 const coreMiddleware = require('./src/middleware');
 
-function init(config) {
-  const compiler = createCompiler(config);
+function init(config = {}) {
+  if (isString(config)) {
+    config = {
+      src: config,
+      watch: {}
+    };
+  }
+
+  const normalizedConfig = {
+    src: normalizeSrc(config.src || {}),
+    watch: normalizeSrc(config.watch || {}),
+    opts: config.opts || {}
+  };
+
+  const compiler = createCompiler(normalizedConfig);
 
   coreMiddleware.forEach(({ key, handler }) => {
-    const opts = get(config, key, {});
+    const opts = get(normalizedConfig, `opts.${key}`, {});
     compiler.use(handler(opts));
   });
 

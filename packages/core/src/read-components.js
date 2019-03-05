@@ -3,7 +3,10 @@ const read = require('./read');
 const Component = require('./entities/component');
 
 module.exports = async function(src, opts = {}) {
-  let files = await read(src, opts);
+  let files = await read(src, {
+    onlyFiles: false,
+    gitignore: opts.gitignore
+  });
 
   files = orderBy(files, 'path.length', 'desc');
   const dirs = files.filter(f => f.stats.isDirectory());

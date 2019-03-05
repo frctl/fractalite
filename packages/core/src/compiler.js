@@ -1,7 +1,7 @@
 const EventEmitter = require('events');
-const { isFunction, isString, debounce } = require('lodash');
-const { normalizeSrc } = require('@frctl/fractalite-support/utils');
+const { isFunction, debounce } = require('lodash');
 const { watch } = require('chokidar');
+const { normalizeSrc } = require('@frctl/fractalite-support/utils');
 const compose = require('./compose');
 const createState = require('./state');
 const readComponents = require('./read-components');
@@ -11,12 +11,8 @@ module.exports = function(config = {}) {
   const middlewares = [];
   const compiler = {};
   const watchCallbacks = [];
-  if (isString(config)) {
-    config = {
-      src: config,
-      watch: {}
-    };
-  }
+  const parseSrc = normalizeSrc(config.src || {});
+  const watchSrc = normalizeSrc(config.watch || {});
 
   const state = createState();
 
@@ -38,7 +34,7 @@ module.exports = function(config = {}) {
     const hrStart = process.hrtime();
     emitter.emit('start');
     const applyPlugins = compose(middlewares);
-    const { paths, opts } = normalizeSrc(config.src);
+    const { paths, opts } = parseSrc;
     const components = await readComponents(paths, opts);
     await applyPlugins(components);
     state.update({ components });
@@ -48,8 +44,6 @@ module.exports = function(config = {}) {
 
   compiler.watch = function(callback) {
     const watchers = [];
-    const parseSrc = normalizeSrc(config.src);
-    const watchSrc = normalizeSrc(config.watch || {});
     const paths = [...parseSrc.paths, ...watchSrc.paths];
     const opts = Object.assign({ ignoreInitial: true }, watchSrc.opts);
 
