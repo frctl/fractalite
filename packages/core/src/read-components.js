@@ -1,6 +1,7 @@
 const { orderBy, difference, compact, clone } = require('lodash');
 const read = require('./read');
 const Component = require('./entities/component');
+const defaultComponentMatcher = require('./component-matcher');
 
 module.exports = async function(src, opts = {}) {
   let files = await read(src, {
@@ -35,7 +36,3 @@ module.exports = async function(src, opts = {}) {
 
   return compact(components);
 };
-
-function defaultComponentMatcher(dir, children) {
-  return dir.stem[0] === '@' && children.length > 0;
-}
