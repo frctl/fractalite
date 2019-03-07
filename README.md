@@ -38,12 +38,12 @@ Feedback, comments and/or pull requests on **all** aspects of the prototype are 
 
 #### Still missing/in progress
 
-* [ ] Community feedback and input! :-)
 * [ ] Proper UI design & implementation
   * [ ] Responsive UI
+  * [ ] Cross-browser tested
   * [ ] Loading states
   * [ ] More variables for theming
-  * [ ] Landing page
+  * [ ] Proper landing page
 * [ ] More tests
 * [ ] Documentation
 * [ ] Additional template engine adapters
@@ -51,7 +51,6 @@ Feedback, comments and/or pull requests on **all** aspects of the prototype are 
   * [ ] Twig
   * [ ] React
   * [ ] Others...?
-* [ ] SSR for static exported files?
 * [ ] More UI customisation hooks?
 * [ ] More extensive feature demo
 * [ ] Any other suggestions...?

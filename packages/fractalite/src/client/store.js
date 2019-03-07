@@ -21,7 +21,10 @@ export default new Vuex.Store({
   state: {
     components: [],
     pages: [],
-    inspectorData: [],
+    inspector: {
+      data: [],
+      drawerHeight: null
+    },
     nav: {
       items: [],
       expandedIds: []
@@ -61,7 +64,7 @@ export default new Vuex.Store({
     },
 
     clearInspectorDataCache(state) {
-      state.inspectorData = [];
+      state.inspector.data = [];
     },
 
     setComponent(state, component) {
@@ -73,7 +76,11 @@ export default new Vuex.Store({
     },
 
     setInspectorData(state, inspectorData) {
-      state.inspectorData.push(inspectorData);
+      state.inspector.data.push(inspectorData);
+    },
+
+    setInspectorDrawerheight(state, height) {
+      state.inspector.drawerHeight = height;
     },
 
     setError(state, err) {
@@ -183,7 +190,7 @@ export default new Vuex.Store({
     },
 
     getInspectorData: state => (componentName, scenarioName) => {
-      return state.inspectorData.find(data => data.id === `${componentName}/${scenarioName}`);
+      return state.inspector.data.find(data => data.id === `${componentName}/${scenarioName}`);
     }
   }
 });
