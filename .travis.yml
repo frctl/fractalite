@@ -5,7 +5,7 @@ os:
 language: node_js
 node_js:
   - lts/dubnium
-  - 11
+  - '11.10.1'
 sudo: false
 before_script:
   - npm run bootstrap
