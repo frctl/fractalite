@@ -1,5 +1,5 @@
-import Preview from './preview';
 import eventBus from '../events';
+import Preview from './preview';
 
 export default {
   template: '#inspector',
@@ -22,6 +22,11 @@ export default {
       currentTab: 0,
       loaded: false
     };
+  },
+  computed: {
+    split() {
+      return this.$store.state.inspector.split;
+    }
   },
   methods: {
     async load() {
@@ -56,6 +61,9 @@ export default {
     },
     selectTab(i) {
       this.currentTab = i;
+    },
+    onDrawerResize(sizes) {
+      this.$store.commit('setInspectorSplit', sizes);
     }
   },
   async mounted() {

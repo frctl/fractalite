@@ -11,6 +11,12 @@ const persist = new VuexPersistence({
   reducer: state => ({
     nav: {
       expandedIds: state.nav.expandedIds
+    },
+    preview: {
+      split: state.preview.split
+    },
+    inspector: {
+      split: state.inspector.split
     }
   })
 });
@@ -21,13 +27,19 @@ export default new Vuex.Store({
   state: {
     components: [],
     pages: [],
-    inspectorData: [],
+    inspector: {
+      data: [],
+      split: null
+    },
     nav: {
       items: [],
       expandedIds: []
     },
     search: {
       targets: []
+    },
+    preview: {
+      split: null
     },
     error: null,
     initialised: false
@@ -61,7 +73,7 @@ export default new Vuex.Store({
     },
 
     clearInspectorDataCache(state) {
-      state.inspectorData = [];
+      state.inspector.data = [];
     },
 
     setComponent(state, component) {
@@ -73,7 +85,15 @@ export default new Vuex.Store({
     },
 
     setInspectorData(state, inspectorData) {
-      state.inspectorData.push(inspectorData);
+      state.inspector.data.push(inspectorData);
+    },
+
+    setInspectorSplit(state, sizes) {
+      state.inspector.split = sizes;
+    },
+
+    setPreviewSplit(state, sizes) {
+      state.preview.split = sizes;
     },
 
     setError(state, err) {
@@ -183,7 +203,7 @@ export default new Vuex.Store({
     },
 
     getInspectorData: state => (componentName, scenarioName) => {
-      return state.inspectorData.find(data => data.id === `${componentName}/${scenarioName}`);
+      return state.inspector.data.find(data => data.id === `${componentName}/${scenarioName}`);
     }
   }
 });
