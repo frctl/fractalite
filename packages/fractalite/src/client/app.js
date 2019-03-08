@@ -1,4 +1,4 @@
-/* global window */
+/* global window, document */
 
 import Vue from 'vue/dist/vue';
 import VueSocketio from 'vue-socket.io-extended';

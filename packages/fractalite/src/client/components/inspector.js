@@ -1,5 +1,5 @@
-import Preview from './preview';
 import eventBus from '../events';
+import Preview from './preview';
 
 export default {
   template: '#inspector',

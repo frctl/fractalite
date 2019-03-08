@@ -1,4 +1,4 @@
-import Split from 'split.js';
+import split from 'split.js';
 
 export default {
   template: `
@@ -13,7 +13,7 @@ export default {
       type: Array,
       required: true,
       validator(value) {
-        // must be array of strings
+        // Must be array of strings
         const isValid = value.every(i => typeof i === 'string');
         if (!isValid) {
           console.error(`VueSplitJs: Invalid elements - "${value}". Must be array of strings`);
@@ -26,7 +26,7 @@ export default {
       type: String,
       default: 'horizontal',
       validator(value) {
-        let allowedValues = ['horizontal', 'vertical'];
+        const allowedValues = ['horizontal', 'vertical'];
         const isValid = allowedValues.includes(value);
         if (!isValid) {
           console.error(`VueSplitJs: Invalid direction - "${value}". Possible values are "horizontal" or "vertical"`);
@@ -61,7 +61,7 @@ export default {
     }
   },
   mounted() {
-    Split(this.elements, {
+    split(this.elements, {
       direction: this.direction,
       sizes: this.sizes,
       minSize: this.minSize,

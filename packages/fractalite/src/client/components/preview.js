@@ -47,11 +47,11 @@ export default {
     this.loaded = false;
     this.previewWidth = this.$refs['preview-wrapper'].clientWidth;
     this.previewHeight = this.$refs['preview-wrapper'].clientHeight;
-    this.$refs.window.onload = () => {
+    this.$refs.window.addEventListener('load', () => {
       if (this.srcdoc) {
         this.loaded = true;
       }
-    };
+    });
   },
   watch: {
     srcdoc() {
