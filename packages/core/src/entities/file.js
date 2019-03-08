@@ -41,6 +41,10 @@ class File extends Entity {
     return this._contents || readFile(this.path, 'utf-8');
   }
 
+  toString() {
+    return this.relative;
+  }
+
   static isFile(item) {
     return item instanceof File;
   }

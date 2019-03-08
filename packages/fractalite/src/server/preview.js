@@ -318,8 +318,8 @@ module.exports = function(app, compiler, renderer, opts = {}) {
 
   function replaceRelativeUrl(value, component) {
     if (typeof value === 'string' && value.startsWith('./')) {
-      const file = component.files.find(file => `./${file.relative}` === value);
-      return file ? app.url('src', { file }) : value;
+      const file = component.files.find(file => `./${file.componentPath}` === value);
+      return file ? app.url('file', { file }) : value;
     }
     return value;
   }
@@ -334,7 +334,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
   function resolveComponentAsset(path, component) {
     if (isString(path)) {
       if (path.startsWith('./')) {
-        const file = component.files.find(file => `./${file.relative}` === path);
+        const file = component.files.find(file => `./${file.componentPath}` === path);
         if (!file) {
           throw new Error(`Preview asset '${path}' not found`);
         }

@@ -1,15 +1,9 @@
 const { orderBy, difference, compact, clone } = require('lodash');
-const read = require('./read');
 const Component = require('./entities/component');
 const defaultComponentMatcher = require('./component-matcher');
 
-module.exports = async function(src, opts = {}) {
-  let files = await read(src, {
-    onlyFiles: false,
-    gitignore: opts.gitignore
-  });
-
-  files = orderBy(files, 'path.length', 'desc');
+module.exports = async function(files, opts = {}) {
+  files = orderBy(files, 'path.length', 'desc'); // work from deepest to shallowest
   const dirs = files.filter(f => f.stats.isDirectory());
   let unusedFiles = files.filter(f => f.stats.isFile());
 
@@ -18,7 +12,7 @@ module.exports = async function(src, opts = {}) {
   const components = dirs.map(dir => {
     const children = unusedFiles.filter(f => f.path.startsWith(`${dir.path}/`));
 
-    if (!matcher(dir, children)) {
+    if (!matcher(dir, children, opts)) {
       return null;
     }
 
@@ -30,7 +24,7 @@ module.exports = async function(src, opts = {}) {
       relative: dir.relative,
       root: clone(dir),
       scenarios: [],
-      files: children.map(clone)
+      files: children
     });
   });
 

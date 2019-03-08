@@ -31,11 +31,6 @@ describe('state', () => {
     expect(state.components).toBe(components);
   });
 
-  test('throws an error when attempting to update files directly', () => {
-    const state = createState();
-    expect(() => state.update({ files: [] })).toThrow();
-  });
-
   test('can have additional properties set', () => {
     const state = createState();
     const pages = [{ name: 'foo' }];

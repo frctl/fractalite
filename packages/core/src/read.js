@@ -5,7 +5,7 @@ const globBase = require('glob-base');
 const { stat } = require('fs-extra');
 const slash = require('slash');
 const { map } = require('asyncro');
-const { normalizeName, toArray } = require('@frctl/fractalite-support/utils');
+const { toArray, normalizeName } = require('@frctl/fractalite-support/utils');
 const File = require('./entities/file');
 
 module.exports = async function(src = [], opts = {}) {
@@ -34,7 +34,6 @@ async function toFile(path, root) {
     dirname: dirname(path),
     extname: ext,
     ext: ext.toLowerCase(),
-    stem: name,
     stats,
     name: normalizeName(name)
   });

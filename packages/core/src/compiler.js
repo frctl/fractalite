@@ -4,7 +4,8 @@ const { watch } = require('chokidar');
 const { normalizeSrc } = require('@frctl/fractalite-support/utils');
 const compose = require('./compose');
 const createState = require('./state');
-const readComponents = require('./read-components');
+const readFiles = require('./read');
+const compileComponents = require('./compile-components');
 
 module.exports = function(config = {}) {
   const emitter = new EventEmitter();
@@ -33,11 +34,20 @@ module.exports = function(config = {}) {
   compiler.run = async function() {
     const hrStart = process.hrtime();
     emitter.emit('start');
-    const applyPlugins = compose(middlewares);
     const { paths, opts } = parseSrc;
-    const components = await readComponents(paths, opts);
+
+    const files = await readFiles(paths, {
+      onlyFiles: false,
+      gitignore: !!opts.gitignore
+    });
+
+    const components = await compileComponents(files, opts);
+    const applyPlugins = compose(
+      middlewares,
+      { files }
+    );
     await applyPlugins(components);
-    state.update({ components });
+    state.update({ components, files });
     emitter.emit('finish', state, process.hrtime(hrStart));
     return state;
   };

@@ -142,27 +142,30 @@ module.exports = function(compiler, opts = {}) {
   views.addGlobal('url', (name, params) => app.url(name, params));
   views.addGlobal('resourceUrl', (name, path) => app.resourceUrl(name, path));
 
-  app.addRoute('src', '/src/:file(.+)', ctx => {
-    const file = ctx.files.find(f => f.handle === ctx.params.file);
+  app.addRoute('file', '/src/:file(.+)', ctx => {
+    const file = ctx.files.find(f => f.relative === ctx.params.file);
     if (file) {
       return ctx.sendFile(file);
     }
-    ctx.throw(404, 'Source file not found');
+    ctx.throw(404, 'File not found');
   });
 
   app.addBuilder((state, { copy }) => {
-    state.files.forEach(file => copy(file.path, { name: 'src', params: { file } }));
+    state.files.forEach(file =>
+      copy(file.path, {
+        name: 'file',
+        params: { file }
+      })
+    );
   });
 
   /*
-   * Compiler middleware to add url properties to files and assets
+   * Compiler middleware to add url properties to files
    */
-  app.compiler.use(async (components, next) => {
+  app.compiler.use(async (components, next, { files }) => {
     await next();
-    components.forEach(component => {
-      component.files.forEach(file => {
-        file.url = app.url('src', { file });
-      });
+    files.forEach(file => {
+      file.url = app.url('file', { file });
     });
   });
 

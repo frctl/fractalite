@@ -2,15 +2,9 @@ const { flatMap } = require('lodash');
 
 module.exports = function(initial = {}) {
   const state = {
-    components: []
+    components: [],
+    files: []
   };
-
-  Object.defineProperty(state, 'files', {
-    get() {
-      return flatMap(state.components, component => component.files);
-    },
-    enumerable: true
-  });
 
   state.update = props => {
     Object.assign(state, props);

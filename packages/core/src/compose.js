@@ -1,6 +1,6 @@
 // Adapted from Koa Compose: https://github.com/koajs/compose
 
-module.exports = function compose(middleware) {
+module.exports = function compose(middleware, ctx = {}) {
   if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!');
   for (const fn of middleware) {
     if (typeof fn !== 'function') throw new TypeError('Middleware must be composed of functions!');
@@ -19,10 +19,11 @@ module.exports = function compose(middleware) {
       try {
         let called = false;
         const trigger = dispatch.bind(null, i + 1);
-        const rawResult = fn(context, () => {
+        const wrappedTrigger = () => {
           called = true;
           return trigger();
-        });
+        };
+        const rawResult = fn(context, wrappedTrigger, ctx);
         const result = Array.isArray(rawResult) ? await Promise.all(rawResult) : await Promise.resolve(rawResult);
         if (!called) {
           await trigger();
