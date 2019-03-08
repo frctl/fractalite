@@ -21,18 +21,13 @@ export default {
       panels: [],
       currentTab: 0,
       loaded: false
-      // viewHeight: null
     };
   },
-  // computed: {
-  //   drawerHeight() {
-  //     const initialHeight = this.$store.state.inspector.drawerHeight;
-  //     if (initialHeight) {
-  //       return `${initialHeight}px !important`;
-  //     }
-  //     return null;
-  //   }
-  // },
+  computed: {
+    split() {
+      return this.$store.state.inspector.split;
+    }
+  },
   methods: {
     async load() {
       this.loaded = false;
@@ -67,8 +62,8 @@ export default {
     selectTab(i) {
       this.currentTab = i;
     },
-    onDrawerResize() {
-      this.$store.commit('setInspectorDrawerheight', this.$refs.drawer.clientHeight);
+    onDrawerResize(sizes) {
+      this.$store.commit('setInspectorSplit', sizes);
     }
   },
   async mounted() {

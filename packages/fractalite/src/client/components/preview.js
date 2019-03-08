@@ -10,6 +10,11 @@ export default {
       previewHeight: 0
     };
   },
+  computed: {
+    split() {
+      return this.$store.state.preview.split || [100, 0];
+    }
+  },
   directives: { resize },
   methods: {
     reload: debounce(
@@ -23,6 +28,9 @@ export default {
     onPreviewResize(el) {
       this.previewWidth = el.clientWidth;
       this.previewHeight = el.clientHeight;
+    },
+    onDrawerResize(sizes) {
+      this.$store.commit('setPreviewSplit', sizes);
     }
   },
   mounted() {

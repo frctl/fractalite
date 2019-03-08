@@ -1,4 +1,4 @@
-<split-pane class="fr-inspector" :elements="['#inspector-preview', '#inspector-drawer']" direction="vertical" :min-size="200" :gutter-size="10" @onDrag="onDrawerResize">
+<split-pane class="fr-inspector" :elements="['#inspector-preview', '#inspector-drawer']" direction="vertical" :min-size="200" :gutter-size="10" @onDragEnd="onDrawerResize" :sizes="split">
   <div id="inspector-preview" class="fr-inspector__preview">
     <preview :srcdoc="preview" :src="scenario.previewUrl" ref="preview"></preview>
   </div>

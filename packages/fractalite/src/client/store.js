@@ -11,6 +11,12 @@ const persist = new VuexPersistence({
   reducer: state => ({
     nav: {
       expandedIds: state.nav.expandedIds
+    },
+    preview: {
+      split: state.preview.split
+    },
+    inspector: {
+      split: state.inspector.split
     }
   })
 });
@@ -23,7 +29,7 @@ export default new Vuex.Store({
     pages: [],
     inspector: {
       data: [],
-      drawerHeight: null
+      split: null
     },
     nav: {
       items: [],
@@ -31,6 +37,9 @@ export default new Vuex.Store({
     },
     search: {
       targets: []
+    },
+    preview: {
+      split: null
     },
     error: null,
     initialised: false
@@ -79,8 +88,12 @@ export default new Vuex.Store({
       state.inspector.data.push(inspectorData);
     },
 
-    setInspectorDrawerheight(state, height) {
-      state.inspector.drawerHeight = height;
+    setInspectorSplit(state, sizes) {
+      state.inspector.split = sizes;
+    },
+
+    setPreviewSplit(state, sizes) {
+      state.preview.split = sizes;
     },
 
     setError(state, err) {

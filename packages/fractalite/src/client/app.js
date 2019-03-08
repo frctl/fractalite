@@ -3,20 +3,20 @@
 import Vue from 'vue/dist/vue';
 import VueSocketio from 'vue-socket.io-extended';
 import io from 'socket.io-client';
-import VueSplit from 'vue-splitjs';
 import Navigation from './components/navigation';
 import Search from './components/search';
 import Error from './components/error';
 import JSONExplorer from './components/json-explorer';
 import SourceCode from './components/source-code';
 import AppLink from './components/app-link';
+import Split from './components/split';
 import router from './router';
 import store from './store';
 import eventBus from './events';
 
 Vue.use(VueSocketio, io(), { store });
 
-Vue.component('split-pane', VueSplit);
+Vue.component('split-pane', Split);
 Vue.component('app-link', AppLink);
 Vue.component('json-explorer', JSONExplorer);
 Vue.component('source-code', SourceCode);
