@@ -1,5 +1,7 @@
 import resize from 'vue-resize-directive';
 
+let statsTimer = null;
+
 export default {
   template: '#preview',
   props: ['src', 'srcdoc'],
@@ -7,7 +9,8 @@ export default {
     return {
       loaded: false,
       previewWidth: 0,
-      previewHeight: 0
+      previewHeight: 0,
+      statsVisible: false
     };
   },
   computed: {
@@ -28,6 +31,13 @@ export default {
     onPreviewResize(el) {
       this.previewWidth = el.clientWidth;
       this.previewHeight = el.clientHeight;
+      this.statsVisible = true;
+      if (statsTimer) {
+        clearTimeout(statsTimer);
+      }
+      statsTimer = setTimeout(() => {
+        this.statsVisible = false;
+      }, 1000);
     },
     onDrawerResize(sizes) {
       this.$store.commit('setPreviewSplit', sizes);

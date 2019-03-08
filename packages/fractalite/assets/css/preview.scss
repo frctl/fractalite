@@ -28,6 +28,13 @@
     font-family: var(--font-family--code);
     font-size: 14px;
     padding: 3px 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-out;
+  }
+
+  &__stats.visible {
+    opacity: 0.9;
   }
 
   &__spacer {

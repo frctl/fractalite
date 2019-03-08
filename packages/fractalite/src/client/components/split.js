@@ -1,7 +1,5 @@
 import Split from 'split.js';
 
-// Adapter
-
 export default {
   template: `
     <div class="split-container"
