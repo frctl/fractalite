@@ -36,12 +36,13 @@ module.exports = function(config = {}) {
     emitter.emit('start');
     const { paths, opts } = parseSrc;
 
-    const files = await readFiles(paths, {
+    let files = await readFiles(paths, {
       onlyFiles: false,
       gitignore: !!opts.gitignore
     });
 
     const components = await compileComponents(files, opts);
+    files = files.filter(f => f.stats.isFile());
     const applyPlugins = compose(
       middlewares,
       { files }
