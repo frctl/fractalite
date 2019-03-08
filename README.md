@@ -178,14 +178,22 @@ module.exports = {
 
 ## Components
 
-Each component is represented by a directory. The directory name must begin with an `@` symbol - for example `@button` or `@media-block`.
+Each Fractalite component is a directory containing one or more files.
+<!--
+Each component directory will typically contain a set of files including as component config file, a view template file (or the framework-specific equivalent) and any other related assets. -->
 
-Each component directory will typically contain a set of files including as component config file, a view template file (or the framework-specific equivalent) and any other related assets.
+In order for Fractalite to correctly identify a directory as a component, it must include **at least one** of the following:
+
+* A view file with a name matching `view.*` or `*.view.*` (i.e. `view.html` or `button.view.njk`)
+* A config file with a name matching `config.*` or `*.config.*` (i.e. `config.yml` or `button.config.js`)
+* A `package.json` file
+
+A component directory can then also include any number of other related files and folders as required.
 
 The file structure for a basic [Nunjucks](https://mozilla.github.io/nunjucks) button component might look something like this:
 
 ```
-@button
+button
 ├── button.config.js
 ├── button.css
 └── view.njk
@@ -267,7 +275,7 @@ Config files must be named `config.{ext}` or `{component-name}.config.{ext}` - f
 CommonJS formatted files should export a configuration object:
 
 ```js
-// @button/button.config.js
+// button/button.config.js
 module.exports = {
   label: 'A basic button',
   // other config here...
@@ -275,7 +283,7 @@ module.exports = {
 ```
 #### Config properties
 
-> See the demo button component for an [annotated example](demos/nunjucks/src/components/01-units/@button/button.config.js) of some of the available config options.
+> See the demo button component for an [annotated example](demos/nunjucks/src/components/01-units/button/button.config.js) of some of the available config options.
 
 **`label`** [string]
 
@@ -317,7 +325,7 @@ Fractalite **adapters** are responsible for determining how view templates are n
 However, in the case of 'simple' template engines such as Nunjucks or Handlebars, views are typically templated fragments of HTML as in the following (Nunjucks) example:
 
 ```html
-<!-- @button/view.njk -->
+<!-- button/view.njk -->
 <a class="button" href="{{ href }}">
   <span class="button__text">{{ text }}</span>
 </a>
@@ -330,7 +338,7 @@ More complex frameworks such as Vue or React may have different requirements and
 Referencing local component assets in view templates can be done via relative paths:
 
 ```
-@button
+button
 ├── next-arrow.png
 └── view.njk
 ```
@@ -386,13 +394,13 @@ module.exports = {
 Individual components can also add **local CSS/JS** files from within their directory using relative paths:
 
 ```
-@button
+button
 ├── preview.css
 └── view.njk
 ```
 
 ```js
-// @button/button.config.js
+// button/button.config.js
 module.exports = {
   preview: [
     stylesheets: ['./preview.css'],
@@ -401,7 +409,7 @@ module.exports = {
 }
 ```
 
-> It's also possible to add 'inline' JS/CSS code to the previews using the `preview.css` and `preview.js` config options. See the Nunjucks demo [button component config](demos/nunjucks/src/components/01-units/@button/button.config.js) for an annotated example of this in action.
+> It's also possible to add 'inline' JS/CSS code to the previews using the `preview.css` and `preview.js` config options. See the Nunjucks demo [button component config](demos/nunjucks/src/components/01-units/button/button.config.js) for an annotated example of this in action.
 
 <h3 id="preview-markup">Customising preview markup</h3>
 
@@ -414,7 +422,7 @@ As well as adding assets, Fractalite also exposes a number of ways to completely
 #### Component-level customisation
 
 ```js
-// @button/button.config.js
+// button/button.config.js
 module.exports = {
 
   preview: {
@@ -879,7 +887,7 @@ module.exports = function(opts = {}) {
 Author information can then be added to component config files and will be displayed in the UI:
 
 ```js
-// @button/button.config.js
+// button/button.config.js
 module.exports = {
   author: {
     name: "Daffy Duck",
@@ -916,7 +924,7 @@ Then create the global entry file to bundle the required assets as per your proj
 ```js
 // ./assets/preview.js
 import '../components/**/*.scss'
-import button from '../components/@button/button.js'
+import button from '../components/button/button.js'
 ```
 
 > See the Parcel docs on module resolution for more info on paths, globbing and aliases: https://parceljs.org/module_resolution.html
