@@ -17,6 +17,13 @@ module.exports = function(config = {}) {
 
   const state = createState();
 
+  Object.defineProperty(compiler, 'src', {
+    get() {
+      return { ...parseSrc, watch: { ...watchSrc } };
+    },
+    enumerable: true
+  });
+
   compiler.use = function(plugin) {
     middlewares.push(plugin);
     return compiler;
