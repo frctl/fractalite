@@ -1,0 +1,13 @@
+{
+  "name": "@frctl/fractalite-demo-twig",
+  "private": true,
+  "scripts": {
+    "start": "fractalite start --port 3032",
+    "build": "fractalite build --dest ./build --serve --port 4042",
+    "serve-static": "fractalite serve --dest ./build --port 4042"
+  },
+  "devDependencies": {
+    "@frctl/fractalite": "^0.0.0",
+    "@frctl/fractalite-adapter-twig": "^0.0.0"
+  }
+}

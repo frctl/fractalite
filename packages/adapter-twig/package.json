@@ -1,0 +1,9 @@
+{
+  "name": "@frctl/fractalite-adapter-twig",
+  "version": "0.0.0",
+  "dependencies": {
+    "@frctl/fractalite-core": "^0.0.0",
+    "@frctl/fractalite-support": "^0.0.0",
+    "twing": "^2.2.2"
+  }
+}
