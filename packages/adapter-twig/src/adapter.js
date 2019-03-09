@@ -1,26 +1,23 @@
 const { TwingEnvironment, TwingLoaderArray } = require('twing');
 
-module.exports = function(opts = {}) {
-  return async function render(component, props, state) {
-    const templates = {};
+module.exports = function(compiler, opts = {}) {
+  const loader = new TwingLoaderArray({});
+
+  compiler.on('finish', state => {
+    loader.templates.clear();
     state.components.forEach(component => {
       const view = component.matchFiles(opts.views)[0];
       if (view) {
-        Object.defineProperty(templates, component.name, {
-          get() {
-            return view.getContentsSync();
-          },
-          enumerable: true
-        });
+        loader.setTemplate(component.name, view.getContentsSync());
       }
     });
+  });
 
-    const loader = new TwingLoaderArray(templates);
+  const twing = new TwingEnvironment(loader, {
+    cache: opts.cache ? opts.cache : false
+  });
 
-    const twing = new TwingEnvironment(loader, {
-      // cache: '/path/to/compilation_cache'
-    });
-
+  return async function render(component, props, state) {
     return new Promise((resolve, reject) => {
       try {
         const html = twing.render(component.name, props);

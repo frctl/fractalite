@@ -7,9 +7,10 @@ const defaults = {
 
 module.exports = function(opts = {}) {
   opts = defaultsDeep(opts, defaults);
-  const adapter = createAdapter(opts);
 
   return function nunjucksAdapter(app, compiler) {
+    const adapter = createAdapter(compiler, opts);
+
     // Compiler middleware to identify .twig files as HTML fragments so that
     // further pre-processing of templates can take place later if required.
     compiler.use(components => {
