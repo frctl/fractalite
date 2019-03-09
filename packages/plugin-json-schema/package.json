@@ -1,0 +1,9 @@
+{
+  "name": "@frctl/fractalite-plugin-json-schema",
+  "version": "0.0.0",
+  "dependencies": {
+    "@frctl/fractalite-support": "^0.0.0",
+    "ajv": "^6.10.0",
+    "json-schema-faker": "^0.5.0-rc16"
+  }
+}
