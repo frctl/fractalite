@@ -1,4 +1,4 @@
-const { readFile } = require('fs-extra');
+const { readFile, readFileSync } = require('fs-extra');
 const Entity = require('./entity');
 
 class File extends Entity {
@@ -39,6 +39,10 @@ class File extends Entity {
 
   getContents() {
     return this._contents || readFile(this.path, 'utf-8');
+  }
+
+  getContentsSync() {
+    return this._contents || readFileSync(this.path, 'utf-8');
   }
 
   toString() {
