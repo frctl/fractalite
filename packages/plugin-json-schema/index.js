@@ -10,13 +10,15 @@ module.exports = function(opts = {}) {
 
   return function jsonSchemaPlugin(app, compiler) {
     if (opts.validate) {
-      let validationErrors = [];
+      let ajvOpts = opts.validate === true ? {} : opts.validate;
 
-      compiler.use(components => {
-        validationErrors = [];
+      compiler.use((components, next, ctx) => {
         components.forEach(component => {
           if (component.config.schema) {
-            const ajv = new Ajv(opts.validate === true ? {} : opts.validate);
+            const ajv = new Ajv({
+              allErrors: true,
+              ...ajvOpts
+            });
             const schema = {
               $schema: 'http://json-schema.org/draft-07/schema#',
               $id: component.name,
@@ -29,20 +31,14 @@ module.exports = function(opts = {}) {
               const valid = ajv.validate(schema, scenario.props);
               if (!valid) {
                 const { errors } = ajv;
-                validationErrors.push({ component, scenario, errors });
+                for (const error of errors) {
+                  const message = error.dataPath ? `${error.dataPath} ${error.message}` : error.message;
+                  ctx.log(`${component.name}/${scenario.name} ${message}`, 'warn');
+                }
               }
             });
           }
         });
-      });
-
-      compiler.on('finish', () => {
-        for (const { component, scenario, errors } of validationErrors) {
-          console.log(`${component.name}/${scenario.name}`);
-          for (const error of errors) {
-            console.log(`-- ${error.message}`);
-          }
-        }
       });
     }
   };
