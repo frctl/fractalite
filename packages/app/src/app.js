@@ -157,7 +157,10 @@ module.exports = function(compiler, opts = {}) {
     koa.context.mode = mode;
     koa.context.utils = utils;
 
-    const state = await compiler.run();
+    const state = compiler.getState();
+
+    const { info } = await compiler.run();
+    app.emit('state.updated', state, info, true);
 
     middleware.forEach(mw => koa.use(mw));
 

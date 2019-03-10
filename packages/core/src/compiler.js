@@ -39,8 +39,10 @@ module.exports = function(config = {}) {
   };
 
   compiler.run = async function() {
-    const hrStart = process.hrtime();
     emitter.emit('start');
+    const ctx = {};
+    const logs = [];
+    const hrStart = process.hrtime();
     const { paths, opts } = parseSrc;
 
     let files = await readFiles(paths, {
@@ -48,16 +50,27 @@ module.exports = function(config = {}) {
       gitignore: !!opts.gitignore
     });
 
+    ctx.files = files;
+    ctx.log = (message, level) => {
+      logs.push({ level, message });
+    };
+
     const components = await compileComponents(files, opts);
     files = files.filter(f => f.stats.isFile());
     const applyPlugins = compose(
       middlewares,
-      { files }
+      ctx
     );
     await applyPlugins(components);
     state.update({ components, files });
-    emitter.emit('finish', state, process.hrtime(hrStart));
-    return state;
+
+    const info = {
+      logs,
+      time: process.hrtime(hrStart)
+    };
+
+    emitter.emit('finish', state, info);
+    return { state, info };
   };
 
   compiler.watch = function(callback) {
@@ -84,12 +97,11 @@ module.exports = function(config = {}) {
   function watchHandler(parseEvents) {
     let lastResult = null;
     return debounce(async (event, path) => {
-      const hrStart = process.hrtime();
       try {
         // Only re-parse for 'primary' events, otherwise just notify of changes
         lastResult = parseEvents.includes(event) ? await compiler.run() : lastResult;
-        const time = process.hrtime(hrStart);
-        watchCallbacks.forEach(cb => cb(null, lastResult, { path, event, time }));
+        const info = { path, event, ...lastResult.info };
+        watchCallbacks.forEach(cb => cb(null, lastResult.state, info));
       } catch (err) {
         watchCallbacks.forEach(cb => cb(err));
       }
