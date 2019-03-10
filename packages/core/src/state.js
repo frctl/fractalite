@@ -1,5 +1,3 @@
-const { flatMap } = require('lodash');
-
 module.exports = function(initial = {}) {
   const state = {
     components: [],
