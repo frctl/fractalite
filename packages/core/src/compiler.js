@@ -47,7 +47,7 @@ module.exports = function(config = {}) {
 
     let files = await readFiles(paths, {
       onlyFiles: false,
-      gitignore: !!opts.gitignore
+      gitignore: Boolean(opts.gitignore)
     });
 
     ctx.files = files;
