@@ -4,7 +4,7 @@ const standardConfig = require('./fixtures/components/@standard/standard.config'
 
 it('Reads JS config files', async () => {
   const compiler = createCompiler(resolve(__dirname, './fixtures/components'));
-  const { components } = await compiler.run();
-  const standard = components.find(c => c.name === 'standard');
+  const { state } = await compiler.run();
+  const standard = state.components.find(c => c.name === 'standard');
   expect(standard.config).toEqual(standardConfig);
 });

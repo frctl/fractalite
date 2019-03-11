@@ -3,7 +3,7 @@ const Component = require('./entities/component');
 const defaultComponentMatcher = require('./component-matcher');
 
 module.exports = async function(files, opts = {}) {
-  files = orderBy(files, 'path.length', 'desc'); // work from deepest to shallowest
+  files = orderBy(files, 'path.length', 'desc'); // Work from deepest to shallowest
   const dirs = files.filter(f => f.stats.isDirectory());
   let unusedFiles = files.filter(f => f.stats.isFile());
 

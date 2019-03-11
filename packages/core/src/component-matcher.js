@@ -1,6 +1,6 @@
 module.exports = function(dir, children, opts = {}) {
   if (children.length === 0) {
-    return false; // components cannot be empty directories
+    return false; // Components cannot be empty directories
   }
   const matchFiles = opts.matchFiles || ['package.json', 'view.', 'config.'];
   for (const file of children) {
