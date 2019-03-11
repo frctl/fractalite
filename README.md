@@ -27,7 +27,7 @@ Feedback, comments and/or pull requests on **all** aspects of the prototype are 
 * Middleware-based components parser/compiler
 * [Plugin system](#plugins) for compiler and UI customisation
 * [Adapter-based](#adapters) component rendering
-* Completely customisable [nav generation](#navigaion)
+* Completely customisable [nav generation](#navigation)
 * Component and scenario search
 * Easy [asset referencing](#view-template-assets) within components
 * Dynamic page builder
@@ -677,13 +677,13 @@ module.exports = {
     items(state, toTree){
       // filter components by some custom property in the config
       const components = state.components.filter(component => {
-        return component.config.customProp = true;
+        return component.config.customProp === true;
       });
       // return the navigation tree
       return [
         {
           label: 'Components',
-          children: state.components // flat list of filtered components
+          children: components // flat list of filtered components
         },
         {
           label: 'Pages',
