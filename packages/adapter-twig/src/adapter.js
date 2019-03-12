@@ -8,7 +8,9 @@ module.exports = function(compiler, opts = {}) {
     state.components.forEach(component => {
       const view = component.matchFiles(opts.views)[0];
       if (view) {
-        loader.setTemplate(component.name, view.getContentsSync());
+        const contents = view.getContentsSync();
+        loader.setTemplate(component.name, contents);
+        loader.setTemplate(view.relative, contents);
       }
     });
   });
