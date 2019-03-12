@@ -10,7 +10,9 @@ Specify as adapter in the project config file:
 // fractal.config.js
 module.exports = {
   adapter: require('@frctl/fractalite-adapter-twig')({
-    cache: '/path/to/template/cache/dir' // optional 
+    env: {
+      cache: '/path/to/template/cache/dir' // optional
+    }
   })
 };
 ```
@@ -36,14 +38,21 @@ button
 
 Templates from other components can be included/extended/imported as required. You can either reference a view template via the component name:
 
-```
+```twig
 {% include 'button' with someData %}
 ```
 
 Or via the path to the component view template itself (relative to the components directory root):
 
-```
+```twig
 {% include 'relative/path/to/button/view.twig' with someData %}
 ```
 
 > The latter option is less flexible and robust (it will need to be updated if components are moved around) but can make integration with PHP environments more straightforward.
+
+### Including with scenario properties
+
+```twig
+{% include 'button/next' %} // render the button template with props from the button's `next` scenario
+{% include 'button/next' with { label: 'Do this' } %} // as above, but additionally override the `label` property
+```

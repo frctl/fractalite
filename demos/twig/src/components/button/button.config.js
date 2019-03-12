@@ -5,6 +5,12 @@ module.exports = {
       props: {
         label: 'Click here'
       }
+    },
+    {
+      name: 'next',
+      props: {
+        label: 'Next'
+      }
     }
   ]
 };

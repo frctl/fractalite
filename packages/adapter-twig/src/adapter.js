@@ -1,32 +1,20 @@
-const { TwingEnvironment, TwingLoaderArray } = require('twing');
+const { TwingEnvironment } = require('twing');
+const createFractalTemplate = require('./template');
+const createLoader = require('./loader');
 
 module.exports = function(compiler, opts = {}) {
-  const loader = new TwingLoaderArray({});
-
-  compiler.on('finish', state => {
-    loader.templates.clear();
-    state.components.forEach(component => {
-      const view = component.matchFiles(opts.views)[0];
-      if (view) {
-        const contents = view.getContentsSync();
-        loader.setTemplate(component.name, contents);
-        loader.setTemplate(view.relative, contents);
-      }
-    });
-  });
+  const state = compiler.getState();
+  const loader = createLoader(compiler, opts);
 
   const twing = new TwingEnvironment(loader, {
-    cache: opts.cache ? opts.cache : false
+    ...opts.env,
+    base_template_class: 'FractalTemplate'
   });
 
+  const runtime = twing.getTemplateRuntime();
+  runtime['FractalTemplate'] = createFractalTemplate(state);
+
   return async function render(component, props, state) {
-    return new Promise((resolve, reject) => {
-      try {
-        const html = twing.render(component.name, props);
-        return resolve(html);
-      } catch (err) {
-        reject(err);
-      }
-    });
+    return twing.render(component.name, props);
   };
 };

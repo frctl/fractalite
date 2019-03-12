@@ -1,5 +1,11 @@
 <div class="card">
-  {% include 'button' with {
-    label: 'Do this thing'
-  } %}
+  <h1>{{ title }}</h1>
+
+  <p>Select one of the following:</p>
+
+  <ul>
+    <li>{% include 'button/next' %}</li>
+    <li>{% include 'button' with { label: 'Do this!' } %}</li>
+  </ul>
+
 </div>
