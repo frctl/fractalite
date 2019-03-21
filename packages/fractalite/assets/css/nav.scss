@@ -39,7 +39,7 @@
     }
   }
 
-  &__item.is-open > &__toggle:before {
+  &__item.is-expanded > &__toggle:before {
     transform: rotate(90deg);
   }
 
