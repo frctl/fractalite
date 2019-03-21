@@ -56,7 +56,8 @@ module.exports = function(app, compiler, renderer, opts = {}) {
         Object.assign(entry, {
           id: `component-${item.name}`,
           type: 'component',
-          label: item.label
+          label: item.label,
+          url: item.scenarios[0].url
         });
         if (opts.scenarios) {
           entry.children = item.scenarios.map(scenario => {
@@ -68,8 +69,6 @@ module.exports = function(app, compiler, renderer, opts = {}) {
             entry.label = generateLabel(scenario.label, entry, scenario);
             return entry;
           });
-        } else {
-          entry.url = item.scenarios[0].url;
         }
       } else if (isFile(item)) {
         Object.assign(entry, {

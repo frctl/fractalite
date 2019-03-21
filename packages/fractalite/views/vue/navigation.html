@@ -5,12 +5,16 @@
     ref="items"
     :class="{'is-expanded': isExpanded(item)}"
   >
-    <app-link :to="item.url" v-if="item.url" class="fr-nav__link">
+    <span :class="{ 'is-collapsable': item.collapsable, 'fr-nav__toggle': item.children, 'fr-nav__link': item.url && !item.children, 'is-active': item.url === $route.path }" @click.stop="handleClick(item)">
+      <span class="fr-nav__label" v-html="item.label"></span>
+    </span>
+
+    <!-- <app-link :to="item.url" v-if="item.url" class="fr-nav__link" :class="{ 'is-collapsable': item.collapsable }" @click="toggleExpanded(item)">
       <span class="fr-nav__label" v-html="item.label"></span>
     </app-link>
     <span class="fr-nav__toggle" :class="{ 'is-collapsable': item.collapsable }" @click.stop="toggleExpanded(item)" v-else>
       <span class="fr-nav__label" v-html="item.label"></span>
-    </span>
+    </span> -->
     <navigation :items="item.children" :depth="depth + 1" v-if="item.children"></navigation>
   </li>
 </ul>

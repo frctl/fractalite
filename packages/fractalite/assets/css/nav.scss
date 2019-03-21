@@ -60,7 +60,7 @@
     color: var(--nav-link-color--hover);
   }
 
-  &__link.router-link-exact-active {
+  &__link:not(.fr-nav__toggle).is-active {
     background-color: var(--nav-link-bg--active);
     color: var(--nav-link-color--active);
   }
