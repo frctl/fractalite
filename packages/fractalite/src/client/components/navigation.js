@@ -61,7 +61,6 @@ export default {
       return true;
     },
     handleClick(item) {
-
       if (item.url && (!item.children || (item.children && !this.isExpanded(item)))) {
         if (item.url.match(/^(http(s)?|ftp):\/\//)) {
           this.toggleExpanded(item);
@@ -70,19 +69,9 @@ export default {
           this.$router.push(item.url);
         }
       }
-
-
       if (item.children) {
         this.toggleExpanded(item);
       }
-
-      // if (item.children) {
-      //   Vue.nextTick(() =>{
-      //     this.toggleExpanded(item);
-      //   });
-      // }
-
-
     }
   },
   watch: {
