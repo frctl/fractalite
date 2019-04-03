@@ -60,7 +60,8 @@ module.exports = function(opts = {}) {
           logLevel: 3,
           publicUrl,
           hmrHostname: opts.hmrHostname || 'localhost',
-          hmr: app.mode === 'develop' ? opts.hmr !== false : false
+          hmr: app.mode === 'develop' ? opts.hmr !== false : false,
+          global: opts.global
         });
 
         if (initial) {
