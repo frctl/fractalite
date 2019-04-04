@@ -1,4 +1,4 @@
-module.exports = function(app, compiler, renderer, opts = {}) {
+module.exports = function(app, compiler, adapter, opts = {}) {
   if (typeof opts === 'string') {
     opts = {
       path: opts

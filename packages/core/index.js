@@ -29,7 +29,7 @@ function init(config = {}) {
 
 module.exports = init;
 module.exports.createCompiler = init;
-module.exports.createRenderer = require('./src/renderer');
+module.exports.createAdapter = require('./src/create-adapter');
 module.exports.htmlAdapter = require('./src/html-adapter');
 module.exports.File = require('./src/entities/file');
 module.exports.Component = require('./src/entities/component');

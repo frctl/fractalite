@@ -36,6 +36,13 @@ module.exports = function(state, adapter) {
     return Promise.all([renderToStaticMarkup(target, props)]);
   }
 
+  function getTemplateString(component) {
+    if (isFunction(adapter.getTemplateString)) {
+      return adapter.getTemplateString(component);
+    }
+    return null;
+  }
+
   function getPreviewString(content) {
     if (isFunction(adapter.getPreviewString)) {
       return adapter.getPreviewString(content, state);
@@ -43,5 +50,5 @@ module.exports = function(state, adapter) {
     return content;
   }
 
-  return { render, renderAll, renderToStaticMarkup, renderAllToStaticMarkup, getPreviewString };
+  return { render, renderAll, renderToStaticMarkup, renderAllToStaticMarkup, getPreviewString, getTemplateString };
 };

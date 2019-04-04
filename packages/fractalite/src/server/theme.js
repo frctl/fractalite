@@ -1,6 +1,6 @@
 const { isString, isFunction, isPlainObject, forEach } = require('lodash');
 
-module.exports = function(app, compiler, renderer, opts = {}) {
+module.exports = function(app, compiler, adapter, opts = {}) {
   if (isFunction(opts)) {
     opts = opts(app) || {};
   }

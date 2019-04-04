@@ -6,7 +6,7 @@ const { read, watch } = require('@frctl/fractalite-core');
 const { map } = require('asyncro');
 const matter = require('gray-matter');
 
-module.exports = function(app, compiler, renderer, opts = {}) {
+module.exports = function(app, compiler, adapter, opts = {}) {
   if (typeof opts === 'string' || Array.isArray(opts)) opts = { src: opts };
   opts = cloneDeep(opts);
   opts.src = normalizeSrc(opts.src);

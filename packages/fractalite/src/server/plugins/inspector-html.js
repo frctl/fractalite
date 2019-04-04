@@ -1,7 +1,7 @@
 /* eslint camelcase: "off" */
 
 module.exports = function(opts = {}) {
-  return function inspectorHTMLPlugin(app, compiler, renderer) {
+  return function inspectorHTMLPlugin(app, compiler, adapter) {
     if (opts === false) return;
 
     const prettify = opts.prettify !== false;
@@ -15,7 +15,7 @@ module.exports = function(opts = {}) {
       `,
       async props(state) {
         const { scenario, component } = state;
-        let items = await renderer.renderAllToStaticMarkup(component, scenario.preview.props);
+        let items = await adapter.renderAllToStaticMarkup(component, scenario.preview.props);
         items = items.map(item => (prettify ? app.utils.prettify(item, 'html') : item));
         return { html: items };
       }

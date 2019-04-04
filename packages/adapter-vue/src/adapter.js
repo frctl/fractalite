@@ -1,4 +1,6 @@
 const JSON5 = require('json5');
+const stripIndent = require('strip-indent');
+const { parse } = require('node-html-parser');
 const { map, isPlainObject, isString } = require('lodash');
 
 module.exports = function(opts = {}) {
@@ -12,6 +14,17 @@ module.exports = function(opts = {}) {
 
     getPreviewString(content) {
       return `<div id="${opts.previewAppId}">${content}</div>`;
+    },
+
+    async getTemplateString(component) {
+      const vueFile = component.files.find(f => f.ext === '.vue');
+      const contents = vueFile ? await vueFile.getContents() : null;
+      if (contents) {
+        const root = parse(contents);
+        const tpl = root.querySelector('template');
+        return tpl ? stripIndent(tpl.innerHTML) : null;
+      }
+      return null;
     }
   };
 };

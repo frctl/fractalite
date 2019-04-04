@@ -1,6 +1,6 @@
 const { flatMap } = require('lodash');
 
-module.exports = function(app, compiler, renderer, opts = {}) {
+module.exports = function(app, compiler, adapter, opts = {}) {
   app.addRoute('api.search', '/api/search.json', ctx => {
     const components = flatMap(ctx.components, component => {
       const { search } = component;

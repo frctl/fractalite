@@ -30,11 +30,18 @@ module.exports = function(compiler, opts = {}) {
     });
   });
 
-  return async function render(component, props, state) {
+  async function render(component, props, state) {
     return new Promise((resolve, reject) => {
       env.render(component.name, props, (err, result) => {
         return err ? reject(err) : resolve(result);
       });
     });
-  };
+  }
+
+  async function getTemplateString(component) {
+    const view = component.matchFiles(opts.views)[0];
+    return view ? view.getContents() : null;
+  }
+
+  return { render, getTemplateString };
 };

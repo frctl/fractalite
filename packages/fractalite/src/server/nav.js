@@ -3,7 +3,7 @@ const { merge, isBoolean, isFunction, isPlainObject, flatMap, uniqBy, orderBy, c
 const { titlize, slugify } = require('@frctl/fractalite-support/utils');
 const { isComponent, isFile } = require('@frctl/fractalite-core/helpers');
 
-module.exports = function(app, compiler, renderer, opts = {}) {
+module.exports = function(app, compiler, adapter, opts = {}) {
   const defaults = {
     label: str => str,
     items: defaultGenerator,

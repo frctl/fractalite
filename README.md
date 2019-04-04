@@ -131,7 +131,7 @@ Below is some preliminary documentation to help get across some of the key aspec
 * **API**
   * [Compiler](#api-compiler)
   * [Application](#api-application)
-  * [Renderer](#api-renderer)
+  * [Adapter](#api-adapter)
   * [Component](#api-component)
   * [Page](#api-page)
   * [File](#api-file)
@@ -809,7 +809,7 @@ module.exports = {
 };
 ```
 
-A plugin is a function that receives `app`, `compiler` and `renderer` instances as it's arguments.
+A plugin is a function that receives `app`, `compiler` and `adapter` instances as it's arguments.
 
 A useful pattern is to wrap the plugin function itself in a 'parent' function so that it can receive runtime options:
 
@@ -817,7 +817,7 @@ A useful pattern is to wrap the plugin function itself in a 'parent' function so
 // plugins/example.js
 module.exports = function(opts = {}){
   // any plugin initialiation here
-  return function(app, compiler, renderer){
+  return function(app, compiler, adapter){
     // this is the plugin function itself
     console.log('This is an example plugin');
   }
@@ -1053,6 +1053,35 @@ module.exports = function(opts = {}) {
 
 ```
 
+### Advanced adapters
+
+More advanced adapters can return an object instead of a simple `render` function - in this case the `render` function must be provided as a method on the returned object:
+
+```js
+// example-adapter.js
+module.exports = function(opts = {}){
+  // any adapter initialiation here
+  return function(app, compiler){
+    // do anything with app/compiler here
+    return {
+      render(component, props, state){
+        // do rendering here...
+        return html;
+      },
+      // any additional integration methods here
+    }
+  }
+};
+```
+
+The adapter can then choose to implement any of the following additional methods to provide a deeper integration with the core:
+
+#### .getTemplateString(component)
+
+Should return a string representation of a source template, if relevant to the target template engine or framework. Can return string or a `Promise` that resolves to a string.
+
+
+
 ## API
 
 <h2 id="api-compiler">Compiler</h2>
@@ -1177,10 +1206,11 @@ Re-parse the component directory and update the internal compiler state. Returns
 
 #### `app.extend(methods)`
 
-<h2 id="api-renderer">Renderer</h2>
+<h2 id="api-adapter">Adapter</h2>
 
-#### `renderer.render(component, props)`
-#### `renderer.renderAll(component, arrayOfProps)`
+#### `adapter.render(component, props)`
+#### `adapter.renderAll(component, arrayOfProps)`
+#### `adapter.getTemplateString(component)`
 
 <h2 id="api-component">Component</h2>
 

@@ -3,7 +3,7 @@ const { titlize, resolveValue, mapValuesAsync } = require('@frctl/fractalite-sup
 const { getScenarioOrDefault, getScenario, getComponent } = require('@frctl/fractalite-core/helpers');
 const { map } = require('asyncro');
 
-module.exports = function(app, compiler, renderer, opts = {}) {
+module.exports = function(app, compiler, adapter, opts = {}) {
   let panels = [];
 
   app.extend({

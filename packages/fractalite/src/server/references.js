@@ -1,4 +1,4 @@
-module.exports = function(app, compiler, renderer, opts = {}) {
+module.exports = function(app, compiler, adapter, opts = {}) {
   if (opts === false) return;
 
   const refMatcher = opts.match || /{(.*?)}/g;

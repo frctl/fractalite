@@ -16,7 +16,7 @@ const defaultOpts = {
   wrapEach: null
 };
 
-module.exports = function(app, compiler, renderer, opts = {}) {
+module.exports = function(app, compiler, adapter, opts = {}) {
   const previewAssets = { css: [], js: [], scripts: [], stylesheets: [] };
   const previewWrappers = { each: [], all: [] };
   const hooks = {
@@ -112,7 +112,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     const previewProps = await applyHooks('beforeScenarioRender', cloneDeep(scenario.preview.props), hookCtx);
 
     // Render the component once for each set of preview props
-    let items = await renderer.renderAll(component, previewProps);
+    let items = await adapter.renderAll(component, previewProps);
 
     // Allow hooks to manipulate the rendered output
     items = await applyHooks('afterScenarioRender', items, hookCtx);
@@ -169,7 +169,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     }
 
     // Allow hooks to manipulate the preview object
-    html = renderer.getPreviewString(html);
+    html = adapter.getPreviewString(html);
 
     let preview = { js, css, meta, scripts, stylesheets, content: html, component, scenario };
     preview = await applyHooks('beforePreviewRender', preview, hookCtx);
@@ -179,7 +179,7 @@ module.exports = function(app, compiler, renderer, opts = {}) {
     // Custom preview template handling
     if (previewTpl) {
       if (isFunction(previewTpl)) {
-        output = await previewTpl(preview.content, preview); // Completely bespoke preview renderer
+        output = await previewTpl(preview.content, preview); // Completely bespoke preview adapter
       } else if (isString(previewTpl)) {
         // Custom Nunjucks preview template
         output = await app.views.renderStringAsync(previewTpl, preview);
