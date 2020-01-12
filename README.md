@@ -12,7 +12,7 @@ A prototype to help explore development ideas for the next version of [Fractal](
 
 The aim of this prototype is to provide the ground work for the next version of Fractal. It's very much a work in progress and we'd love to get **as much input from the community as possible** to help shape that process.
 
-**Please let us know your thoughts** by [opening a new issue using the 'Feedback' issue template](https://github.com/frctl/fractalite/issues/new?assignees=allmarkedup&labels=Feedback&template=feedback.md&title=Feedback+) or by jumping into the `#fractalite` channel in the [Fractal community Slack](http://slack.fractal.build) to discuss. Feel free to message `@mark` with any questions you might have!
+**Please let us know your thoughts** by [opening a new issue using the 'Feedback' issue template](https://github.com/frctl/fractalite/issues/new?assignees=allmarkedup&labels=Feedback&template=feedback.md&title=Feedback+) or by jumping into the `#fractalite` channel in the [Fractal community Discord](https://discord.gg/vuRz4Yx) to discuss. Feel free to message `@mark` with any questions you might have!
 
 ---
 
