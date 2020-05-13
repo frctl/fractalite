@@ -5,9 +5,9 @@
     ref="items"
     :class="{'is-expanded': isExpanded(item)}"
   >
-    <span :class="{ 'is-collapsable': item.collapsable, 'fr-nav__toggle': item.children, 'fr-nav__link': item.url && !item.children, 'is-active': item.url === $route.path }" @click.stop="handleClick(item)">
+    <a href="#" :class="{ 'is-collapsable': item.collapsable, 'fr-nav__toggle': item.children, 'fr-nav__link': item.url && !item.children, 'is-active': item.url === $route.path }" @click.prevent.stop="handleClick(item)">
       <span class="fr-nav__label" v-html="item.label"></span>
-    </span>
+    </a>
     <navigation :items="item.children" :depth="depth + 1" v-if="item.children"></navigation>
   </li>
 </ul>
